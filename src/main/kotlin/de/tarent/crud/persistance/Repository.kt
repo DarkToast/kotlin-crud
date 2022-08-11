@@ -1,7 +1,6 @@
 package de.tarent.crud.persistance
 
 import de.tarent.crud.dtos.Group
-import io.ktor.server.plugins.NotFoundException
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils

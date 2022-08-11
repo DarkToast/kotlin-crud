@@ -14,10 +14,10 @@ import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
@@ -28,49 +28,52 @@ import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
-
-fun startServer() {
+@Suppress("unused")
+fun Application.server() {
     val logger = KotlinLogging.logger {}
 
-    val server = embeddedServer(Netty, port = 8080) {
-        install(StatusPages) {
-            exception<Throwable> { call, e ->
-                logger.error(e) { "Got an unknown exception! Measure error!" }
-                call.respond(
-                    Conflict,
-                    Failure(InternalServerError.value, e.message ?: "Unexpected error")
-                )
-            }
-
-            exception<ServiceException> { call, e -> exceptionHandler(call, e) }
+    install(StatusPages) {
+        exception<Throwable> { call, e ->
+            logger.error(e) { "Got an unknown exception! Measure error!" }
+            call.respond(
+                InternalServerError,
+                Failure(InternalServerError.value, e.message ?: "Unexpected error")
+            )
         }
 
-        install(Koin) {
-            slf4jLogger(Level.DEBUG)
-            modules(serviceModule("/configuration.yml"))
+        exception<BadRequestException> { call, e ->
+            logger.error(e) { "Bad request of the user request" }
+            call.respond(
+                BadRequest,
+                Failure(BadRequest.value, e.message ?: "Unexpected error")
+            )
         }
 
-        install(ContentNegotiation) {
-            jackson {
-                configure(SerializationFeature.INDENT_OUTPUT, true)
-                setDefaultPrettyPrinter(DefaultPrettyPrinter())
-                registerModule(KotlinModule.Builder().build())
-            }
-        }
+        exception<ServiceException> { call, e -> exceptionHandler(call, e) }
+    }
 
+    install(Koin) {
+        slf4jLogger(Level.DEBUG)
+        modules(serviceModule(environment.config))
+    }
 
-        val groupService: GroupService by inject()
-
-        routing {
-            indexPage()
-            groupPage(groupService)
+    install(ContentNegotiation) {
+        jackson {
+            configure(SerializationFeature.INDENT_OUTPUT, true)
+            setDefaultPrettyPrinter(DefaultPrettyPrinter())
+            registerModule(KotlinModule.Builder().build())
         }
     }
 
-    server.start(wait = true)
+    val groupService: GroupService by inject()
+
+    routing {
+        indexPage()
+        groupPage(groupService)
+    }
 }
 
-suspend fun exceptionHandler(call:ApplicationCall, e: ServiceException) {
+suspend fun exceptionHandler(call: ApplicationCall, e: ServiceException) {
     val logger = KotlinLogging.logger {}
 
     return when (e) {

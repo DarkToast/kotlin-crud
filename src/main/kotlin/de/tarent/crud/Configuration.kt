@@ -1,9 +1,7 @@
 package de.tarent.crud
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import java.io.InputStream
+import io.ktor.server.config.ApplicationConfig
+import mu.KotlinLogging
 
 data class Database(
     val connection: String,
@@ -14,16 +12,23 @@ data class Database(
 
 data class Configuration(val database: Database? = null) {
     companion object {
-        fun load(configurationFile: String): Configuration? {
-            val mapper = ObjectMapper(YAMLFactory())
-            mapper.registerModule(KotlinModule.Builder().build())
+        val logger = KotlinLogging.logger {}
 
-            val stream: InputStream? =
-                Configuration::class.java.getResourceAsStream(configurationFile)
+        fun load(configuration: ApplicationConfig): Configuration {
+            logger.info { "Loading database configuration with: " }
+            val dbConfig = configuration.config("database")
 
-            return stream?.bufferedReader(Charsets.UTF_8)?.use {
-                mapper.readValue(it, Configuration::class.java)
-            }
+            val database = Database(
+                dbConfig.property("connection").getString(),
+                dbConfig.property("driver").getString(),
+                dbConfig.property("username").getString(),
+                dbConfig.property("password").getString()
+            )
+
+            logger.info { "  Connection '${database.connection}'" }
+            logger.info { "  Driver '${database.driver}'" }
+
+            return Configuration(database)
         }
     }
 }
