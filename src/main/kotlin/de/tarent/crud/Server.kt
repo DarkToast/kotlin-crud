@@ -3,6 +3,7 @@ package de.tarent.crud
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import de.tarent.crud.controller.adminPage
 import de.tarent.crud.controller.groupPage
 import de.tarent.crud.controller.indexPage
 import de.tarent.crud.dtos.Failure
@@ -69,6 +70,7 @@ fun Application.server() {
 
     routing {
         indexPage()
+        adminPage()
         groupPage(groupService)
     }
 }
