@@ -1,0 +1,5 @@
+database:
+  connection: "jdbc:postgresql://localhost:5432/iot"
+  driver: "org.postgresql.Driver"
+  username: "admin"
+  password: "s3cr3t"

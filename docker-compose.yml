@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:14.4
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: s3cr3t
+      POSTGRES_USER: admin
+      POSTGRES_DB: iot
+    ports:
+      - "5432:5432"
