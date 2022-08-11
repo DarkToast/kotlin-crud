@@ -10,7 +10,7 @@ data class Database(
     val password: String
 )
 
-data class Configuration(val database: Database? = null) {
+data class Configuration(val database: Database) {
     companion object {
         val logger = KotlinLogging.logger {}
 

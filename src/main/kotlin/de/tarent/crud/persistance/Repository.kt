@@ -21,7 +21,9 @@ class Repository(private val database: Database) {
         }
     }
 
-    private val transform = { row: ResultRow -> Group(row[Groups.name], row[Groups.description]) }
+    private val transform = { row: ResultRow ->
+        Group(row[Groups.name], row[Groups.description])
+    }
 
     fun insert(group: Group): Boolean = transaction(database) {
         val count = Groups.select { Groups.name eq group.name }.count()
@@ -37,25 +39,25 @@ class Repository(private val database: Database) {
         }
     }
 
-    fun update(groupName: String, group: Group): Boolean = transaction(database) {
+    fun update(groupName: String, updatedGroup: Group): Boolean = transaction(database) {
         val currentGroupExists = Groups.select { Groups.name eq groupName }.count() == 1L
         if (!currentGroupExists) {
             throw NotFoundException("Group '$groupName' does not exist!")
         }
 
-        val newGroupNameExists = if(groupName != group.name) {
-            Groups.select { Groups.name eq group.name }.count() == 1L
+        val newGroupNameExists = if(groupName != updatedGroup.name) {
+            Groups.select { Groups.name eq updatedGroup.name }.count() == 1L
         } else {
             false
         }
         
         if (newGroupNameExists) {
-            throw ConflictException("Group name '${group.name}' already exists!")
+            throw ConflictException("Group name '${updatedGroup.name}' already exists!")
         }
 
         Groups.update({ Groups.name eq groupName }) {
-            it[name] = group.name
-            it[description] = group.description
+            it[name] = updatedGroup.name
+            it[description] = updatedGroup.description
         }
         true
     }
