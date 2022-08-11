@@ -1,11 +1,16 @@
+@file:Suppress("RemoveExplicitTypeArguments")
+
 package de.tarent.crud
 
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import de.tarent.crud.persistance.Repository
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.EngineMain
 import org.jetbrains.exposed.sql.Database
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
@@ -14,17 +19,26 @@ val serviceModule = { configuration: ApplicationConfig ->
         singleOf(::GroupService)
         singleOf(::Repository)
 
-        single { Configuration.load(configuration) }
+        single<Configuration> { Configuration.load(configuration) }
 
-        single {
+        single<HikariDataSource> {
             val c: Configuration by inject()
-            val databaseConfig = c.database ?: throw IllegalStateException("No database configuration given!")
-            Database.connect(
-                url = databaseConfig.connection,
-                driver = databaseConfig.driver,
-                user = databaseConfig.username,
-                password = databaseConfig.password
-            )
+
+            val config = HikariConfig()
+            config.jdbcUrl = c.database.connection
+            config.username = c.database.username
+            config.password = c.database.password
+            config.driverClassName = c.database.driver
+            config.connectionTestQuery = "SELECT 1"
+            config.maximumPoolSize = 3
+            config.minimumIdle = 1
+
+            HikariDataSource(config)
+        }
+
+        single<Database> {
+            val source: HikariDataSource by inject()
+            Database.connect(source)
         }
     }
 }
