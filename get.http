@@ -1,0 +1,72 @@
+DELETE localhost:8080/users/max.mustermann/foobar/5679/vertraege/4711
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 2830219380921830921830
+
+{
+  "key": "value",
+  "foo": "bar",
+  "bar": "baz"
+}
+
+### INDEX PAGE
+GET localhost:8080/
+
+### GET A LIST OF GROUPS
+GET localhost:8080/groups
+
+### GET A GROUP
+GET localhost:8080/groups/hwr
+
+### CREATE A NEW GROUP
+POST localhost:8080/groups
+Content-Type: application/json
+
+{
+  "name": "HWR",
+  "description": "Hauswirtschaftsraum"
+}
+
+### UPDATE A GROUP
+PUT localhost:8080/groups/HWR
+Content-Type: application/json
+
+{
+  "name": "hwr",
+  "description": "Neuer Raum. Mit Waschmaschine"
+}
+
+### DELETE A GROUP
+DELETE localhost:8080/groups/hwr
+
+### GET A LIST OF ALL DEVICES
+GET localhost:8080/devices
+
+
+
+### GET ALL DEVICES FOR GROUP 1
+GET localhost:8080/groups/1/devices
+
+### GET ALL DEVICES GOR GROUP WITH NAME "HWR"
+GET localhost:8080/groups/HWR/devices
+
+### CREATE A NEW DEVICE FOR GROUP 1
+POST localhost:8080/groups/1/devices
+Content-Type: application/json
+
+{
+  "name": "Wetterstation1",
+  "description": "",
+  "type": "",
+  "sensors": {
+    "thermometer": "C",
+    "humidity": "%"
+  }
+}
+
+### GET DEVICE INFORMATION FOR DEVICE 1 in GROUP 1
+GET localhost:8080/groups/1/devices/1
+
+### GET DEVICE INFORMATION FOR DEVICE Wetterstation1
+GET localhost:8080/groups/1/devices/Wetterstation1
+
