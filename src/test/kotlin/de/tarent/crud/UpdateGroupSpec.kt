@@ -3,11 +3,14 @@ package de.tarent.crud
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.put
+import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.contentType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -23,14 +26,14 @@ class UpdateGroupSpec : BaseGroupSpec() {
         val response = client.put("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(updateBody())
+            setBody(requestBody())
         }
 
         // Then: The status is ok
         assertEquals(OK, response.status)
 
         // and: The response is the request body
-        assertEquals(updateBody(), response.bodyAsText())
+        assertEquals(requestBody(), response.bodyAsText())
     }
 
     @Test
@@ -42,14 +45,14 @@ class UpdateGroupSpec : BaseGroupSpec() {
         var response = client.put("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(updateBody("NEW_ID"))
+            setBody(requestBody("NEW_ID"))
         }
 
         // Then: The status is ok
         assertEquals(OK, response.status)
 
         // and: The response is the request body
-        assertEquals(updateBody("NEW_ID"), response.bodyAsText())
+        assertEquals(requestBody("NEW_ID"), response.bodyAsText())
 
         response = client.get("/groups/NEW_ID") {
             contentType(ContentType.Application.Json)
@@ -58,23 +61,50 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
         // then: The status is ok and the group is returned
         assertEquals(OK, response.status)
-        assertEquals(updateBody("NEW_ID"), response.bodyAsText())
+        assertEquals(requestBody("NEW_ID"), response.bodyAsText())
     }
 
     @Test
     fun `Failed - group unknown`() = componentTest {
-        // when>
+        // when: An unknown group is updated
         val response = client.put("/groups/UNKNOWN") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(updateBody())
+            setBody(requestBody())
         }
 
+        // then: not found is returned
         assertEquals(NotFound, response.status)
     }
 
+    @Test
+    fun `Failed - new id conflicts`() = componentTest {
+        // given: The default group
+        provideExistingDefaultGroup(this)
+
+        // and: another group
+        var response = client.post("/groups") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(requestBody("OTHER_GROUP"))
+        }
+
+        assertEquals(Created, response.status)
+
+        // when: We change the ID of the other group to the first group
+        response = client.put("/groups/OTHER_GROUP") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(requestBody(DEFAULT_GROUP_NAME))
+        }
+
+        // then: we get a conflict
+        assertEquals(Conflict, response.status)
+    }
+
+
     // and: new group information
-    private fun updateBody(name: String = DEFAULT_GROUP_NAME) = """
+    private fun requestBody(name: String = DEFAULT_GROUP_NAME) = """
           |{
           |  "name" : "$name",
           |  "description" : "New description"

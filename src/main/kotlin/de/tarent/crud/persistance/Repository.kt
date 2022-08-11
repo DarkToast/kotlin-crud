@@ -38,17 +38,26 @@ class Repository(private val database: Database) {
     }
 
     fun update(groupName: String, group: Group): Boolean = transaction(database) {
-        val count = Groups.select { Groups.name eq groupName }.count()
-
-        if (count == 1L) {
-            Groups.update({ Groups.name eq groupName }) {
-                it[name] = group.name
-                it[description] = group.description
-            }
-            true
-        } else {
-            throw NotFoundException("Group '$groupName' does not exists!")
+        val currentGroupExists = Groups.select { Groups.name eq groupName }.count() == 1L
+        if (!currentGroupExists) {
+            throw NotFoundException("Group '$groupName' does not exist!")
         }
+
+        val newGroupNameExists = if(groupName != group.name) {
+            Groups.select { Groups.name eq group.name }.count() == 1L
+        } else {
+            false
+        }
+        
+        if (newGroupNameExists) {
+            throw ConflictException("Group name '${group.name}' already exists!")
+        }
+
+        Groups.update({ Groups.name eq groupName }) {
+            it[name] = group.name
+            it[description] = group.description
+        }
+        true
     }
 
     fun load(name: String): Group? = transaction(database) {
