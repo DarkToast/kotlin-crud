@@ -52,7 +52,6 @@ fun Route.groupPage(groupService: GroupService) {
                     val response = call.response
                     response.header(Location, "/groups/${group.name}")
                     response.status(Created)
-                    call.respond("")
                 } else {
                     call.respond(HttpStatusCode.BadRequest, Failure(400, "Creation failed!"))
                 }
@@ -87,6 +86,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             logger.info { "DELETE group with name '${name}'." }
             val result = groupService.delete(name)
+
             if (result) call.respond(HttpStatusCode.NoContent)
             else call.respond(HttpStatusCode.BadRequest, Failure(400, "Group '$name' was not found!"))
         }
