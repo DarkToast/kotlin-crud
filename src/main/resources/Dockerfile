@@ -1,7 +1,8 @@
 FROM image-registry.openshift-image-registry.svc:5000/iot/eclipse-temurin:17-alpine
 
 RUN mkdir /opt/app
-COPY ./crud /opt/app/
+COPY ./*/bin /opt/app/bin/
+COPY ./*/lib /opt/app/lib/
 
 EXPOSE 8080
 
