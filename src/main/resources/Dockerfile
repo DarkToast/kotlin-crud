@@ -6,4 +6,4 @@ COPY ./*/lib /opt/app/lib/
 
 EXPOSE 8080
 
-CMD ["/bin/sh", "/opt/app/bin/crud"]
+CMD ["/bin/sh", "/opt/app/bin/source"]
