@@ -43,3 +43,15 @@ spec:
         resources:
           requests:
             storage: 1Gi
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pgadmin-route
+spec:
+  to:
+    kind: Service
+    name: postgres-db-pgadmin
+    weight: 100
+  port:
+    targetPort: pgadmin            
