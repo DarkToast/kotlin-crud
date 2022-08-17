@@ -47,6 +47,53 @@ spec:
         name: openshift-client-1-7-0
       workspaces:
         - name: manifest-dir
-          workspace: workspace1          
+          workspace: workspace1       
+    - name: build-and-test
+      taskRef:
+        kind: Task
+        name: gradle
+      params:
+        - name: GRADLE_IMAGE
+          value: 'docker.io/library/gradle:7.5-jdk17-alpine'
+        - name: PROJECT_DIR
+          value: .
+        - name: TASKS
+          value:
+            - clean
+            - build
+            - test
+            - installDist
+            - prepareImage
+      runAfter:
+        - infrastructure
+      workspaces:
+        - name: source
+          workspace: workspace1             
+    - name: build-image
+      params:
+        - name: SCRIPT
+          value: oc start-build iot-build --from-dir=./build/install --follow
+        - name: VERSION
+          value: latest
+      runAfter:
+        - build-and-test
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client-1-7-0
+      workspaces:
+        - name: manifest-dir
+          workspace: workspace1
+    - name: deploy
+      params:
+        - name: SCRIPT
+          value: oc apply -f deployment/deployment.yml
+        - name: VERSION
+          value: latest
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client-1-7-0
+      workspaces:
+        - name: manifest-dir
+          workspace: workspace1
   workspaces:
-    - name: workspace1
+  - name: workspace1
