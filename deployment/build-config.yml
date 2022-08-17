@@ -1,0 +1,21 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: iot-build
+  namespace: iot
+  labels:
+    build: iot-build
+spec:
+  output:
+    to:
+      kind: ImageStream
+      name: iot-image-stream
+  resources: { }
+  successfulBuildsHistoryLimit: 1
+  failedBuildsHistoryLimit: 2
+  strategy:
+    type: Docker
+    dockerStrategy: { }
+  source:
+    type: Binary
+    binary: { }

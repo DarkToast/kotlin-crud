@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: iot-pipeline  
+  namespace: iot
+spec:
+  tasks:
+    - name: git-clone
+      params:
+      - name: url
+        value: 'https://gitlab.com/christian_schmidt/crud.git'
+      - name: revision
+        value: master
+      - name: submodules
+        value: 'true'
+      - name: depth
+        value: '1'
+      - name: sslVerify
+        value: 'true'
+      - name: deleteExisting
+        value: 'true'
+      - name: verbose
+        value: 'true'
+      - name: gitInitImage
+        value: >-
+          registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:fbf1c4df0f6c1330b34a0ea882ca1dff0e224f3a7060772532a2244438b91074
+      - name: userHome
+        value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: workspace1    
+    - name: infrastructure
+      params:
+        - name: SCRIPT
+          value: >-
+            oc apply -f
+            ./deployment/build-config.yml,./deployment/image-stream.yml,./deployment/postgres.yml
+        - name: VERSION
+          value: latest
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client-1-7-0
+      workspaces:
+        - name: manifest-dir
+          workspace: workspace1          
+  workspaces:
+    - name: workspace1
