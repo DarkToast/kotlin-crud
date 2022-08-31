@@ -1,4 +1,4 @@
-package de.tarent.crud
+package de.tarent.crud.tests.groups
 
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
