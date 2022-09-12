@@ -18,7 +18,7 @@ class Repository(private val database: Database) {
     init {
         transaction(database) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(GroupEntity)
+            SchemaUtils.create(GroupEntity, DeviceEntity)
         }
     }
 

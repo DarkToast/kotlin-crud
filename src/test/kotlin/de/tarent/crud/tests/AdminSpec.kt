@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test
 
 class AdminSpec : BaseComponentSpec() {
     @Test
-    fun `GET status resource`() = componentTest {
+    fun `GET status resource`() = Spec().componentSpec {
         val response = client.get("/admin/status")
         assertEquals(HttpStatusCode.OK, response.status)
     }
 
     @Test
-    fun `GET on health resource`() = componentTest {
+    fun `GET on health resource`() = Spec().componentSpec {
         val response = client.get("/admin/health")
         assertEquals(HttpStatusCode.OK, response.status)
     }
