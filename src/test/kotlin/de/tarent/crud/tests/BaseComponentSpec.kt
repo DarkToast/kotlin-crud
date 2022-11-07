@@ -1,6 +1,6 @@
 package de.tarent.crud.tests
 
-import de.tarent.crud.persistance.Groups
+import de.tarent.crud.persistance.GroupEntity
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -29,7 +29,7 @@ abstract class BaseComponentSpec {
         } finally {
             val db: ExposedDatabase by inject(ExposedDatabase::class.java)
             transaction(db) {
-                Groups.deleteAll()
+                GroupEntity.deleteAll()
             }
 
             stopKoin()
