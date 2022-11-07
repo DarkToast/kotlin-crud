@@ -1,4 +1,4 @@
-package de.tarent.crud
+package de.tarent.crud.tests
 
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
