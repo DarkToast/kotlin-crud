@@ -1,0 +1,7 @@
+stages:
+  - build
+
+test/build:
+  image: gradle:jdk17
+  stage: build
+  script: "gradle clean build"
