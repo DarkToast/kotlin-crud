@@ -17,19 +17,19 @@ class Repository(private val database: Database) {
     init {
         transaction(database) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups)
+            SchemaUtils.create(GroupEntity)
         }
     }
 
     private val transform = { row: ResultRow ->
-        Group(row[Groups.name], row[Groups.description])
+        Group(row[GroupEntity.name], row[GroupEntity.description])
     }
 
     fun insert(group: Group): Boolean = transaction(database) {
-        val count = Groups.select { Groups.name eq group.name }.count()
+        val count = GroupEntity.select { GroupEntity.name eq group.name }.count()
 
         if (count == 0L) {
-            Groups.insert {
+            GroupEntity.insert {
                 it[name] = group.name
                 it[description] = group.description
             }
@@ -40,13 +40,13 @@ class Repository(private val database: Database) {
     }
 
     fun update(groupName: String, updatedGroup: Group): Boolean = transaction(database) {
-        val currentGroupExists = Groups.select { Groups.name eq groupName }.count() == 1L
+        val currentGroupExists = GroupEntity.select { GroupEntity.name eq groupName }.count() == 1L
         if (!currentGroupExists) {
             throw NotFoundException("Group '$groupName' does not exist!")
         }
 
         val newGroupNameExists = if(groupName != updatedGroup.name) {
-            Groups.select { Groups.name eq updatedGroup.name }.count() == 1L
+            GroupEntity.select { GroupEntity.name eq updatedGroup.name }.count() == 1L
         } else {
             false
         }
@@ -55,7 +55,7 @@ class Repository(private val database: Database) {
             throw ConflictException("Group name '${updatedGroup.name}' already exists!")
         }
 
-        Groups.update({ Groups.name eq groupName }) {
+        GroupEntity.update({ GroupEntity.name eq groupName }) {
             it[name] = updatedGroup.name
             it[description] = updatedGroup.description
         }
@@ -63,16 +63,16 @@ class Repository(private val database: Database) {
     }
 
     fun load(name: String): Group? = transaction(database) {
-        Groups.select { Groups.name eq name }
+        GroupEntity.select { GroupEntity.name eq name }
             .map(transform)
             .firstOrNull()
     }
 
     fun delete(name: String): Int = transaction(database) {
-        Groups.deleteWhere { Groups.name eq name }
+        GroupEntity.deleteWhere { GroupEntity.name eq name }
     }
 
     fun list(): List<Group> = transaction(database) {
-        Groups.selectAll().map(transform)
+        GroupEntity.selectAll().map(transform)
     }
 }
