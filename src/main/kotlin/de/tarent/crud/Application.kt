@@ -4,10 +4,10 @@ package de.tarent.crud
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.config.ApplicationConfig
 import de.tarent.crud.persistance.GroupEntity
 import de.tarent.crud.persistance.GroupRepository
 import de.tarent.crud.service.GroupService
-import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.EngineMain
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -31,10 +31,10 @@ val serviceModule = { configuration: ApplicationConfig ->
             val c: Configuration by inject()
 
             val config = HikariConfig()
-            config.jdbcUrl = c.database.connection
-            config.username = c.database.username
-            config.password = c.database.password
-            config.driverClassName = c.database.driver
+            config.jdbcUrl = c.databaseConfig.connection
+            config.username = c.databaseConfig.username
+            config.password = c.databaseConfig.password
+            config.driverClassName = c.databaseConfig.driver
             config.connectionTestQuery = "SELECT 1"
             config.maximumPoolSize = 3
             config.minimumIdle = 1

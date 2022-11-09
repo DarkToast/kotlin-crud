@@ -3,32 +3,32 @@ package de.tarent.crud
 import io.ktor.server.config.ApplicationConfig
 import mu.KotlinLogging
 
-data class Database(
+data class DatabaseConfig(
     val connection: String,
     val driver: String,
     val username: String,
     val password: String
 )
 
-data class Configuration(val database: Database) {
+data class Configuration(val databaseConfig: DatabaseConfig) {
     companion object {
         private val logger = KotlinLogging.logger {}
 
         fun load(configuration: ApplicationConfig): Configuration {
             logger.info { "Loading database configuration with: " }
-            val dbConfig = configuration.config("database")
+            val dbProps = configuration.config("database")
 
-            val database = Database(
-                dbConfig.property("connection").getString(),
-                dbConfig.property("driver").getString(),
-                dbConfig.property("username").getString(),
-                dbConfig.property("password").getString()
+            val databaseConfig = DatabaseConfig(
+                dbProps.property("connection").getString(),
+                dbProps.property("driver").getString(),
+                dbProps.property("username").getString(),
+                dbProps.property("password").getString()
             )
 
-            logger.info { "  Connection '${database.connection}'" }
-            logger.info { "  Driver '${database.driver}'" }
+            logger.info { "  Connection '${databaseConfig.connection}'" }
+            logger.info { "  Driver '${databaseConfig.driver}'" }
 
-            return Configuration(database)
+            return Configuration(databaseConfig)
         }
     }
 }
