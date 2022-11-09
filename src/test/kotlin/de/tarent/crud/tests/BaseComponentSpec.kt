@@ -86,7 +86,7 @@ abstract class BaseComponentSpec {
          |  "description": "${description}",
          |  "type": "${type}"
          |}
-        """.trimIndent()
+        """.trimMargin("|")
 
     protected suspend fun createGroup(builder: ApplicationTestBuilder, groupName: String, description: String): String {
         val response = builder.client.post("/groups") {
