@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource
 import de.tarent.crud.persistance.DeviceEntity
 import de.tarent.crud.persistance.GroupEntity
 import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.service.GroupService
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.EngineMain
@@ -25,6 +26,7 @@ val serviceModule = { configuration: ApplicationConfig ->
     module {
         singleOf(::GroupService)
         singleOf(::GroupRepository)
+        singleOf(::DeviceRepository)
 
         single<Configuration> { Configuration.load(configuration) }
 
