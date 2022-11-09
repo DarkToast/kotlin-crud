@@ -65,6 +65,29 @@ abstract class BaseComponentSpec {
         }
     }
 
+    protected suspend fun createDevice(builder: ApplicationTestBuilder, groupName: String, deviceJson: String): String {
+        val response = builder.client.post("/groups/$groupName/devices") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(deviceJson)
+        }
+
+        assertEquals(HttpStatusCode.Created, response.status)
+
+        return response.headers[HttpHeaders.Location]
+            ?: throw IllegalStateException("Illegal creation state. No location header set!")
+    }
+
+    @Suppress("SameParameterValue")
+    protected fun clientJson(name: String, description: String, type: String): String =
+        """
+         |{
+         |  "name": "${name}",
+         |  "description": "${description}",
+         |  "type": "${type}"
+         |}
+        """.trimIndent()
+
     protected suspend fun createGroup(builder: ApplicationTestBuilder, groupName: String, description: String): String {
         val response = builder.client.post("/groups") {
             contentType(ContentType.Application.Json)
