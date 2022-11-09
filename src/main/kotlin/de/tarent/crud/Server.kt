@@ -9,7 +9,7 @@ import de.tarent.crud.controller.indexPage
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.persistance.ConflictException
 import de.tarent.crud.persistance.NotFoundException
-import de.tarent.crud.persistance.ServiceException
+import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.GroupService
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
@@ -51,7 +51,7 @@ fun Application.server() {
             )
         }
 
-        exception<ServiceException> { call, e -> exceptionHandler(call, e) }
+        exception<PeristenceException> { call, e -> exceptionHandler(call, e) }
     }
 
     install(Koin) {
@@ -76,7 +76,7 @@ fun Application.server() {
     }
 }
 
-suspend fun exceptionHandler(call: ApplicationCall, e: ServiceException) {
+suspend fun exceptionHandler(call: ApplicationCall, e: PeristenceException) {
     val logger = KotlinLogging.logger {}
 
     return when (e) {
