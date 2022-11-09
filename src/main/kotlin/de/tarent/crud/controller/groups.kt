@@ -1,10 +1,10 @@
 package de.tarent.crud.controller
 
-import de.tarent.crud.GroupService
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.exceptionHandler
 import de.tarent.crud.persistance.ServiceException
+import de.tarent.crud.service.GroupService
 import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -75,7 +75,7 @@ fun Route.groupPage(groupService: GroupService) {
                 } else {
                     call.respond(HttpStatusCode.BadRequest, Failure(400, "Update failed!"))
                 }
-            } catch(e: ServiceException) {
+            } catch (e: ServiceException) {
                 exceptionHandler(call, e)
             }
         }

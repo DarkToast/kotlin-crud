@@ -10,6 +10,7 @@ import de.tarent.crud.dtos.Failure
 import de.tarent.crud.persistance.ConflictException
 import de.tarent.crud.persistance.NotFoundException
 import de.tarent.crud.persistance.ServiceException
+import de.tarent.crud.service.GroupService
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
