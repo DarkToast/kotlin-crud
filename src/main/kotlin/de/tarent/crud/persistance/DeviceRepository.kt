@@ -2,6 +2,7 @@ package de.tarent.crud.persistance
 
 import de.tarent.crud.dtos.Device
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

@@ -5,12 +5,12 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.builtins.ListSerializer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-@Suppress("unused")
 class ReadDeviceSpec : BaseDeviceSpec() {
     private val spec = Spec().withSetup {
         createGroup(this, testGroupName, "my-test-group")
@@ -75,8 +75,18 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         assertDevice("second_device", "test-device", "plug", list[1])
     }
 
-    fun `all devices of an unknown group fails`() {
+    @Test
+    fun `all devices of an unknown group fails`() = Spec().componentSpec {
+        // given: url with unknown group
+        val url = "/groups/unknown/devices"
 
+        // when: a GET is made
+        val response = client.get(url) {
+            accept(ContentType.Application.Json)
+        }
+
+        // then: status not found is returned
+        assertEquals(NotFound, response.status)
     }
 
     fun `get device of a group`() {

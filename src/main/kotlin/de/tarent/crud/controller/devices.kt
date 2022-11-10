@@ -5,11 +5,12 @@ import de.tarent.crud.dtos.Failure
 import de.tarent.crud.exceptionHandler
 import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.DeviceAlreadyExists
+import de.tarent.crud.service.DeviceDontExists
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.Failed
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
-import de.tarent.crud.service.Result
+import de.tarent.crud.service.WriteResult
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
@@ -36,7 +37,22 @@ fun Route.devicePage(deviceService: DeviceService) {
                 ?: return@get call.respond(BadRequest, Failure(400, "Parameter groupName not found"))
 
             logger.info { "READ list of devices for group $groupName" }
-            call.respond(HttpStatusCode.OK, deviceService.listDevices(groupName))
+            when (val result = deviceService.listDevices(groupName)) {
+                is Ok -> {
+                    logger.debug { "${result.value.size}' devices loaded of group '$groupName'." }
+                    call.respond(HttpStatusCode.OK, result.value)
+                }
+                is GroupDontExists -> {
+                    val msg = "Group '${result.groupName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+                is Failed -> {
+                    val msg = "Unknown error occurred"
+                    logger.error(result.e) { msg }
+                    call.respond(BadRequest, Failure(404, msg))
+                }
+            }
         }
 
 

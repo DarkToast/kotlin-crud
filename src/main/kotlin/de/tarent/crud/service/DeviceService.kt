@@ -8,11 +8,17 @@ import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 import de.tarent.crud.persistance.PeristenceException
 
-sealed class Result
-data class Ok(val groupName: String, val deviceName: String) : Result()
-data class Failed(val e: PeristenceException) : Result()
-data class GroupDontExists(val groupName: String) : Result()
-data class DeviceAlreadyExists(val groupName: String, val deviceName: String) : Result()
+interface WriteResult<T>
+interface ReadResult<T>
+
+sealed interface ReadDeviceResult<T> : ReadResult<T>
+
+data class Ok<T>(val value: T) : WriteResult<T>, ReadResult<T>, ReadDeviceResult<T>
+data class GroupDontExists<T>(val groupName: String) : WriteResult<T>, ReadResult<T>, ReadDeviceResult<T>
+data class DeviceDontExists<T>(val groupName: String, val deviceName: String) : ReadResult<T>, ReadDeviceResult<T>
+
+data class Failed<T>(val e: PeristenceException) : WriteResult<T>, ReadResult<T>
+data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) : WriteResult<T>
 
 
 @Suppress("unused", "RedundantNullableReturnType") // still wip
@@ -39,6 +45,10 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
 
     fun delete(groupId: String, name: String): Boolean = TODO()
 
-    fun listDevices(groupName: String): List<Device> = deviceRepo.findForGroup(groupName)
+    fun listDevices(groupName: String): ReadResult<List<Device>> = if (groupRepo.exists(groupName)) {
+        Ok(deviceRepo.findForGroup(groupName))
+    } else {
+        GroupDontExists(groupName)
+    }
 }
 
