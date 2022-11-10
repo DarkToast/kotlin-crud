@@ -28,25 +28,36 @@ class CreateGroupSpec : BaseGroupSpec() {
 
     @Test
     fun `Failed creation - bad request`() = componentTest {
+        // given: an invalid json string
+        val body = "{}"
+
+        // when: the group is created
         val response = client.post("/groups") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody("{}")
+            setBody(body)
         }
 
+        // then: bad request is returned
         assertEquals(BadRequest, response.status)
     }
 
     @Test
     fun `Failed creation - existing`() = componentTest {
-        provideExistingDefaultGroup(this)
+        // given: An existing group
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
+        // and: A valid json body same to the existing
+        val body = groupJson
+
+        // when: the group is created
         val response = client.post("/groups") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(groupJson)
+            setBody(body)
         }
 
+        // then: Conflict is returned
         assertEquals(Conflict, response.status)
     }
 

@@ -11,6 +11,7 @@ import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.context.GlobalContext.stopKoin
@@ -19,6 +20,8 @@ import kotlin.test.assertEquals
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
 abstract class BaseComponentSpec {
+    protected val json = Json { isLenient = true }
+
     fun componentTest(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
         environment {
             config = ApplicationConfig("test-application.conf")
@@ -36,11 +39,11 @@ abstract class BaseComponentSpec {
         }
     }
 
-    protected suspend fun createGroup(builder: ApplicationTestBuilder, bodyContent: String): String {
+    protected suspend fun createGroup(builder: ApplicationTestBuilder, groupName: String, description: String): String {
         val response = builder.client.post("/groups") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(bodyContent)
+            setBody(groupJson(groupName, description))
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
@@ -48,4 +51,12 @@ abstract class BaseComponentSpec {
         return response.headers[HttpHeaders.Location]
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
+
+    protected fun groupJson(name: String, description: String) =
+        """
+         |{
+         |  "name": "$name",
+         |  "description": "$description"
+         |}
+        """.trimMargin("|")
 }

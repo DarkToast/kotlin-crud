@@ -15,7 +15,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
     @Test
     fun `Delete group`() = componentTest {
         // given: An exiting group
-        provideExistingDefaultGroup(this)
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
         // when: the group is deleted
         var response = client.delete("/groups/$DEFAULT_GROUP_NAME") {
