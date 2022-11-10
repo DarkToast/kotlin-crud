@@ -4,10 +4,16 @@ package de.tarent.crud
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import de.tarent.crud.persistance.Repository
+import de.tarent.crud.persistance.GroupEntity
+import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.service.GroupService
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.EngineMain
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -17,7 +23,7 @@ fun main(args: Array<String>) = EngineMain.main(args)
 val serviceModule = { configuration: ApplicationConfig ->
     module {
         singleOf(::GroupService)
-        singleOf(::Repository)
+        singleOf(::GroupRepository)
 
         single<Configuration> { Configuration.load(configuration) }
 
@@ -38,7 +44,14 @@ val serviceModule = { configuration: ApplicationConfig ->
 
         single<Database> {
             val source: HikariDataSource by inject()
-            Database.connect(source)
+            val database = Database.connect(source)
+
+            transaction(database) {
+                addLogger(StdOutSqlLogger)
+                SchemaUtils.create(GroupEntity)
+            }
+
+            database
         }
     }
 }
