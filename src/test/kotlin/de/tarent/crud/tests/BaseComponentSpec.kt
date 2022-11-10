@@ -11,6 +11,7 @@ import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.context.GlobalContext.stopKoin
@@ -19,6 +20,8 @@ import kotlin.test.assertEquals
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
 abstract class BaseComponentSpec {
+    protected val json = Json { isLenient = true }
+
     fun componentTest(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
         environment {
             config = ApplicationConfig("test-application.conf")
