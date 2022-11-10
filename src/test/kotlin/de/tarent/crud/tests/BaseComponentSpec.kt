@@ -52,7 +52,7 @@ abstract class BaseComponentSpec {
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
 
-    private fun groupJson(name: String, description: String) =
+    protected fun groupJson(name: String, description: String) =
         """
          |{
          |  "name": "$name",

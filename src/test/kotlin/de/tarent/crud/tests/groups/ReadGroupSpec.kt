@@ -9,7 +9,6 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -53,9 +52,7 @@ class ReadGroupSpec : BaseGroupSpec() {
         assertEquals(OK, response.status)
 
         // and: the group is returned
-        val group = json.decodeFromString<Group>(response.bodyAsText())
-        assertEquals(DEFAULT_GROUP_NAME, group.name)
-        assertEquals("Hauswirtschaftsraum", group.description)
+        assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", response)
     }
 
     @Test
@@ -68,11 +65,5 @@ class ReadGroupSpec : BaseGroupSpec() {
 
         // then: It is not found
         assertEquals(NotFound, response.status)
-    }
-
-    private fun assertGroup(name: String, description: String, group: Group): Boolean {
-        assertEquals(name, group.name)
-        assertEquals(description, group.description)
-        return true
     }
 }
