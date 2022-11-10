@@ -49,7 +49,15 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
 
     fun update(groupId: String, name: String, device: Device): Boolean = TODO()
 
-    fun delete(groupId: String, name: String): Boolean = TODO()
+    fun delete(groupName: String, deviceName: String): ReadResult<Unit> = if (groupRepo.exists(groupName)) {
+        if (deviceRepo.delete(groupName, deviceName) == 1) {
+            Ok(Unit)
+        } else {
+            DeviceDontExists(groupName, deviceName)
+        }
+    } else {
+        GroupDontExists(groupName)
+    }
 
     fun listDevices(groupName: String): ReadResult<List<Device>> = if (groupRepo.exists(groupName)) {
         Ok(deviceRepo.findForGroup(groupName))

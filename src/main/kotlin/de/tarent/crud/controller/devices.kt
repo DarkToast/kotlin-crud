@@ -130,8 +130,30 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         delete("{deviceName?}") {
-            logger.info { "DELETE a device in a group" }
-            call.respond(HttpStatusCode.OK, "")
+            val groupName: String = call.parameters["groupName"]
+                ?: return@delete call.respond(BadRequest, Failure(400, "Parameter 'groupName' not found"))
+
+            val deviceName: String = call.parameters["deviceName"]
+                ?: return@delete call.respond(BadRequest, Failure(400, "Parameter 'deviceName' not found"))
+
+            logger.info { "DELETE device '$deviceName' for group '$groupName'." }
+
+            when (val result = deviceService.delete(groupName, deviceName)) {
+                is Ok -> {
+                    logger.debug { "Device '$deviceName' deleted" }
+                    call.respond(HttpStatusCode.NoContent)
+                }
+                is GroupDontExists -> {
+                    val msg = "Group '${result.groupName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+                is DeviceDontExists -> {
+                    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+            }
         }
     }
 }

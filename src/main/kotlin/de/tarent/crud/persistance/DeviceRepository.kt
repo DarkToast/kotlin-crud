@@ -2,8 +2,10 @@ package de.tarent.crud.persistance
 
 import de.tarent.crud.dtos.Device
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.andWhere
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +37,10 @@ class DeviceRepository(private val database: Database) {
                 )
             }
             .firstOrNull()
+    }
+
+    fun delete(groupName: String, deviceName: String): Int = transaction {
+        DeviceEntity.deleteWhere { (groupId eq groupName) and (name eq deviceName) }
     }
 
     fun findForGroup(groupName: String): List<Device> = transaction {
