@@ -102,8 +102,6 @@ class UpdateGroupSpec : BaseGroupSpec() {
         assertEquals(Conflict, response.status)
     }
 
-
-    // and: new group information
     private fun requestBody(name: String = DEFAULT_GROUP_NAME) = """
           |{
           |  "name" : "$name",
