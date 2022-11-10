@@ -32,8 +32,11 @@ fun Route.devicePage(deviceService: DeviceService) {
 
     route("/groups/{groupName?}/devices") {
         get {
-            logger.info { "READ list of devices of a group" }
-            call.respond(HttpStatusCode.OK, emptyList<Device>())
+            val groupName: String = call.parameters["groupName"]
+                ?: return@get call.respond(BadRequest, Failure(400, "Parameter groupName not found"))
+
+            logger.info { "READ list of devices for group $groupName" }
+            call.respond(HttpStatusCode.OK, deviceService.listDevices(groupName))
         }
 
 

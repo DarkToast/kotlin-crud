@@ -23,6 +23,18 @@ class DeviceRepository(private val database: Database) {
         device.name
     }
 
+    fun findForGroup(groupName: String): List<Device> = transaction {
+        DeviceEntity
+            .select { DeviceEntity.groupId.eq(groupName) }
+            .map {
+                Device(
+                    name = it[DeviceEntity.name],
+                    description = it[DeviceEntity.description],
+                    type = it[DeviceEntity.type]
+                )
+            }
+    }
+
     private fun exists(groupName: String, deviceName: String): Boolean = transaction(database) {
         DeviceEntity
             .select { DeviceEntity.name eq deviceName }

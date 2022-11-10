@@ -39,6 +39,6 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
 
     fun delete(groupId: String, name: String): Boolean = TODO()
 
-    fun listDevices(groupId: String): List<Device> = TODO()
+    fun listDevices(groupName: String): List<Device> = deviceRepo.findForGroup(groupName)
 }
 
