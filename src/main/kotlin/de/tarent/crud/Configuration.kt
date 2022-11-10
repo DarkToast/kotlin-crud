@@ -12,7 +12,7 @@ data class Database(
 
 data class Configuration(val database: Database) {
     companion object {
-        val logger = KotlinLogging.logger {}
+        private val logger = KotlinLogging.logger {}
 
         fun load(configuration: ApplicationConfig): Configuration {
             logger.info { "Loading database configuration with: " }
