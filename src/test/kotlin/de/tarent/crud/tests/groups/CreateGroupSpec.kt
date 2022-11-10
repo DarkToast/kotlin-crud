@@ -39,7 +39,7 @@ class CreateGroupSpec : BaseGroupSpec() {
 
     @Test
     fun `Failed creation - existing`() = componentTest {
-        provideExistingDefaultGroup(this)
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
         val response = client.post("/groups") {
             contentType(ContentType.Application.Json)

@@ -20,7 +20,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     @Test
     fun `Update an existing group`() = componentTest {
         // given: The default group
-        provideExistingDefaultGroup(this)
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
         // when: We update the group
         val response = client.put("/groups/$DEFAULT_GROUP_NAME") {
@@ -39,7 +39,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     @Test
     fun `Update an existing group id`() = componentTest {
         // given: The default group
-        provideExistingDefaultGroup(this)
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
         // when: We update the group
         var response = client.put("/groups/$DEFAULT_GROUP_NAME") {
@@ -80,7 +80,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     @Test
     fun `Failed - new id conflicts`() = componentTest {
         // given: The default group
-        provideExistingDefaultGroup(this)
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
         // and: another group
         var response = client.post("/groups") {

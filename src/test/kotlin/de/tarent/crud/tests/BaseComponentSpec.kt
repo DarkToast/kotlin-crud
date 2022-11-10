@@ -39,11 +39,11 @@ abstract class BaseComponentSpec {
         }
     }
 
-    protected suspend fun createGroup(builder: ApplicationTestBuilder, bodyContent: String): String {
+    protected suspend fun createGroup(builder: ApplicationTestBuilder, groupName: String, description: String): String {
         val response = builder.client.post("/groups") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(bodyContent)
+            setBody(groupJson(groupName, description))
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
@@ -51,4 +51,12 @@ abstract class BaseComponentSpec {
         return response.headers[HttpHeaders.Location]
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
+
+    private fun groupJson(name: String, description: String) =
+        """
+         |{
+         |  "name": "$name",
+         |  "description": "$description"
+         |}
+        """.trimMargin("|")
 }
