@@ -11,7 +11,6 @@ import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.contentType
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class CreateDeviceSpec : BaseDeviceSpec() {
@@ -85,6 +84,6 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         Assertions.assertEquals(NotFound, response.status)
     }
 
-    private val deviceJson = clientJson("steckdose_lüftung", "Steckdose für die Lüftung", "plug")
+    private val deviceJson = deviceJson("steckdose_lüftung", "Steckdose für die Lüftung", "plug")
 
 }

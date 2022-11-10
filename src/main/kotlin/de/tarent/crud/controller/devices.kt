@@ -33,7 +33,7 @@ fun Route.devicePage(deviceService: DeviceService) {
     route("/groups/{groupName?}/devices") {
         get {
             logger.info { "READ list of devices of a group" }
-            call.respond(HttpStatusCode.OK, "")
+            call.respond(HttpStatusCode.OK, emptyList<Device>())
         }
 
 

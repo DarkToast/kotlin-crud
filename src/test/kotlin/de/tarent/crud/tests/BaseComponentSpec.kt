@@ -79,12 +79,12 @@ abstract class BaseComponentSpec {
     }
 
     @Suppress("SameParameterValue")
-    protected fun clientJson(name: String, description: String, type: String): String =
+    protected fun deviceJson(name: String, description: String, type: String): String =
         """
          |{
-         |  "name": "${name}",
-         |  "description": "${description}",
-         |  "type": "${type}"
+         |  "name": "$name",
+         |  "description": "$description",
+         |  "type": "$type"
          |}
         """.trimMargin("|")
 
