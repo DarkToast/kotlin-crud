@@ -1,9 +1,9 @@
-package de.tarent.crud
+package de.tarent.crud.service
 
 import de.tarent.crud.dtos.Group
-import de.tarent.crud.persistance.Repository
+import de.tarent.crud.persistance.GroupRepository
 
-class GroupService(private val repo: Repository) {
+class GroupService(private val repo: GroupRepository) {
     fun create(group: Group): Boolean = repo.insert(group)
 
     fun read(name: String): Group? = repo.load(name)

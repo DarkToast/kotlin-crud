@@ -3,10 +3,7 @@ package de.tarent.crud.persistance
 import de.tarent.crud.dtos.Group
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -14,22 +11,15 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-class Repository(private val database: Database) {
-    init {
-        transaction(database) {
-            addLogger(StdOutSqlLogger)
-            SchemaUtils.create(GroupEntity, DeviceEntity)
-        }
-    }
-
+class GroupRepository(private val database: Database) {
     private val transform = { row: ResultRow ->
         Group(row[GroupEntity.name], row[GroupEntity.description])
     }
 
     fun insert(group: Group): Boolean = transaction(database) {
-        val count = GroupEntity.select { GroupEntity.name eq group.name }.count()
+        val exists = exists(group.name)
 
-        if (count == 0L) {
+        if (!exists) {
             GroupEntity.insert {
                 it[name] = group.name
                 it[description] = group.description
@@ -46,12 +36,12 @@ class Repository(private val database: Database) {
             throw NotFoundException("Group '$groupName' does not exist!")
         }
 
-        val newGroupNameExists = if(groupName != updatedGroup.name) {
+        val newGroupNameExists = if (groupName != updatedGroup.name) {
             GroupEntity.select { GroupEntity.name eq updatedGroup.name }.count() == 1L
         } else {
             false
         }
-        
+
         if (newGroupNameExists) {
             throw ConflictException("Group name '${updatedGroup.name}' already exists!")
         }
@@ -75,5 +65,9 @@ class Repository(private val database: Database) {
 
     fun list(): List<Group> = transaction(database) {
         GroupEntity.selectAll().map(transform)
+    }
+
+    private fun exists(name: String): Boolean = transaction(database) {
+        GroupEntity.select { GroupEntity.name eq name }.count() == 1L
     }
 }
