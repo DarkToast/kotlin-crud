@@ -89,16 +89,47 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         assertEquals(NotFound, response.status)
     }
 
-    fun `get device of a group`() {
+    @Test
+    fun `get device of a group`() = spec.componentSpec {
+        // given: url of a single device
+        val url = "/groups/$testGroupName/devices/$testDeviceName"
 
+        // when: a GET is made
+        val response = client.get(url) {
+            accept(ContentType.Application.Json)
+        }
+
+        // then: status ok and the device is returned
+        assertEquals(OK, response.status)
+        assertDevice(testDeviceName, "test-device", "plug", response)
     }
 
-    fun `get device of an unknown group fails`() {
+    @Test
+    fun `get device of an unknown group fails`() = spec.componentSpec {
+        // given: url with unknown group
+        val url = "/groups/unknown/devices/$testDeviceName"
 
+        // when: a GET is made
+        val response = client.get(url) {
+            accept(ContentType.Application.Json)
+        }
+
+        // then: status not found is returned
+        assertEquals(NotFound, response.status)
     }
 
-    fun `get unknown device fails`() {
+    @Test
+    fun `get unknown device fails`() = spec.componentSpec {
+        // given: url with unknown group
+        val url = "/groups/$testGroupName/devices/unknown"
 
+        // when: a GET is made
+        val response = client.get(url) {
+            accept(ContentType.Application.Json)
+        }
+
+        // then: status not found is returned
+        assertEquals(NotFound, response.status)
     }
 
 

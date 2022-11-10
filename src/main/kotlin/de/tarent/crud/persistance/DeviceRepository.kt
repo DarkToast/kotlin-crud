@@ -24,6 +24,19 @@ class DeviceRepository(private val database: Database) {
         device.name
     }
 
+    fun load(groupName: String, deviceName: String): Device? = transaction(database) {
+        DeviceEntity
+            .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+            .map {
+                Device(
+                    name = it[DeviceEntity.name],
+                    description = it[DeviceEntity.description],
+                    type = it[DeviceEntity.type]
+                )
+            }
+            .firstOrNull()
+    }
+
     fun findForGroup(groupName: String): List<Device> = transaction {
         DeviceEntity
             .select { DeviceEntity.groupId.eq(groupName) }

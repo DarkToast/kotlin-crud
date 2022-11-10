@@ -57,8 +57,29 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         get("{deviceName?}") {
-            logger.info { "READ a device from a group" }
-            call.respond(HttpStatusCode.OK, "")
+            val groupName: String = call.parameters["groupName"]
+                ?: return@get call.respond(BadRequest, Failure(400, "Parameter 'groupName' not found"))
+
+            val deviceName: String = call.parameters["deviceName"]
+                ?: return@get call.respond(BadRequest, Failure(400, "Parameter 'deviceName' not found"))
+
+            logger.info { "READ device '$deviceName' for group '$groupName'." }
+            when (val result = deviceService.read(groupName, deviceName)) {
+                is Ok -> {
+                    logger.debug { "Device '${result.value.name}' loaded" }
+                    call.respond(HttpStatusCode.OK, result.value)
+                }
+                is GroupDontExists -> {
+                    val msg = "Group '${result.groupName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+                is DeviceDontExists -> {
+                    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+            }
         }
 
 

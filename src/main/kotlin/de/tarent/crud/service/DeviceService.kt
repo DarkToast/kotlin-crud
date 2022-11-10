@@ -39,7 +39,13 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         }
     }
 
-    fun read(groupId: String, name: String): Device? = TODO()
+    fun read(groupName: String, name: String): ReadDeviceResult<Device> = if (groupRepo.exists(groupName)) {
+        deviceRepo.load(groupName, name)
+            ?.let { Ok(it) }
+            ?: DeviceDontExists(groupName, name)
+    } else {
+        GroupDontExists(groupName)
+    }
 
     fun update(groupId: String, name: String, device: Device): Boolean = TODO()
 
