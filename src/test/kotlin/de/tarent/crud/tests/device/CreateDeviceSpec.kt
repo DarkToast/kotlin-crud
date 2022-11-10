@@ -11,8 +11,10 @@ import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.contentType
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
+@Disabled("still WiP")
 class CreateDeviceSpec : BaseDeviceSpec() {
     val groupName = "testGroup"
 
