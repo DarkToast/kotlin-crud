@@ -14,10 +14,9 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class CreateDeviceSpec : BaseDeviceSpec() {
-    val groupName = "testGroup"
+    private val groupName = "testGroup"
 
-
-    val spec = Spec().withSetup {
+    private val spec = Spec().withSetup {
         createGroup(this, groupName, "my-test-group")
     }
 

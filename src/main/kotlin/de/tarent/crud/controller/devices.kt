@@ -69,7 +69,7 @@ fun Route.devicePage(deviceService: DeviceService) {
                         call.respond(Conflict, Failure(409, msg))
                     }
                     is Failed -> {
-                        val msg = "Unknown error occured"
+                        val msg = "Unknown error occurred"
                         logger.error(result.e) { msg }
                         call.respond(BadRequest, Failure(404, msg))
                     }

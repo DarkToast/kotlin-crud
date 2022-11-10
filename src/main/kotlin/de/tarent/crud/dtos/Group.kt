@@ -8,7 +8,6 @@ data class Group(
     val description: String
 )
 
-@Suppress("unused")
 @Serializable
 data class Device(
     val name: String,

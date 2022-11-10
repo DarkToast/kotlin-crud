@@ -9,7 +9,6 @@ object GroupEntity : Table("group") {
     override val primaryKey = PrimaryKey(name, name = "group_pk")
 }
 
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 object DeviceEntity : Table("device") {
     val name = varchar("name", 50)
     val description = varchar("description", 250)

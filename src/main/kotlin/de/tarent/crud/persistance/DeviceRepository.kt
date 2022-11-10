@@ -9,8 +9,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class DeviceRepository(private val database: Database) {
     fun insert(groupId: String, device: Device): String = transaction(database) {
-        if(exists(groupId, device.name)) {
-            throw ConflictException("device ${device.name} in group ${groupId} does already exists!")
+        if (exists(groupId, device.name)) {
+            throw ConflictException("device ${device.name} in group $groupId does already exists!")
         }
 
         DeviceEntity.insert {
@@ -23,9 +23,9 @@ class DeviceRepository(private val database: Database) {
         device.name
     }
 
-    fun exists(groupName: String, deviceName: String): Boolean = transaction(database){
+    private fun exists(groupName: String, deviceName: String): Boolean = transaction(database) {
         DeviceEntity
-            .select{ DeviceEntity.name eq deviceName }
+            .select { DeviceEntity.name eq deviceName }
             .andWhere { DeviceEntity.groupId eq groupName }
             .count() == 1L
     }
