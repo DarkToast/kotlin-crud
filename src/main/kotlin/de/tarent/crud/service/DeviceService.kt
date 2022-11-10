@@ -23,11 +23,11 @@ data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String)
 
 @Suppress("unused", "RedundantNullableReturnType") // still wip
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
-    fun create(groupName: String, device: Device): Result {
+    fun create(groupName: String, device: Device): WriteResult<Pair<String, String>> {
         return if (groupRepo.exists(groupName)) {
             try {
                 val deviceName = deviceRepo.insert(groupName, device)
-                Ok(groupName, deviceName)
+                Ok(Pair(groupName, deviceName))
             } catch (e: PeristenceException) {
                 when (e) {
                     is ConflictException -> DeviceAlreadyExists(groupName, device.name)

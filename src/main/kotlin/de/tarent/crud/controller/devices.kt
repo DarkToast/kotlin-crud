@@ -91,12 +91,15 @@ fun Route.devicePage(deviceService: DeviceService) {
             logger.info { "CREATE a new device in the group $groupName" }
 
             try {
-                when(val result: Result = deviceService.create(groupName, device)) {
+                when (val result: WriteResult<Pair<String, String>> = deviceService.create(groupName, device)) {
                     is Ok -> {
                         val response = call.response
-                        response.header(HttpHeaders.Location, "/groups/${result.groupName}/devices/${result.deviceName}")
+                        response.header(
+                            HttpHeaders.Location,
+                            "/groups/${result.value.first}/devices/${result.value.second}"
+                        )
                         response.status(HttpStatusCode.Created)
-                        logger.debug { "Device ${result.deviceName} created" }
+                        logger.debug { "Device '${result.value.first}' created" }
                     }
                     is GroupDontExists -> {
                         val msg = "Group ${result.groupName} was not found!"
