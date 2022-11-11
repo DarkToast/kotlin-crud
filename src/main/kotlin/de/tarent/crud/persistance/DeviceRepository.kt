@@ -13,10 +13,6 @@ import org.jetbrains.exposed.sql.update
 
 class DeviceRepository(private val database: Database) {
     fun insert(groupId: String, device: Device): String = transaction(database) {
-        if (exists(groupId, device.name)) {
-            throw ConflictException("device ${device.name} in group $groupId does already exists!")
-        }
-
         DeviceEntity.insert {
             it[this.name] = device.name
             it[this.description] = device.description

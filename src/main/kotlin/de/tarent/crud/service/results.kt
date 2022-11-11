@@ -1,7 +1,5 @@
 package de.tarent.crud.service
 
-import de.tarent.crud.persistance.PeristenceException
-
 sealed interface CreateResult<T>
 sealed interface ReadResult<T>
 sealed interface UpdateResult<T>
@@ -26,8 +24,6 @@ data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
     ReadResult<T>,
     UpdateResult<T>,
     DeleteResult<T>
-
-data class Failed<T>(val e: PeristenceException): CreateResult<T>
 
 data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
     CreateResult<T>,

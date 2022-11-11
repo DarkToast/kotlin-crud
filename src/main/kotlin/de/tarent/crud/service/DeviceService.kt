@@ -3,26 +3,21 @@
 package de.tarent.crud.service
 
 import de.tarent.crud.dtos.Device
-import de.tarent.crud.persistance.ConflictException
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
-import de.tarent.crud.persistance.PeristenceException
 
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
     fun create(groupName: String, device: Device): CreateResult<Pair<String, String>> {
-        return if (groupRepo.exists(groupName)) {
-            try {
-                val deviceName = deviceRepo.insert(groupName, device)
-                Ok(Pair(groupName, deviceName))
-            } catch (e: PeristenceException) {
-                when (e) {
-                    is ConflictException -> DeviceAlreadyExists(groupName, device.name)
-                    else -> Failed(e)
-                }
-            }
-        } else {
-            GroupDontExists(groupName)
+        if (!groupRepo.exists(groupName)) {
+            return GroupDontExists(groupName)
         }
+
+        if (deviceRepo.exists(groupName, device.name)) {
+            return DeviceAlreadyExists(groupName, device.name)
+        }
+
+        val deviceName = deviceRepo.insert(groupName, device)
+        return Ok(Pair(groupName, deviceName))
     }
 
     fun read(groupName: String, name: String): ReadResult<Device> = if (groupRepo.exists(groupName)) {
@@ -38,11 +33,11 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
             return GroupDontExists(groupName)
         }
 
-        if(!deviceRepo.exists(groupName, deviceName)) {
+        if (!deviceRepo.exists(groupName, deviceName)) {
             return DeviceDontExists(groupName, deviceName)
         }
 
-        if(deviceName != device.name && deviceRepo.exists(groupName, device.name)) {
+        if (deviceName != device.name && deviceRepo.exists(groupName, device.name)) {
             return DeviceAlreadyExists(groupName, deviceName)
         }
 

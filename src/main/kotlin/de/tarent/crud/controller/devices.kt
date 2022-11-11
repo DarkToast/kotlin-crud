@@ -7,7 +7,6 @@ import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.DeviceAlreadyExists
 import de.tarent.crud.service.DeviceDontExists
 import de.tarent.crud.service.DeviceService
-import de.tarent.crud.service.Failed
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
 import io.ktor.http.HttpHeaders
@@ -104,11 +103,6 @@ fun Route.devicePage(deviceService: DeviceService) {
                         val msg = "Device ${result.deviceName} already exists in group ${result.groupName}!"
                         logger.warn { msg }
                         call.respond(Conflict, Failure(409, msg))
-                    }
-                    is Failed -> {
-                        val msg = "Unknown error occurred"
-                        logger.error(result.e) { msg }
-                        call.respond(BadRequest, Failure(404, msg))
                     }
                 }
             } catch (e: PeristenceException) {
