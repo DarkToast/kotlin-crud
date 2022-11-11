@@ -36,7 +36,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Update an existing group id`() = Spec().componentSpec {
+    fun `Overwrite an existing group id`() = Spec().componentSpec {
         // given: The default group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
