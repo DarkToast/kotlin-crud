@@ -10,7 +10,6 @@ import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.Failed
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
-import de.tarent.crud.service.WriteResult
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
@@ -46,11 +45,6 @@ fun Route.devicePage(deviceService: DeviceService) {
                     val msg = "Group '${result.groupName}' was not found!"
                     logger.warn { msg }
                     call.respond(NotFound, Failure(404, msg))
-                }
-                is Failed -> {
-                    val msg = "Unknown error occurred"
-                    logger.error(result.e) { msg }
-                    call.respond(BadRequest, Failure(404, msg))
                 }
             }
         }
@@ -91,7 +85,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             logger.info { "CREATE a new device in the group $groupName" }
 
             try {
-                when (val result: WriteResult<Pair<String, String>> = deviceService.create(groupName, device)) {
+                when (val result = deviceService.create(groupName, device)) {
                     is Ok -> {
                         val response = call.response
                         response.header(

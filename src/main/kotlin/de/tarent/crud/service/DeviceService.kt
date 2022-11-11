@@ -8,41 +8,8 @@ import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 import de.tarent.crud.persistance.PeristenceException
 
-interface WriteResult<T>
-interface ReadResult<T>
-
-sealed interface ReadDeviceResult<T> : ReadResult<T>
-sealed interface UpdateDeviceResult<T> : WriteResult<T>
-
-data class Ok<T>(val value: T) :
-    WriteResult<T>,
-    ReadResult<T>,
-    ReadDeviceResult<T>,
-    UpdateDeviceResult<T>
-
-data class GroupDontExists<T>(val groupName: String) :
-    WriteResult<T>,
-    ReadResult<T>,
-    ReadDeviceResult<T>,
-    UpdateDeviceResult<T>
-
-data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
-    ReadResult<T>,
-    ReadDeviceResult<T>,
-    UpdateDeviceResult<T>
-
-data class Failed<T>(val e: PeristenceException) :
-    WriteResult<T>,
-    ReadResult<T>
-
-data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
-    WriteResult<T>,
-    UpdateDeviceResult<T>
-
-
-@Suppress("unused", "RedundantNullableReturnType") // still wip
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
-    fun create(groupName: String, device: Device): WriteResult<Pair<String, String>> {
+    fun create(groupName: String, device: Device): CreateResult<Pair<String, String>> {
         return if (groupRepo.exists(groupName)) {
             try {
                 val deviceName = deviceRepo.insert(groupName, device)
@@ -58,7 +25,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         }
     }
 
-    fun read(groupName: String, name: String): ReadDeviceResult<Device> = if (groupRepo.exists(groupName)) {
+    fun read(groupName: String, name: String): ReadResult<Device> = if (groupRepo.exists(groupName)) {
         deviceRepo.load(groupName, name)
             ?.let { Ok(it) }
             ?: DeviceDontExists(groupName, name)
@@ -66,7 +33,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun update(groupName: String, deviceName: String, device: Device): UpdateDeviceResult<Device> {
+    fun update(groupName: String, deviceName: String, device: Device): UpdateResult<Device> {
         if (!groupRepo.exists(groupName)) {
             return GroupDontExists(groupName)
         }
@@ -85,7 +52,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
     }
 
 
-    fun delete(groupName: String, deviceName: String): ReadResult<Unit> = if (groupRepo.exists(groupName)) {
+    fun delete(groupName: String, deviceName: String): DeleteResult<Unit> = if (groupRepo.exists(groupName)) {
         if (deviceRepo.delete(groupName, deviceName) == 1) {
             Ok(Unit)
         } else {
@@ -95,7 +62,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun listDevices(groupName: String): ReadResult<List<Device>> = if (groupRepo.exists(groupName)) {
+    fun listDevices(groupName: String): ListResult<List<Device>> = if (groupRepo.exists(groupName)) {
         Ok(deviceRepo.findForGroup(groupName))
     } else {
         GroupDontExists(groupName)
