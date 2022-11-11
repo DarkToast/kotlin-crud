@@ -14,6 +14,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.header
@@ -26,13 +27,12 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import mu.KotlinLogging
 
-fun Route.devicePage(deviceService: DeviceService) {
-    val logger = KotlinLogging.logger {}
+val logger = KotlinLogging.logger("de.tarent.crud.controller.devicesKt")
 
+fun Route.devicePage(deviceService: DeviceService) {
     route("/groups/{groupName?}/devices") {
         get {
-            val groupName: String = call.parameters["groupName"]
-                ?: return@get call.respond(BadRequest, Failure(400, "Parameter groupName not found"))
+            val groupName = parameter(call, "groupName") ?: return@get
 
             logger.info { "READ list of devices for group $groupName" }
             when (val result = deviceService.listDevices(groupName)) {
@@ -40,21 +40,14 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "${result.value.size}' devices loaded of group '$groupName'." }
                     call.respond(HttpStatusCode.OK, result.value)
                 }
-                is GroupDontExists -> {
-                    val msg = "Group '${result.groupName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
+                is GroupDontExists -> groupDontExist(call, result)
             }
         }
 
 
         get("{deviceName?}") {
-            val groupName: String = call.parameters["groupName"]
-                ?: return@get call.respond(BadRequest, Failure(400, "Parameter 'groupName' not found"))
-
-            val deviceName: String = call.parameters["deviceName"]
-                ?: return@get call.respond(BadRequest, Failure(400, "Parameter 'deviceName' not found"))
+            val groupName = parameter(call, "groupName") ?: return@get
+            val deviceName = parameter(call, "deviceName") ?: return@get
 
             logger.info { "READ device '$deviceName' for group '$groupName'." }
             when (val result = deviceService.read(groupName, deviceName)) {
@@ -62,24 +55,15 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '${result.value.name}' loaded" }
                     call.respond(HttpStatusCode.OK, result.value)
                 }
-                is GroupDontExists -> {
-                    val msg = "Group '${result.groupName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
-                is DeviceDontExists -> {
-                    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
+                is GroupDontExists -> groupDontExist(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
             }
         }
 
 
         post {
             val device = call.receive<Device>()
-            val groupName: String = call.parameters["groupName"]
-                ?: return@post call.respond(BadRequest, Failure(400, "Parameter groupName not found"))
+            val groupName = parameter(call, "groupName") ?: return@post
 
             logger.info { "CREATE a new device in the group $groupName" }
 
@@ -94,30 +78,17 @@ fun Route.devicePage(deviceService: DeviceService) {
                         response.status(HttpStatusCode.Created)
                         logger.debug { "Device '${result.value.first}' created" }
                     }
-                    is GroupDontExists -> {
-                        val msg = "Group ${result.groupName} was not found!"
-                        logger.warn { msg }
-                        call.respond(NotFound, Failure(404, msg))
-                    }
-                    is DeviceAlreadyExists -> {
-                        val msg = "Device ${result.deviceName} already exists in group ${result.groupName}!"
-                        logger.warn { msg }
-                        call.respond(Conflict, Failure(409, msg))
-                    }
+                    is GroupDontExists -> groupDontExist(call, result)
+                    is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
                 }
             } catch (e: PeristenceException) {
                 exceptionHandler(call, e)
             }
         }
 
-
         put("{deviceName?}") {
-            val groupName: String = call.parameters["groupName"]
-                ?: return@put call.respond(BadRequest, Failure(400, "Parameter 'groupName' not found"))
-
-            val deviceName: String = call.parameters["deviceName"]
-                ?: return@put call.respond(BadRequest, Failure(400, "Parameter 'deviceName' not found"))
-
+            val groupName: String = parameter(call, "groupName") ?: return@put
+            val deviceName: String = parameter(call, "deviceName") ?: return@put
             val device = call.receive<Device>()
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
@@ -127,31 +98,16 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '$deviceName' updated" }
                     call.respond(HttpStatusCode.OK, result.value)
                 }
-                is DeviceAlreadyExists -> {
-                    val msg = "Device '${device.name}' already exists. Device '$deviceName' can not be renamed."
-                    logger.warn { msg }
-                    call.respond(Conflict, Failure(404, msg))
-                }
-                is GroupDontExists -> {
-                    val msg = "Group '${result.groupName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
-                is DeviceDontExists -> {
-                    val msg = "Device '${result.deviceName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
+                is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
+                is GroupDontExists -> groupDontExist(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
             }
         }
 
 
         delete("{deviceName?}") {
-            val groupName: String = call.parameters["groupName"]
-                ?: return@delete call.respond(BadRequest, Failure(400, "Parameter 'groupName' not found"))
-
-            val deviceName: String = call.parameters["deviceName"]
-                ?: return@delete call.respond(BadRequest, Failure(400, "Parameter 'deviceName' not found"))
+            val groupName: String = parameter(call, "groupName") ?: return@delete
+            val deviceName: String = parameter(call, "deviceName") ?: return@delete
 
             logger.info { "DELETE device '$deviceName' for group '$groupName'." }
 
@@ -160,17 +116,35 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '$deviceName' deleted" }
                     call.respond(HttpStatusCode.NoContent)
                 }
-                is GroupDontExists -> {
-                    val msg = "Group '${result.groupName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
-                is DeviceDontExists -> {
-                    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
-                    logger.warn { msg }
-                    call.respond(NotFound, Failure(404, msg))
-                }
+                is GroupDontExists -> groupDontExist(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
             }
         }
     }
+}
+
+private suspend fun parameter(call:ApplicationCall, parameterName: String): String? {
+    val parameter = call.parameters[parameterName]
+    if(parameter == null) {
+        call.respond(BadRequest, Failure(400, "Parameter '$parameterName' not found"))
+    }
+    return parameter
+}
+
+private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlreadyExists<*>) {
+    val msg = "Device '${result.deviceName}' of group '${result.groupName}' already exists."
+    logger.warn { msg }
+    call.respond(Conflict, Failure(409, msg))
+}
+
+private suspend fun deviceDontExist(call: ApplicationCall, result: DeviceDontExists<*>) {
+    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
+    logger.warn { msg }
+    call.respond(NotFound, Failure(404, msg))
+}
+
+private suspend fun groupDontExist(call: ApplicationCall, result: GroupDontExists<*>) {
+    val msg = "Group ${result.groupName} was not found!"
+    logger.warn { msg }
+    call.respond(NotFound, Failure(404, msg))
 }
