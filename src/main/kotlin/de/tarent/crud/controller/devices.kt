@@ -124,8 +124,37 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         put("{deviceName?}") {
-            logger.info { "UPDATE a device in a group" }
-            call.respond(HttpStatusCode.OK, "")
+            val groupName: String = call.parameters["groupName"]
+                ?: return@put call.respond(BadRequest, Failure(400, "Parameter 'groupName' not found"))
+
+            val deviceName: String = call.parameters["deviceName"]
+                ?: return@put call.respond(BadRequest, Failure(400, "Parameter 'deviceName' not found"))
+
+            val device = call.receive<Device>()
+
+            logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
+
+            when(val result = deviceService.update(groupName, deviceName, device)) {
+                is Ok -> {
+                    logger.debug { "Device '$deviceName' updated" }
+                    call.respond(HttpStatusCode.OK, result.value)
+                }
+                is DeviceAlreadyExists -> {
+                    val msg = "Device '${device.name}' already exists. Device '$deviceName' can not be renamed."
+                    logger.warn { msg }
+                    call.respond(Conflict, Failure(404, msg))
+                }
+                is GroupDontExists -> {
+                    val msg = "Group '${result.groupName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+                is DeviceDontExists -> {
+                    val msg = "Device '${result.deviceName}' was not found!"
+                    logger.warn { msg }
+                    call.respond(NotFound, Failure(404, msg))
+                }
+            }
         }
 
 

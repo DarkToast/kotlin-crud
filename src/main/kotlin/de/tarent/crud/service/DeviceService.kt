@@ -12,13 +12,32 @@ interface WriteResult<T>
 interface ReadResult<T>
 
 sealed interface ReadDeviceResult<T> : ReadResult<T>
+sealed interface UpdateDeviceResult<T> : WriteResult<T>
 
-data class Ok<T>(val value: T) : WriteResult<T>, ReadResult<T>, ReadDeviceResult<T>
-data class GroupDontExists<T>(val groupName: String) : WriteResult<T>, ReadResult<T>, ReadDeviceResult<T>
-data class DeviceDontExists<T>(val groupName: String, val deviceName: String) : ReadResult<T>, ReadDeviceResult<T>
+data class Ok<T>(val value: T) :
+    WriteResult<T>,
+    ReadResult<T>,
+    ReadDeviceResult<T>,
+    UpdateDeviceResult<T>
 
-data class Failed<T>(val e: PeristenceException) : WriteResult<T>, ReadResult<T>
-data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) : WriteResult<T>
+data class GroupDontExists<T>(val groupName: String) :
+    WriteResult<T>,
+    ReadResult<T>,
+    ReadDeviceResult<T>,
+    UpdateDeviceResult<T>
+
+data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
+    ReadResult<T>,
+    ReadDeviceResult<T>,
+    UpdateDeviceResult<T>
+
+data class Failed<T>(val e: PeristenceException) :
+    WriteResult<T>,
+    ReadResult<T>
+
+data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
+    WriteResult<T>,
+    UpdateDeviceResult<T>
 
 
 @Suppress("unused", "RedundantNullableReturnType") // still wip
@@ -47,7 +66,24 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun update(groupId: String, name: String, device: Device): Boolean = TODO()
+    fun update(groupName: String, deviceName: String, device: Device): UpdateDeviceResult<Device> {
+        if (!groupRepo.exists(groupName)) {
+            return GroupDontExists(groupName)
+        }
+
+        if(!deviceRepo.exists(groupName, deviceName)) {
+            return DeviceDontExists(groupName, deviceName)
+        }
+
+        if(deviceName != device.name && deviceRepo.exists(groupName, device.name)) {
+            return DeviceAlreadyExists(groupName, deviceName)
+        }
+
+        deviceRepo.update(groupName, deviceName, device)
+
+        return Ok(device)
+    }
+
 
     fun delete(groupName: String, deviceName: String): ReadResult<Unit> = if (groupRepo.exists(groupName)) {
         if (deviceRepo.delete(groupName, deviceName) == 1) {

@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class DeviceRepository(private val database: Database) {
     fun insert(groupId: String, device: Device): String = transaction(database) {
@@ -24,6 +25,15 @@ class DeviceRepository(private val database: Database) {
         }
 
         device.name
+    }
+
+    fun update(groupName: String, deviceName: String, device: Device): Boolean = transaction {
+        DeviceEntity.update({ (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }) {
+            it[name] = device.name
+            it[description] = device.description
+            it[type] = device.type
+        }
+        true
     }
 
     fun load(groupName: String, deviceName: String): Device? = transaction(database) {
@@ -55,7 +65,7 @@ class DeviceRepository(private val database: Database) {
             }
     }
 
-    private fun exists(groupName: String, deviceName: String): Boolean = transaction(database) {
+    fun exists(groupName: String, deviceName: String): Boolean = transaction(database) {
         DeviceEntity
             .select { DeviceEntity.name eq deviceName }
             .andWhere { DeviceEntity.groupId eq groupName }
