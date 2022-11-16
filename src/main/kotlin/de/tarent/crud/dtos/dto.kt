@@ -1,6 +1,7 @@
 package de.tarent.crud.dtos
 
 import kotlinx.serialization.Serializable
+import java.net.URI
 
 @Serializable
 class Index : Linked<Index>()
@@ -9,7 +10,7 @@ class Index : Linked<Index>()
 data class Failure(
     val code: Int,
     val message: String
-)
+): Linked<Failure>()
 
 @Serializable
 data class Device(
@@ -22,4 +23,10 @@ data class Device(
 data class Group(
     val name: String,
     val description: String
-): Linked<Group>()
+): Linked<Group>() {
+    init {
+        addLink("_self", Method.GET, URI("/groups/$name"))
+        addLink("add_device", Method.POST, URI("/groups/$name"))
+        addLink("list_devices", Method.GET, URI("/groups/$name/devices"))
+    }
+}

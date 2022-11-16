@@ -1,14 +1,17 @@
 package de.tarent.crud.tests.groups
 
+import de.tarent.crud.dtos.Failure
+import de.tarent.crud.dtos.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.contentType
+import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -16,14 +19,24 @@ class CreateGroupSpec : BaseGroupSpec() {
 
     @Test
     fun `Create a group`() = Spec().componentSpec {
+        // when: We create a new group
         val response = client.post("/groups") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(groupJson)
         }
 
+        // then: Status created in response
         assertEquals(Created, response.status)
-        assertEquals("/groups/HWR", response.headers[Location])
+
+        // and: The group as body
+        assertGroup("HWR", "Hauswirtschaftsraum", response)
+
+        // and: with further links
+        val group: Group = json.decodeFromString(response.bodyAsText())
+        assertLink("_self", "/groups/HWR", "GET", group.links)
+        assertLink("add_device", "/groups/HWR", "POST", group.links)
+        assertLink("list_devices", "/groups/HWR/devices", "GET", group.links)
     }
 
     @Test
@@ -40,6 +53,9 @@ class CreateGroupSpec : BaseGroupSpec() {
 
         // then: bad request is returned
         assertEquals(BadRequest, response.status)
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("get_groups", "/groups", "GET", failure.links)
+        assertLink("add_group", "/groups", "POST", failure.links)
     }
 
     @Test
@@ -59,6 +75,10 @@ class CreateGroupSpec : BaseGroupSpec() {
 
         // then: Conflict is returned
         assertEquals(Conflict, response.status)
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("get_groups", "/groups", "GET", failure.links)
+        assertLink("add_group", "/groups", "POST", failure.links)
+        assertLink("existing_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
     }
 
     private val groupJson = """

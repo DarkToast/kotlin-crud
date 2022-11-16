@@ -2,11 +2,12 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
+import de.tarent.crud.dtos.Method.GET
+import de.tarent.crud.dtos.Method.POST
 import de.tarent.crud.service.GroupAlreadyExists
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.Ok
-import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -14,7 +15,6 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
-import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -23,6 +23,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import mu.KotlinLogging
+import java.net.URI
 
 fun Route.groupPage(groupService: GroupService) {
     val logger = KotlinLogging.logger {}
@@ -50,11 +51,7 @@ fun Route.groupPage(groupService: GroupService) {
             logger.info { "CREATE group with name '${group.name}'." }
 
             when (val result = groupService.create(group)) {
-                is Ok -> {
-                    val response = call.response
-                    response.header(Location, "/groups/${group.name}")
-                    response.status(Created)
-                }
+                is Ok -> call.respond(Created, result.value)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
             }
         }
@@ -76,7 +73,7 @@ fun Route.groupPage(groupService: GroupService) {
             val name = parameter(call, "name") ?: return@delete
             logger.info { "DELETE group with name '${name}'." }
 
-            when(val result = groupService.delete(name)) {
+            when (val result = groupService.delete(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is Ok -> call.respond(HttpStatusCode.NoContent)
             }
@@ -87,7 +84,12 @@ fun Route.groupPage(groupService: GroupService) {
 private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlreadyExists<*>) {
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
-    call.respond(Conflict, Failure(409, msg))
+    val failure = Failure(409, msg).apply {
+        addLink("get_groups", GET, URI("/groups"))
+        addLink("add_group", POST, URI("/groups"))
+        addLink("existing_group", GET, URI("/groups/${result.groupName}"))
+    }
+    call.respond(Conflict, failure)
 }
 
 private suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {

@@ -1,10 +1,15 @@
 package de.tarent.crud.tests
 
+import de.tarent.crud.dtos.Group
+import de.tarent.crud.dtos.Link
+import de.tarent.crud.dtos.Linked
 import de.tarent.crud.persistance.DeviceEntity
 import de.tarent.crud.persistance.GroupEntity
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -12,12 +17,14 @@ import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.java.KoinJavaComponent.inject
-import kotlin.test.assertEquals
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
 typealias testBlock = suspend ApplicationTestBuilder.() -> Unit
@@ -96,9 +103,10 @@ abstract class BaseComponentSpec {
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
+        val group: Group = json.decodeFromString(response.bodyAsText())
 
-        return response.headers[HttpHeaders.Location]
-            ?: throw IllegalStateException("Illegal creation state. No location header set!")
+        return group.links["_self"]?.href
+            ?: throw IllegalStateException("Illegal creation state. No _self link set!")
     }
 
     protected fun groupJson(name: String, description: String) =
@@ -108,4 +116,24 @@ abstract class BaseComponentSpec {
          |  "description": "$description"
          |}
         """.trimMargin("|")
+
+    protected suspend inline fun <reified T : Linked<T>> assertLink(
+        name: String,
+        href: String,
+        method: String,
+        response: HttpResponse
+    ): Boolean {
+        val linked: Linked<T> = json.decodeFromString(response.bodyAsText())
+        return assertLink(name, href, method, linked.links)
+    }
+
+    protected fun assertLink(name: String, href: String, method: String, links: Map<String, Link>): Boolean {
+        assertNotNull(links[name], "No link found by $name. Links: ${links}")
+
+        val link = links[name]
+        assertEquals(name, link?.name)
+        assertEquals(href, link?.href)
+        assertEquals(method, link?.method)
+        return true
+    }
 }

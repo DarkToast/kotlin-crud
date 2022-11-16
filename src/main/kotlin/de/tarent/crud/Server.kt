@@ -8,6 +8,7 @@ import de.tarent.crud.controller.devicePage
 import de.tarent.crud.controller.groupPage
 import de.tarent.crud.controller.indexPage
 import de.tarent.crud.dtos.Failure
+import de.tarent.crud.dtos.Method
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
@@ -25,6 +26,7 @@ import org.koin.core.logger.Level
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import java.net.URI
 
 @Suppress("unused")
 fun Application.server() {
@@ -41,10 +43,11 @@ fun Application.server() {
 
         exception<BadRequestException> { call, e ->
             logger.error(e) { "Bad request of the user request" }
-            call.respond(
-                BadRequest,
-                Failure(BadRequest.value, e.message ?: "Unexpected error")
-            )
+            val failure = Failure(BadRequest.value, e.message ?: "Unexpected error").apply {
+                addLink("get_groups", Method.GET, URI("/groups"))
+                addLink("add_group", Method.POST, URI("/groups"))
+            }
+            call.respond(BadRequest, failure)
         }
     }
 
