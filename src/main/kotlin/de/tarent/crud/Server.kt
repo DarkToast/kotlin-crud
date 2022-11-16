@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.tarent.crud.controller.adminPage
+import de.tarent.crud.controller.devicePage
 import de.tarent.crud.controller.groupPage
 import de.tarent.crud.controller.indexPage
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.persistance.ConflictException
 import de.tarent.crud.persistance.NotFoundException
 import de.tarent.crud.persistance.PeristenceException
+import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
@@ -68,11 +70,13 @@ fun Application.server() {
     }
 
     val groupService: GroupService by inject()
+    val deviceService: DeviceService by inject()
 
     routing {
         indexPage()
         adminPage()
         groupPage(groupService)
+        devicePage(deviceService)
     }
 }
 

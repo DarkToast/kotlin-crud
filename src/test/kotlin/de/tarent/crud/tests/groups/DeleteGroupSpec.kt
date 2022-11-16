@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class DeleteGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `Delete group`() = componentTest {
+    fun `Delete group`() = Spec().componentSpec {
         // given: An exiting group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
@@ -37,7 +37,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Delete unknown group - not found`() = componentTest {
+    fun `Delete unknown group - not found`() = Spec().componentSpec {
         // when: an unknown group is received
         val response = client.get("/groups/UNKNOWN") {
             contentType(ContentType.Application.Json)

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 class UpdateGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `Update an existing group`() = componentTest {
+    fun `Update an existing group`() = Spec().componentSpec {
         // given: The default group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
@@ -36,7 +36,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Update an existing group id`() = componentTest {
+    fun `Overwrite an existing group id`() = Spec().componentSpec {
         // given: The default group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
@@ -64,7 +64,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Failed - group unknown`() = componentTest {
+    fun `Failed - group unknown`() = Spec().componentSpec {
         // when: An unknown group is updated
         val response = client.put("/groups/UNKNOWN") {
             contentType(ContentType.Application.Json)
@@ -77,7 +77,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Failed - new id conflicts`() = componentTest {
+    fun `Failed - new id conflicts`() = Spec().componentSpec {
         // given: The default group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 

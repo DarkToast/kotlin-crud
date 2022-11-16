@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 class IndexSpec: BaseComponentSpec() {
 
     @Test
-    fun `GET on index page returns link list`() = componentTest {
+    fun `GET on index page returns link list`() = Spec().componentSpec {
         val response = client.get("/") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)

@@ -44,7 +44,7 @@ spec:
         - git-clone
       taskRef:
         kind: ClusterTask
-        name: openshift-client-1-7-0
+        name: openshift-client-1-8-0
       workspaces:
         - name: manifest-dir
           workspace: workspace1       
@@ -79,7 +79,7 @@ spec:
         - build-and-test
       taskRef:
         kind: ClusterTask
-        name: openshift-client-1-7-0
+        name: openshift-client-1-8-0
       workspaces:
         - name: manifest-dir
           workspace: workspace1
@@ -93,7 +93,7 @@ spec:
         - build-image          
       taskRef:
         kind: ClusterTask
-        name: openshift-client-1-7-0
+        name: openshift-client-1-8-0
       workspaces:
         - name: manifest-dir
           workspace: workspace1

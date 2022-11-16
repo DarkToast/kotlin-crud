@@ -67,7 +67,7 @@ class GroupRepository(private val database: Database) {
         GroupEntity.selectAll().map(transform)
     }
 
-    private fun exists(name: String): Boolean = transaction(database) {
+    fun exists(name: String): Boolean = transaction(database) {
         GroupEntity.select { GroupEntity.name eq name }.count() == 1L
     }
 }

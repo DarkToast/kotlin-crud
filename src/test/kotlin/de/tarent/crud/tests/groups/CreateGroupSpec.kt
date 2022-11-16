@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class CreateGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `Create a group`() = componentTest {
+    fun `Create a group`() = Spec().componentSpec {
         val response = client.post("/groups") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -27,7 +27,7 @@ class CreateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Failed creation - bad request`() = componentTest {
+    fun `Failed creation - bad request`() = Spec().componentSpec {
         // given: an invalid json string
         val body = "{}"
 
@@ -43,7 +43,7 @@ class CreateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Failed creation - existing`() = componentTest {
+    fun `Failed creation - existing`() = Spec().componentSpec {
         // given: An existing group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 

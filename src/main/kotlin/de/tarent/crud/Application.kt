@@ -4,10 +4,13 @@ package de.tarent.crud
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.config.ApplicationConfig
+import de.tarent.crud.persistance.DeviceEntity
+import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupEntity
 import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
+import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.EngineMain
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -24,6 +27,8 @@ val serviceModule = { configuration: ApplicationConfig ->
     module {
         singleOf(::GroupService)
         singleOf(::GroupRepository)
+        singleOf(::DeviceRepository)
+        singleOf(::DeviceService)
 
         single<Configuration> { Configuration.load(configuration) }
 
@@ -48,7 +53,7 @@ val serviceModule = { configuration: ApplicationConfig ->
 
             transaction(database) {
                 addLogger(StdOutSqlLogger)
-                SchemaUtils.create(GroupEntity)
+                SchemaUtils.create(GroupEntity, DeviceEntity)
             }
 
             database

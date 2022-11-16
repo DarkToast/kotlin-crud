@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class ReadGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `GET a list of groups`() = componentTest {
+    fun `GET a list of groups`() = Spec().componentSpec {
         // given: Two exiting groups
         createGroup(this, "group1", "first_group")
         createGroup(this, "group2", "second_group")
@@ -38,7 +38,7 @@ class ReadGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `GET existing group`() = componentTest {
+    fun `GET existing group`() = Spec().componentSpec {
         // given: An exiting group
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
@@ -56,7 +56,7 @@ class ReadGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `GET group not known`() = componentTest {
+    fun `GET group not known`() = Spec().componentSpec {
         // when: We get an unknown group
         val response = client.get("/groups/NOT_KNOWN") {
             contentType(ContentType.Application.Json)

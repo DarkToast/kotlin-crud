@@ -1,5 +1,6 @@
 package de.tarent.crud.tests
 
+import de.tarent.crud.persistance.DeviceEntity
 import de.tarent.crud.persistance.GroupEntity
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
@@ -19,25 +20,73 @@ import org.koin.java.KoinJavaComponent.inject
 import kotlin.test.assertEquals
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
+typealias testBlock = suspend ApplicationTestBuilder.() -> Unit
+
 abstract class BaseComponentSpec {
     protected val json = Json { isLenient = true }
 
-    fun componentTest(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
-        environment {
-            config = ApplicationConfig("test-application.conf")
-        }
-
-        try {
-            block(this)
-        } finally {
+    class Spec {
+        private val cleanDatabase: testBlock = {
             val db: ExposedDatabase by inject(ExposedDatabase::class.java)
             transaction(db) {
+                DeviceEntity.deleteAll()
                 GroupEntity.deleteAll()
             }
+        }
 
-            stopKoin()
+        private val cleanKoinDi: testBlock = { stopKoin() }
+
+        private val setups: MutableList<testBlock> = mutableListOf()
+        private val tearDowns: MutableList<testBlock> = mutableListOf(cleanDatabase, cleanKoinDi)
+
+        @Suppress("unused")
+        fun withSetup(setup: testBlock): Spec {
+            setups += setup
+            return this
+        }
+
+        @Suppress("unused")
+        fun withTearDown(tearDown: testBlock): Spec {
+            tearDowns += tearDown
+            return this
+        }
+
+        fun componentSpec(block: testBlock) = testApplication {
+            environment {
+                config = ApplicationConfig("test-application.conf")
+            }
+
+            try {
+                setups.forEach { it(this) }
+                block(this)
+            } finally {
+                tearDowns.forEach { it(this) }
+            }
         }
     }
+
+    protected suspend fun createDevice(builder: ApplicationTestBuilder, groupName: String, deviceJson: String): String {
+        val response = builder.client.post("/groups/$groupName/devices") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(deviceJson)
+        }
+
+        assertEquals(HttpStatusCode.Created, response.status)
+
+        return response.headers[HttpHeaders.Location]
+            ?: throw IllegalStateException("Illegal creation state. No location header set!")
+    }
+
+    @Suppress("SameParameterValue")
+    protected fun deviceJson(name: String, description: String, type: String): String =
+        """
+         |{
+         |  "name": "$name",
+         |  "description": "$description",
+         |  "type": "$type"
+         |}
+        """.trimMargin("|")
 
     protected suspend fun createGroup(builder: ApplicationTestBuilder, groupName: String, description: String): String {
         val response = builder.client.post("/groups") {
