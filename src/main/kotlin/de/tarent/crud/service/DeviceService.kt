@@ -7,7 +7,7 @@ import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
-    fun create(groupName: String, device: Device): CreateResult<Pair<String, String>> {
+    fun create(groupName: String, device: Device): CreateDeviceResult<Pair<String, String>> {
         if (!groupRepo.exists(groupName)) {
             return GroupDontExists(groupName)
         }
@@ -20,7 +20,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         return Ok(Pair(groupName, deviceName))
     }
 
-    fun read(groupName: String, name: String): ReadResult<Device> = if (groupRepo.exists(groupName)) {
+    fun read(groupName: String, name: String): DeviceReadResult<Device> = if (groupRepo.exists(groupName)) {
         deviceRepo.load(groupName, name)
             ?.let { Ok(it) }
             ?: DeviceDontExists(groupName, name)
@@ -28,7 +28,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun update(groupName: String, deviceName: String, device: Device): UpdateResult<Device> {
+    fun update(groupName: String, deviceName: String, device: Device): DeviceUpdateResult<Device> {
         if (!groupRepo.exists(groupName)) {
             return GroupDontExists(groupName)
         }
@@ -47,7 +47,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
     }
 
 
-    fun delete(groupName: String, deviceName: String): DeleteResult<Unit> = if (groupRepo.exists(groupName)) {
+    fun delete(groupName: String, deviceName: String): DeviceDeleteResult<Unit> = if (groupRepo.exists(groupName)) {
         if (deviceRepo.delete(groupName, deviceName) == 1) {
             Ok(Unit)
         } else {
@@ -57,7 +57,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun listDevices(groupName: String): ListResult<List<Device>> = if (groupRepo.exists(groupName)) {
+    fun listDevices(groupName: String): ListDeviceResult<List<Device>> = if (groupRepo.exists(groupName)) {
         Ok(deviceRepo.findForGroup(groupName))
     } else {
         GroupDontExists(groupName)

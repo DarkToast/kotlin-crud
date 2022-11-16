@@ -8,18 +8,12 @@ import de.tarent.crud.controller.devicePage
 import de.tarent.crud.controller.groupPage
 import de.tarent.crud.controller.indexPage
 import de.tarent.crud.dtos.Failure
-import de.tarent.crud.persistance.ConflictException
-import de.tarent.crud.persistance.NotFoundException
-import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
-import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -52,8 +46,6 @@ fun Application.server() {
                 Failure(BadRequest.value, e.message ?: "Unexpected error")
             )
         }
-
-        exception<PeristenceException> { call, e -> exceptionHandler(call, e) }
     }
 
     install(Koin) {
@@ -77,26 +69,5 @@ fun Application.server() {
         adminPage()
         groupPage(groupService)
         devicePage(deviceService)
-    }
-}
-
-suspend fun exceptionHandler(call: ApplicationCall, e: PeristenceException) {
-    val logger = KotlinLogging.logger {}
-
-    return when (e) {
-        is ConflictException -> {
-            logger.warn(e) { "Got an conflicting request!" }
-            call.respond(
-                Conflict,
-                Failure(BadRequest.value, e.message ?: "Unexpected error")
-            )
-        }
-        is NotFoundException -> {
-            logger.warn(e) { "Requesting entity was not found!" }
-            call.respond(
-                NotFound,
-                Failure(BadRequest.value, e.message ?: "Unexpected error")
-            )
-        }
     }
 }
