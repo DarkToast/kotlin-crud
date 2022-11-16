@@ -28,7 +28,10 @@ class GroupService(private val repo: GroupRepository) {
         return Ok(group)
     }
 
-    fun delete(name: String): Boolean = repo.delete(name) == 1
+    fun delete(name: String): GroupDeleteResult<String> {
+        val cnt = repo.delete(name)
+        return if (cnt == 1) Ok(name) else GroupDontExists(name)
+    }
 
     fun list(): ListGroupResult<List<Group>> = Ok(repo.list())
 }

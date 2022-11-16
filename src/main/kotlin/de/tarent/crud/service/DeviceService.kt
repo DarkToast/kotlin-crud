@@ -47,7 +47,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
     }
 
 
-    fun delete(groupName: String, deviceName: String): DeleteResult<Unit> = if (groupRepo.exists(groupName)) {
+    fun delete(groupName: String, deviceName: String): DeviceDeleteResult<Unit> = if (groupRepo.exists(groupName)) {
         if (deviceRepo.delete(groupName, deviceName) == 1) {
             Ok(Unit)
         } else {

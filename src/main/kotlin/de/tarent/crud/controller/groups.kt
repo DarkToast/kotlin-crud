@@ -73,14 +73,13 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         delete("{name?}") {
-            val name: String = call.parameters["name"]
-                ?: return@delete call.respond(HttpStatusCode.BadRequest, Failure(400, "Parameter name not found"))
-
+            val name = parameter(call, "name") ?: return@delete
             logger.info { "DELETE group with name '${name}'." }
-            val result = groupService.delete(name)
 
-            if (result) call.respond(HttpStatusCode.NoContent)
-            else call.respond(HttpStatusCode.BadRequest, Failure(400, "Group '$name' was not found!"))
+            when(val result = groupService.delete(name)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is Ok -> call.respond(HttpStatusCode.NoContent)
+            }
         }
     }
 }
