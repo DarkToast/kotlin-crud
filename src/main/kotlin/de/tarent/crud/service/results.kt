@@ -2,31 +2,36 @@ package de.tarent.crud.service
 
 sealed interface CreateGroupResult<T>
 sealed interface CreateDeviceResult<T>
-sealed interface ReadResult<T>
+sealed interface GroupReadResult<T>
+sealed interface DeviceReadResult<T>
 sealed interface UpdateResult<T>
 sealed interface DeleteResult<T>
-sealed interface ListResult<T>
+sealed interface ListDeviceResult<T>
+sealed interface ListGroupResult<T>
 
 data class Ok<T>(val value: T) :
     CreateDeviceResult<T>,
     CreateGroupResult<T>,
-    ReadResult<T>,
+    DeviceReadResult<T>,
+    GroupReadResult<T>,
     UpdateResult<T>,
     DeleteResult<T>,
-    ListResult<T>
+    ListDeviceResult<T>,
+    ListGroupResult<T>
 
 data class GroupDontExists<T>(val groupName: String) :
     CreateDeviceResult<T>,
-    ReadResult<T>,
+    DeviceReadResult<T>,
+    GroupReadResult<T>,
     UpdateResult<T>,
     DeleteResult<T>,
-    ListResult<T>
+    ListDeviceResult<T>
 
 data class GroupAlreadyExists<T>(val groupName: String) :
     CreateGroupResult<T>
 
 data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
-    ReadResult<T>,
+    DeviceReadResult<T>,
     UpdateResult<T>,
     DeleteResult<T>
 

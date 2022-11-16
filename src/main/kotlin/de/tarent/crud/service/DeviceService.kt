@@ -20,7 +20,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         return Ok(Pair(groupName, deviceName))
     }
 
-    fun read(groupName: String, name: String): ReadResult<Device> = if (groupRepo.exists(groupName)) {
+    fun read(groupName: String, name: String): DeviceReadResult<Device> = if (groupRepo.exists(groupName)) {
         deviceRepo.load(groupName, name)
             ?.let { Ok(it) }
             ?: DeviceDontExists(groupName, name)
@@ -57,7 +57,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun listDevices(groupName: String): ListResult<List<Device>> = if (groupRepo.exists(groupName)) {
+    fun listDevices(groupName: String): ListDeviceResult<List<Device>> = if (groupRepo.exists(groupName)) {
         Ok(deviceRepo.findForGroup(groupName))
     } else {
         GroupDontExists(groupName)

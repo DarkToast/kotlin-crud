@@ -30,7 +30,9 @@ fun Route.groupPage(groupService: GroupService) {
     route("/groups") {
         get {
             logger.info { "READ list of groups" }
-            call.respond(HttpStatusCode.OK, groupService.listGroups())
+            when(val result = groupService.list()) {
+                is Ok -> call.respond(HttpStatusCode.OK, result.value)
+            }
         }
 
         get("{name?}") {
