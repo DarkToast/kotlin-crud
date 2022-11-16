@@ -2,8 +2,6 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Failure
-import de.tarent.crud.exceptionHandler
-import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.DeviceAlreadyExists
 import de.tarent.crud.service.DeviceDontExists
 import de.tarent.crud.service.DeviceService
@@ -66,22 +64,18 @@ fun Route.devicePage(deviceService: DeviceService) {
 
             logger.info { "CREATE a new device in the group $groupName" }
 
-            try {
-                when (val result = deviceService.create(groupName, device)) {
-                    is Ok -> {
-                        val response = call.response
-                        response.header(
-                            HttpHeaders.Location,
-                            "/groups/${result.value.first}/devices/${result.value.second}"
-                        )
-                        response.status(HttpStatusCode.Created)
-                        logger.debug { "Device '${result.value.first}' created" }
-                    }
-                    is GroupDontExists -> groupDontExist(call, result)
-                    is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
+            when (val result = deviceService.create(groupName, device)) {
+                is Ok -> {
+                    val response = call.response
+                    response.header(
+                        HttpHeaders.Location,
+                        "/groups/${result.value.first}/devices/${result.value.second}"
+                    )
+                    response.status(HttpStatusCode.Created)
+                    logger.debug { "Device '${result.value.first}' created" }
                 }
-            } catch (e: PeristenceException) {
-                exceptionHandler(call, e)
+                is GroupDontExists -> groupDontExist(call, result)
+                is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
             }
         }
 
