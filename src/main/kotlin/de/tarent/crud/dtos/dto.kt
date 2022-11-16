@@ -1,5 +1,9 @@
 package de.tarent.crud.dtos
 
+import de.tarent.crud.dtos.Method.DELETE
+import de.tarent.crud.dtos.Method.GET
+import de.tarent.crud.dtos.Method.POST
+import de.tarent.crud.dtos.Method.PUT
 import kotlinx.serialization.Serializable
 import java.net.URI
 
@@ -25,8 +29,10 @@ data class Group(
     val description: String
 ): Linked<Group>() {
     init {
-        addLink("_self", Method.GET, URI("/groups/$name"))
-        addLink("add_device", Method.POST, URI("/groups/$name"))
-        addLink("list_devices", Method.GET, URI("/groups/$name/devices"))
+        addLink("_self", GET, URI("/groups/$name"))
+        addLink("delete", DELETE, URI("/groups/$name"))
+        addLink("update", PUT, URI("/groups/$name"))
+        addLink("add_device", POST, URI("/groups/$name"))
+        addLink("list_devices", GET, URI("/groups/$name/devices"))
     }
 }

@@ -9,7 +9,7 @@ import java.net.URI
 fun HttpMethod.toString() = this.value
 
 enum class Method {
-    POST, GET
+    POST, GET, DELETE, PUT
 }
 
 @Serializable

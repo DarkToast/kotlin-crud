@@ -1,5 +1,6 @@
 package de.tarent.crud.tests.groups
 
+import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
@@ -9,6 +10,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -53,6 +55,14 @@ class ReadGroupSpec : BaseGroupSpec() {
 
         // and: the group is returned
         assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", response)
+
+        // and: It has all further links
+        val group: Group = json.decodeFromString(response.bodyAsText())
+        assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
+        assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)
+        assertLink("update", "/groups/$DEFAULT_GROUP_NAME", "PUT", group.links)
+        assertLink("add_device", "/groups/$DEFAULT_GROUP_NAME", "POST", group.links)
+        assertLink("list_devices", "/groups/$DEFAULT_GROUP_NAME/devices", "GET", group.links)
     }
 
     @Test
@@ -65,5 +75,10 @@ class ReadGroupSpec : BaseGroupSpec() {
 
         // then: It is not found
         assertEquals(NotFound, response.status)
+
+        // and: It has further links
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("get_groups", "/groups", "GET", failure.links)
+        assertLink("add_group", "/groups", "POST", failure.links)
     }
 }

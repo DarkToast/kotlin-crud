@@ -35,6 +35,8 @@ class CreateGroupSpec : BaseGroupSpec() {
         // and: with further links
         val group: Group = json.decodeFromString(response.bodyAsText())
         assertLink("_self", "/groups/HWR", "GET", group.links)
+        assertLink("delete", "/groups/HWR", "DELETE", group.links)
+        assertLink("update", "/groups/HWR", "PUT", group.links)
         assertLink("add_device", "/groups/HWR", "POST", group.links)
         assertLink("list_devices", "/groups/HWR/devices", "GET", group.links)
     }
@@ -75,6 +77,8 @@ class CreateGroupSpec : BaseGroupSpec() {
 
         // then: Conflict is returned
         assertEquals(Conflict, response.status)
+
+        // and: It has further links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
         assertLink("get_groups", "/groups", "GET", failure.links)
         assertLink("add_group", "/groups", "POST", failure.links)

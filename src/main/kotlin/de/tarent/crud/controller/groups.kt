@@ -95,5 +95,9 @@ private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlrea
 private suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {
     val msg = "Group '${result.groupName}' does not exists."
     logger.warn { msg }
-    call.respond(NotFound, Failure(404, msg))
+    val failure = Failure(404, msg).apply {
+        addLink("get_groups", GET, URI("/groups"))
+        addLink("add_group", POST, URI("/groups"))
+    }
+    call.respond(NotFound, failure)
 }
