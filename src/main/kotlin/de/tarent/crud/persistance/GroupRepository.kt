@@ -17,17 +17,11 @@ class GroupRepository(private val database: Database) {
     }
 
     fun insert(group: Group): Boolean = transaction(database) {
-        val exists = exists(group.name)
-
-        if (!exists) {
-            GroupEntity.insert {
-                it[name] = group.name
-                it[description] = group.description
-            }
-            true
-        } else {
-            throw ConflictException("Group already exists!")
+        GroupEntity.insert {
+            it[name] = group.name
+            it[description] = group.description
         }
+        true
     }
 
     fun update(groupName: String, updatedGroup: Group): Boolean = transaction(database) {

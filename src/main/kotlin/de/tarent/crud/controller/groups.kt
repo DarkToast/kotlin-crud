@@ -4,10 +4,14 @@ import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.exceptionHandler
 import de.tarent.crud.persistance.PeristenceException
+import de.tarent.crud.service.GroupAlreadyExists
 import de.tarent.crud.service.GroupService
+import de.tarent.crud.service.Ok
 import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.header
@@ -42,21 +46,15 @@ fun Route.groupPage(groupService: GroupService) {
 
         post {
             val group = call.receive<Group>()
-
             logger.info { "CREATE group with name '${group.name}'." }
 
-            try {
-                val result = groupService.create(group)
-
-                if (result) {
+            when (val result = groupService.create(group)) {
+                is Ok -> {
                     val response = call.response
                     response.header(Location, "/groups/${group.name}")
                     response.status(Created)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, Failure(400, "Creation failed!"))
                 }
-            } catch (e: PeristenceException) {
-                exceptionHandler(call, e)
+                is GroupAlreadyExists -> groupAlreadyExists(call, result)
             }
         }
 
@@ -75,7 +73,7 @@ fun Route.groupPage(groupService: GroupService) {
                 } else {
                     call.respond(HttpStatusCode.BadRequest, Failure(400, "Update failed!"))
                 }
-            } catch(e: PeristenceException) {
+            } catch (e: PeristenceException) {
                 exceptionHandler(call, e)
             }
         }
@@ -91,4 +89,10 @@ fun Route.groupPage(groupService: GroupService) {
             else call.respond(HttpStatusCode.BadRequest, Failure(400, "Group '$name' was not found!"))
         }
     }
+}
+
+private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlreadyExists<*>) {
+    val msg = "Group '${result.groupName}' already exists."
+    logger.warn { msg }
+    call.respond(Conflict, Failure(409, msg))
 }

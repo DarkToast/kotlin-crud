@@ -4,7 +4,12 @@ import de.tarent.crud.dtos.Group
 import de.tarent.crud.persistance.GroupRepository
 
 class GroupService(private val repo: GroupRepository) {
-    fun create(group: Group): Boolean = repo.insert(group)
+    fun create(group: Group): CreateGroupResult<Group> = if(repo.exists(group.name)) {
+        GroupAlreadyExists(group.name)
+    } else {
+        repo.insert(group)
+        Ok(group)
+    }
 
     fun read(name: String): Group? = repo.load(name)
 
