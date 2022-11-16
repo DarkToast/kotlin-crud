@@ -1,30 +1,47 @@
 package de.tarent.crud.service
 
-sealed interface CreateResult<T>
-sealed interface ReadResult<T>
-sealed interface UpdateResult<T>
-sealed interface DeleteResult<T>
-sealed interface ListResult<T>
+sealed interface CreateGroupResult<T>
+sealed interface CreateDeviceResult<T>
+sealed interface GroupReadResult<T>
+sealed interface DeviceReadResult<T>
+sealed interface DeviceUpdateResult<T>
+sealed interface GroupUpdateResult<T>
+sealed interface DeviceDeleteResult<T>
+sealed interface GroupDeleteResult<T>
+sealed interface ListDeviceResult<T>
+sealed interface ListGroupResult<T>
 
 data class Ok<T>(val value: T) :
-    CreateResult<T>,
-    ReadResult<T>,
-    UpdateResult<T>,
-    DeleteResult<T>,
-    ListResult<T>
+    CreateDeviceResult<T>,
+    CreateGroupResult<T>,
+    DeviceReadResult<T>,
+    GroupReadResult<T>,
+    DeviceUpdateResult<T>,
+    GroupUpdateResult<T>,
+    DeviceDeleteResult<T>,
+    GroupDeleteResult<T>,
+    ListDeviceResult<T>,
+    ListGroupResult<T>
 
 data class GroupDontExists<T>(val groupName: String) :
-    CreateResult<T>,
-    ReadResult<T>,
-    UpdateResult<T>,
-    DeleteResult<T>,
-    ListResult<T>
+    CreateDeviceResult<T>,
+    DeviceReadResult<T>,
+    GroupReadResult<T>,
+    DeviceUpdateResult<T>,
+    GroupUpdateResult<T>,
+    DeviceDeleteResult<T>,
+    GroupDeleteResult<T>,
+    ListDeviceResult<T>
+
+data class GroupAlreadyExists<T>(val groupName: String) :
+    CreateGroupResult<T>,
+    GroupUpdateResult<T>
 
 data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
-    ReadResult<T>,
-    UpdateResult<T>,
-    DeleteResult<T>
+    DeviceReadResult<T>,
+    DeviceUpdateResult<T>,
+    DeviceDeleteResult<T>
 
 data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
-    CreateResult<T>,
-    UpdateResult<T>
+    CreateDeviceResult<T>,
+    DeviceUpdateResult<T>

@@ -2,8 +2,6 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Failure
-import de.tarent.crud.exceptionHandler
-import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.DeviceAlreadyExists
 import de.tarent.crud.service.DeviceDontExists
 import de.tarent.crud.service.DeviceService
@@ -11,7 +9,6 @@ import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.ApplicationCall
@@ -67,22 +64,18 @@ fun Route.devicePage(deviceService: DeviceService) {
 
             logger.info { "CREATE a new device in the group $groupName" }
 
-            try {
-                when (val result = deviceService.create(groupName, device)) {
-                    is Ok -> {
-                        val response = call.response
-                        response.header(
-                            HttpHeaders.Location,
-                            "/groups/${result.value.first}/devices/${result.value.second}"
-                        )
-                        response.status(HttpStatusCode.Created)
-                        logger.debug { "Device '${result.value.first}' created" }
-                    }
-                    is GroupDontExists -> groupDontExist(call, result)
-                    is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
+            when (val result = deviceService.create(groupName, device)) {
+                is Ok -> {
+                    val response = call.response
+                    response.header(
+                        HttpHeaders.Location,
+                        "/groups/${result.value.first}/devices/${result.value.second}"
+                    )
+                    response.status(HttpStatusCode.Created)
+                    logger.debug { "Device '${result.value.first}' created" }
                 }
-            } catch (e: PeristenceException) {
-                exceptionHandler(call, e)
+                is GroupDontExists -> groupDontExist(call, result)
+                is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
             }
         }
 
@@ -93,7 +86,7 @@ fun Route.devicePage(deviceService: DeviceService) {
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
 
-            when(val result = deviceService.update(groupName, deviceName, device)) {
+            when (val result = deviceService.update(groupName, deviceName, device)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' updated" }
                     call.respond(HttpStatusCode.OK, result.value)
@@ -121,14 +114,6 @@ fun Route.devicePage(deviceService: DeviceService) {
             }
         }
     }
-}
-
-private suspend fun parameter(call:ApplicationCall, parameterName: String): String? {
-    val parameter = call.parameters[parameterName]
-    if(parameter == null) {
-        call.respond(BadRequest, Failure(400, "Parameter '$parameterName' not found"))
-    }
-    return parameter
 }
 
 private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlreadyExists<*>) {
