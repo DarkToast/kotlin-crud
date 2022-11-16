@@ -2,8 +2,6 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
-import de.tarent.crud.exceptionHandler
-import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.GroupAlreadyExists
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.GroupService
@@ -32,7 +30,7 @@ fun Route.groupPage(groupService: GroupService) {
     route("/groups") {
         get {
             logger.info { "READ list of groups" }
-            when(val result = groupService.list()) {
+            when (val result = groupService.list()) {
                 is Ok -> call.respond(HttpStatusCode.OK, result.value)
             }
         }
@@ -41,7 +39,7 @@ fun Route.groupPage(groupService: GroupService) {
             val name = parameter(call, "name") ?: return@get
             logger.info { "READ group by name '$name'" }
 
-            when(val result = groupService.read(name)) {
+            when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is Ok -> call.respond(HttpStatusCode.OK, result.value)
             }
@@ -62,22 +60,15 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         put("{name?}") {
-            val name: String = call.parameters["name"]
-                ?: return@put call.respond(HttpStatusCode.BadRequest, Failure(400, "Parameter name not found"))
+            val name = parameter(call, "name") ?: return@put
 
             logger.info { "UPDATE group with name '${name}'." }
             val group = call.receive<Group>()
 
-            try {
-                val result = groupService.update(name, group)
-
-                if (result) {
-                    call.respond(HttpStatusCode.OK, group)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, Failure(400, "Update failed!"))
-                }
-            } catch (e: PeristenceException) {
-                exceptionHandler(call, e)
+            when (val result = groupService.update(name, group)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is GroupAlreadyExists -> groupAlreadyExists(call, result)
+                is Ok -> call.respond(HttpStatusCode.OK, group)
             }
         }
 

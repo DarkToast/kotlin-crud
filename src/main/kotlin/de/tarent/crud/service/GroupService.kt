@@ -15,7 +15,18 @@ class GroupService(private val repo: GroupRepository) {
         ?.let { Ok(it) }
         ?: GroupDontExists(name)
 
-    fun update(name: String, group: Group): Boolean = repo.update(name, group)
+    fun update(name: String, group: Group): GroupUpdateResult<Group> {
+        if(!repo.exists(name)) {
+            return GroupDontExists(name)
+        }
+
+        if(name != group.name && repo.exists(group.name)) {
+            return GroupAlreadyExists(group.name)
+        }
+
+        repo.update(name, group)
+        return Ok(group)
+    }
 
     fun delete(name: String): Boolean = repo.delete(name) == 1
 

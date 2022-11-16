@@ -4,7 +4,8 @@ sealed interface CreateGroupResult<T>
 sealed interface CreateDeviceResult<T>
 sealed interface GroupReadResult<T>
 sealed interface DeviceReadResult<T>
-sealed interface UpdateResult<T>
+sealed interface DeviceUpdateResult<T>
+sealed interface GroupUpdateResult<T>
 sealed interface DeleteResult<T>
 sealed interface ListDeviceResult<T>
 sealed interface ListGroupResult<T>
@@ -14,7 +15,8 @@ data class Ok<T>(val value: T) :
     CreateGroupResult<T>,
     DeviceReadResult<T>,
     GroupReadResult<T>,
-    UpdateResult<T>,
+    DeviceUpdateResult<T>,
+    GroupUpdateResult<T>,
     DeleteResult<T>,
     ListDeviceResult<T>,
     ListGroupResult<T>
@@ -23,18 +25,20 @@ data class GroupDontExists<T>(val groupName: String) :
     CreateDeviceResult<T>,
     DeviceReadResult<T>,
     GroupReadResult<T>,
-    UpdateResult<T>,
+    DeviceUpdateResult<T>,
+    GroupUpdateResult<T>,
     DeleteResult<T>,
     ListDeviceResult<T>
 
 data class GroupAlreadyExists<T>(val groupName: String) :
-    CreateGroupResult<T>
+    CreateGroupResult<T>,
+    GroupUpdateResult<T>
 
 data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
     DeviceReadResult<T>,
-    UpdateResult<T>,
+    DeviceUpdateResult<T>,
     DeleteResult<T>
 
 data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
     CreateDeviceResult<T>,
-    UpdateResult<T>
+    DeviceUpdateResult<T>

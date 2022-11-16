@@ -28,7 +28,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun update(groupName: String, deviceName: String, device: Device): UpdateResult<Device> {
+    fun update(groupName: String, deviceName: String, device: Device): DeviceUpdateResult<Device> {
         if (!groupRepo.exists(groupName)) {
             return GroupDontExists(groupName)
         }
