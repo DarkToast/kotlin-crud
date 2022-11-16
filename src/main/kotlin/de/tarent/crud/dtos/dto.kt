@@ -2,8 +2,10 @@ package de.tarent.crud.dtos
 
 import kotlinx.serialization.Serializable
 
+@Serializable
 class Index : Linked<Index>()
 
+@Serializable
 data class Failure(
     val code: Int,
     val message: String

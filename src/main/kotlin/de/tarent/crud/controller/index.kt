@@ -13,8 +13,7 @@ fun Route.indexPage() {
     val body = Index()
         .addLink("_self", Method.GET, URI("/"))
         .addLink("get_groups", Method.GET, URI("/groups"))
-        .addLink("add_groups", Method.POST, URI("/groups"))
-        .addLink("get_devices", Method.GET, URI("/devices"))
+        .addLink("add_group", Method.POST, URI("/groups"))
 
     get("/") {
         call.respond(HttpStatusCode.OK, body)
