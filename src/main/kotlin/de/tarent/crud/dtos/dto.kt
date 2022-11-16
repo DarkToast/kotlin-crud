@@ -4,17 +4,20 @@ import kotlinx.serialization.Serializable
 
 class Index : Linked<Index>()
 
-data class Failure(val code: Int, val message: String)
+data class Failure(
+    val code: Int,
+    val message: String
+)
 
 @Serializable
 data class Device(
     val name: String,
     val description: String,
     val type: String,
-)
+): Linked<Group>()
 
 @Serializable
 data class Group(
     val name: String,
     val description: String
-)
+): Linked<Group>()
