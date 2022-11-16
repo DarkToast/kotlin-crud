@@ -11,7 +11,6 @@ import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.ApplicationCall
@@ -93,7 +92,7 @@ fun Route.devicePage(deviceService: DeviceService) {
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
 
-            when(val result = deviceService.update(groupName, deviceName, device)) {
+            when (val result = deviceService.update(groupName, deviceName, device)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' updated" }
                     call.respond(HttpStatusCode.OK, result.value)
@@ -121,14 +120,6 @@ fun Route.devicePage(deviceService: DeviceService) {
             }
         }
     }
-}
-
-private suspend fun parameter(call:ApplicationCall, parameterName: String): String? {
-    val parameter = call.parameters[parameterName]
-    if(parameter == null) {
-        call.respond(BadRequest, Failure(400, "Parameter '$parameterName' not found"))
-    }
-    return parameter
 }
 
 private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlreadyExists<*>) {

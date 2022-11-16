@@ -11,7 +11,9 @@ class GroupService(private val repo: GroupRepository) {
         Ok(group)
     }
 
-    fun read(name: String): Group? = repo.load(name)
+    fun read(name: String): GroupReadResult<Group> = repo.load(name)
+        ?.let { Ok(it) }
+        ?: GroupDontExists(name)
 
     fun update(name: String, group: Group): Boolean = repo.update(name, group)
 

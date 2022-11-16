@@ -5,12 +5,14 @@ import de.tarent.crud.dtos.Group
 import de.tarent.crud.exceptionHandler
 import de.tarent.crud.persistance.PeristenceException
 import de.tarent.crud.service.GroupAlreadyExists
+import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.Ok
 import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
@@ -36,14 +38,13 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         get("{name?}") {
-            val name: String = call.parameters["name"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, Failure(400, "Parameter name not found"))
-
+            val name = parameter(call, "name") ?: return@get
             logger.info { "READ group by name '$name'" }
-            val group = groupService.read(name)
-                ?: return@get call.respond(HttpStatusCode.NotFound, Failure(404, "Group was not found"))
 
-            call.respond(HttpStatusCode.OK, group)
+            when(val result = groupService.read(name)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is Ok -> call.respond(HttpStatusCode.OK, result.value)
+            }
         }
 
         post {
@@ -97,4 +98,10 @@ private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlrea
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
     call.respond(Conflict, Failure(409, msg))
+}
+
+private suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {
+    val msg = "Group '${result.groupName}' does not exists."
+    logger.warn { msg }
+    call.respond(NotFound, Failure(404, msg))
 }
