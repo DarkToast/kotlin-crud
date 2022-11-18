@@ -80,6 +80,7 @@ class CreateGroupSpec : BaseGroupSpec() {
 
         // and: It has further links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
         assertLink("add_group", "/groups", "POST", failure.links)
         assertLink("existing_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)

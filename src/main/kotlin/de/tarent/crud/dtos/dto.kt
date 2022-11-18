@@ -8,13 +8,23 @@ import kotlinx.serialization.Serializable
 import java.net.URI
 
 @Serializable
-class Index : Linked<Index>()
+class Index : Linked<Index>() {
+    init {
+        addLink("_self", GET, URI("/"))
+        addLink("get_groups", GET, URI("/groups"))
+        addLink("add_group", POST, URI("/groups"))
+    }
+}
 
 @Serializable
 data class Failure(
     val code: Int,
     val message: String
-): Linked<Failure>()
+) : Linked<Failure>() {
+    init {
+        addLink("index", GET, URI("/"))
+    }
+}
 
 @Serializable
 data class Device(
