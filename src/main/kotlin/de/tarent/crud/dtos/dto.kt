@@ -42,13 +42,13 @@ data class Device(
     val name: String,
     val description: String,
     val type: String,
-): Linked<Group>()
+) : Linked<Group>()
 
 @Serializable
 data class Group(
     val name: String,
     val description: String
-): Linked<Group>() {
+) : Linked<Group>() {
     init {
         addLink("_self", GET, URI("/groups/$name"))
         addLink("delete", DELETE, URI("/groups/$name"))
