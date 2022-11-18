@@ -39,9 +39,10 @@ class UpdateGroupSpec : BaseGroupSpec() {
         // and: with further links
         val group: Group = json.decodeFromString(response.bodyAsText())
         assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
+        assertLink("index", "/", "GET", group.links)
         assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)
         assertLink("update", "/groups/$DEFAULT_GROUP_NAME", "PUT", group.links)
-        assertLink("add_device", "/groups/$DEFAULT_GROUP_NAME", "POST", group.links)
+        assertLink("add_device", "/groups/$DEFAULT_GROUP_NAME/devices", "POST", group.links)
         assertLink("list_devices", "/groups/$DEFAULT_GROUP_NAME/devices", "GET", group.links)
     }
 
@@ -66,9 +67,10 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
         // and: with further links
         assertLink("_self", "/groups/NEW_ID", "GET", group.links)
+        assertLink("index", "/", "GET", group.links)
         assertLink("delete", "/groups/NEW_ID", "DELETE", group.links)
         assertLink("update", "/groups/NEW_ID", "PUT", group.links)
-        assertLink("add_device", "/groups/NEW_ID", "POST", group.links)
+        assertLink("add_device", "/groups/NEW_ID/devices", "POST", group.links)
         assertLink("list_devices", "/groups/NEW_ID/devices", "GET", group.links)
 
         // when: We get the group

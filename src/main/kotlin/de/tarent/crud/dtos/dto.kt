@@ -51,9 +51,10 @@ data class Group(
 ) : Linked<Group>() {
     init {
         addLink("_self", GET, URI("/groups/$name"))
+        addLink("index", GET, URI("/"))
         addLink("delete", DELETE, URI("/groups/$name"))
         addLink("update", PUT, URI("/groups/$name"))
-        addLink("add_device", POST, URI("/groups/$name"))
+        addLink("add_device", POST, URI("/groups/$name/devices"))
         addLink("list_devices", GET, URI("/groups/$name/devices"))
     }
 }

@@ -58,10 +58,11 @@ class ReadGroupSpec : BaseGroupSpec() {
 
         // and: It has all further links
         val group: Group = json.decodeFromString(response.bodyAsText())
+        assertLink("index", "/", "GET", group.links)
         assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
         assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)
         assertLink("update", "/groups/$DEFAULT_GROUP_NAME", "PUT", group.links)
-        assertLink("add_device", "/groups/$DEFAULT_GROUP_NAME", "POST", group.links)
+        assertLink("add_device", "/groups/$DEFAULT_GROUP_NAME/devices", "POST", group.links)
         assertLink("list_devices", "/groups/$DEFAULT_GROUP_NAME/devices", "GET", group.links)
     }
 
@@ -78,6 +79,7 @@ class ReadGroupSpec : BaseGroupSpec() {
 
         // and: It has further links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
         assertLink("add_group", "/groups", "POST", failure.links)
     }
