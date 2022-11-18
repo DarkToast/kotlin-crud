@@ -83,7 +83,7 @@ class CreateGroupSpec : BaseGroupSpec() {
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
         assertLink("add_group", "/groups", "POST", failure.links)
-        assertLink("existing_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
+        assertLink("get_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
     }
 
     private val groupJson = """

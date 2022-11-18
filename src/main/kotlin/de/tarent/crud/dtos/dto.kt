@@ -24,6 +24,17 @@ data class Failure(
     init {
         addLink("index", GET, URI("/"))
     }
+
+    companion object {
+        fun onIndex(code: Int, message: String): Failure = Failure(code, message).apply {
+            addLink("get_groups", GET, URI("/groups"))
+            addLink("add_group", POST, URI("/groups"))
+        }
+
+        fun onGroup(code: Int, message: String, groupName: String) = onIndex(code, message).apply {
+            addLink("get_group", GET, URI("/groups/$groupName"))
+        }
+    }
 }
 
 @Serializable

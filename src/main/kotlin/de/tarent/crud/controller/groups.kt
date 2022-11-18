@@ -84,20 +84,11 @@ fun Route.groupPage(groupService: GroupService) {
 private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlreadyExists<*>) {
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
-    val failure = Failure(409, msg).apply {
-        addLink("get_groups", GET, URI("/groups"))
-        addLink("add_group", POST, URI("/groups"))
-        addLink("existing_group", GET, URI("/groups/${result.groupName}"))
-    }
-    call.respond(Conflict, failure)
+    call.respond(Conflict, Failure.onGroup(404, msg, result.groupName))
 }
 
 private suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {
     val msg = "Group '${result.groupName}' does not exists."
     logger.warn { msg }
-    val failure = Failure(404, msg).apply {
-        addLink("get_groups", GET, URI("/groups"))
-        addLink("add_group", POST, URI("/groups"))
-    }
-    call.respond(NotFound, failure)
+    call.respond(NotFound, Failure.onIndex(404, msg))
 }
