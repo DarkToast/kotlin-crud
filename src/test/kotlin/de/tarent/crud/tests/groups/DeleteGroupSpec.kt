@@ -1,12 +1,15 @@
 package de.tarent.crud.tests.groups
 
+import de.tarent.crud.dtos.Index
 import io.ktor.client.request.accept
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.contentType
+import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -34,6 +37,29 @@ class DeleteGroupSpec : BaseGroupSpec() {
 
         // then: it is not found
         assertEquals(NotFound, response.status)
+    }
+
+    @Test
+    fun `Delete response has index links`() = Spec().componentSpec {
+        // given: An exiting group
+        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
+
+        // when: the group is deleted
+        val response = client.delete("/groups/$DEFAULT_GROUP_NAME") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+        }
+
+        // then: return is no content
+        assertEquals(NoContent, response.status)
+
+        // and: has index links
+        val index: Index = json.decodeFromString(response.bodyAsText())
+
+        assertEquals(3, index.links.size)
+        assertLink("_self", "/", "GET", index.links)
+        assertLink("get_groups", "/groups", "GET", index.links)
+        assertLink("add_group", "/groups", "POST", index.links)
     }
 
     @Test

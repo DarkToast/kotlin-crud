@@ -2,8 +2,7 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
-import de.tarent.crud.dtos.Method.GET
-import de.tarent.crud.dtos.Method.POST
+import de.tarent.crud.dtos.Index
 import de.tarent.crud.service.GroupAlreadyExists
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.GroupService
@@ -11,6 +10,7 @@ import de.tarent.crud.service.Ok
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
@@ -23,7 +23,6 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import mu.KotlinLogging
-import java.net.URI
 
 fun Route.groupPage(groupService: GroupService) {
     val logger = KotlinLogging.logger {}
@@ -75,7 +74,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             when (val result = groupService.delete(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(HttpStatusCode.NoContent)
+                is Ok -> call.respond(NoContent, Index())
             }
         }
     }
