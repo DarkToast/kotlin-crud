@@ -136,4 +136,15 @@ abstract class BaseComponentSpec {
         assertEquals(method, link?.method)
         return true
     }
+
+    protected suspend fun assertGroup(name: String, description: String, response: HttpResponse): Boolean {
+        val group: Group = json.decodeFromString(response.bodyAsText())
+        return assertGroup(name, description, group)
+    }
+
+    protected fun assertGroup(name: String, description: String, group: Group): Boolean {
+        assertEquals(name, group.name)
+        assertEquals(description, group.description)
+        return true
+    }
 }

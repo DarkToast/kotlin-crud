@@ -8,6 +8,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -15,6 +16,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
     private val spec = Spec().withSetup {
         createGroup(this, testGroupName, "my-test-group")
         createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
+        createDevice(this, testGroupName, deviceJson("$testDeviceName-2", "test-device-2", "plug"))
     }
 
     @Test
@@ -30,14 +32,18 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         // then: status ok is returned
         assertEquals(OK, response.status)
 
-        // and: The list contains one device
+        // and: The list contains two devices
         val body: String = response.bodyAsText()
         val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
+        assertEquals(2, list.size)
 
-        assertEquals(1, list.size)
-
-        // and: The test device was returned
+        // and: The test devices was returned
         assertDevice(testDeviceName, "test-device", "plug", list[0])
+        assertDevice("$testDeviceName-2", "test-device-2", "plug", list[1])
+
+        // and: Each device has related links
+        assertEquals(5, list[0].links)
+        assertEquals(5, list[1].links)
     }
 
     @Test
@@ -99,9 +105,19 @@ class ReadDeviceSpec : BaseDeviceSpec() {
             accept(ContentType.Application.Json)
         }
 
-        // then: status ok and the device is returned
+        // then: status ok
         assertEquals(OK, response.status)
-        assertDevice(testDeviceName, "test-device", "plug", response)
+
+        // and: the device is returned
+        val device: Device = json.decodeFromString(response.bodyAsText())
+        assertDevice(testDeviceName, "test-device", "plug", device)
+
+        // and: It has all related links
+        assertLink("_self", "/groups/$testGroupName/devices/$testDeviceName", "GET", device.links)
+        assertLink("update", "/groups/$testGroupName/devices/$testDeviceName", "PUT", device.links)
+        assertLink("delete", "/groups/$testGroupName/devices/$testDeviceName", "DELETE", device.links)
+        assertLink("get_devices", "/groups/$testGroupName/devices", "GET", device.links)
+        assertLink("get_group", "/groups/$testGroupName", "GET", device.links)
     }
 
     @Test
