@@ -7,11 +7,10 @@ import de.tarent.crud.service.GroupAlreadyExists
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.Ok
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
-import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
@@ -31,7 +30,7 @@ fun Route.groupPage(groupService: GroupService) {
         get {
             logger.info { "READ list of groups" }
             when (val result = groupService.list()) {
-                is Ok -> call.respond(HttpStatusCode.OK, result.value)
+                is Ok -> call.respond(OK, result.value)
             }
         }
 
@@ -41,7 +40,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(HttpStatusCode.OK, result.value)
+                is Ok -> call.respond(OK, result.value)
             }
         }
 
@@ -64,7 +63,7 @@ fun Route.groupPage(groupService: GroupService) {
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(HttpStatusCode.OK, group)
+                is Ok -> call.respond(OK, group)
             }
         }
 
@@ -74,7 +73,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             when (val result = groupService.delete(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(NoContent, Index())
+                is Ok -> call.respond(OK, Index())
             }
         }
     }
