@@ -42,8 +42,8 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         assertDevice("$testDeviceName-2", "test-device-2", "plug", list[1])
 
         // and: Each device has related links
-        assertEquals(5, list[0].links)
-        assertEquals(5, list[1].links)
+        assertEquals(5, list[0].links.size)
+        assertEquals(5, list[1].links.size)
     }
 
     @Test

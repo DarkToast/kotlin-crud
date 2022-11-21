@@ -5,7 +5,6 @@ import de.tarent.crud.dtos.Group
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.decodeFromString
@@ -28,7 +27,7 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
         var response = client.delete(url)
 
         // then: Status No Content
-        assertEquals(NoContent, response.status)
+        assertEquals(OK, response.status)
 
         // when: We make GET
         response = client.get(url)

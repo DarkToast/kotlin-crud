@@ -1,5 +1,6 @@
 package de.tarent.crud.tests
 
+import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.dtos.Link
 import de.tarent.crud.dtos.Linked
@@ -11,7 +12,6 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
@@ -80,8 +80,7 @@ abstract class BaseComponentSpec {
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
-
-        return response.headers[HttpHeaders.Location]
+        return json.decodeFromString<Device>(response.bodyAsText()).links["_self"]?.href
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
 
@@ -128,7 +127,7 @@ abstract class BaseComponentSpec {
     }
 
     protected fun assertLink(name: String, href: String, method: String, links: Map<String, Link>): Boolean {
-        assertNotNull(links[name], "No link found by $name. Links: ${links}")
+        assertNotNull(links[name], "No link found by $name. Links: $links")
 
         val link = links[name]
         assertEquals(name, link?.name)
