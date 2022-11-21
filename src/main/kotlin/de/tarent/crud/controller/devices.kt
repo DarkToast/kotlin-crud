@@ -74,6 +74,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             }
         }
 
+
         put("{deviceName?}") {
             val groupName: String = call.path("groupName") ?: return@put
             val deviceName: String = call.path("deviceName") ?: return@put
