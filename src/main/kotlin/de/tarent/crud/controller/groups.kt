@@ -13,7 +13,6 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -45,7 +44,7 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         post {
-            val group = call.receive<Group>()
+            val group = call.receiveFailed<Group>() ?: return@post
             logger.info { "CREATE group with name '${group.name}'." }
 
             when (val result = groupService.create(group)) {
@@ -56,9 +55,8 @@ fun Route.groupPage(groupService: GroupService) {
 
         put("{name?}") {
             val name = parameter(call, "name") ?: return@put
-
+            val group = call.receiveFailed<Group>() ?: return@put
             logger.info { "UPDATE group with name '${name}'." }
-            val group = call.receive<Group>()
 
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)

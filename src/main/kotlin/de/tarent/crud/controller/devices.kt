@@ -7,17 +7,12 @@ import de.tarent.crud.service.DeviceDontExists
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.plugins.BadRequestException
-import io.ktor.server.request.httpMethod
-import io.ktor.server.request.path
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -116,17 +111,6 @@ fun Route.devicePage(deviceService: DeviceService) {
             }
         }
     }
-}
-
-suspend inline fun <reified T : Any> ApplicationCall.receiveFailed(
-    failure: (msg: String) -> Failure = { Failure.onIndex(400, it) }
-): T? = try {
-    this.receive()
-} catch (e: BadRequestException) {
-    val req = "${this.request.httpMethod} ${this.request.path()}"
-    val msg = "Bad request body on call '$req'!"
-    this.respond(BadRequest, failure(msg))
-    null
 }
 
 private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlreadyExists<*>) {
