@@ -10,12 +10,10 @@ import de.tarent.crud.controller.indexPage
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
-import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
@@ -36,14 +34,6 @@ fun Application.server() {
             call.respond(
                 InternalServerError,
                 Failure(InternalServerError.value, e.message ?: "Unexpected error")
-            )
-        }
-
-        exception<BadRequestException> { call, e ->
-            logger.error(e) { "Bad request of the user request" }
-            call.respond(
-                BadRequest,
-                Failure(BadRequest.value, e.message ?: "Unexpected error")
             )
         }
     }

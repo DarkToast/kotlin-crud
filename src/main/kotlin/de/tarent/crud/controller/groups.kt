@@ -2,19 +2,17 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
+import de.tarent.crud.dtos.Index
 import de.tarent.crud.service.GroupAlreadyExists
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.Ok
-import io.ktor.http.HttpHeaders.Location
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.request.receive
-import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -31,54 +29,49 @@ fun Route.groupPage(groupService: GroupService) {
         get {
             logger.info { "READ list of groups" }
             when (val result = groupService.list()) {
-                is Ok -> call.respond(HttpStatusCode.OK, result.value)
+                is Ok -> call.respond(OK, result.value.map { it.withLinks() })
             }
         }
 
         get("{name?}") {
-            val name = parameter(call, "name") ?: return@get
+            val name = call.path("name") ?: return@get
             logger.info { "READ group by name '$name'" }
 
             when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(HttpStatusCode.OK, result.value)
+                is Ok -> call.respond(OK, result.value.withLinks())
             }
         }
 
         post {
-            val group = call.receive<Group>()
+            val group = call.body<Group>() ?: return@post
             logger.info { "CREATE group with name '${group.name}'." }
 
             when (val result = groupService.create(group)) {
-                is Ok -> {
-                    val response = call.response
-                    response.header(Location, "/groups/${group.name}")
-                    response.status(Created)
-                }
+                is Ok -> call.respond(Created, result.value.withLinks())
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
             }
         }
 
         put("{name?}") {
-            val name = parameter(call, "name") ?: return@put
-
+            val name = call.path("name") ?: return@put
+            val group = call.body<Group>() ?: return@put
             logger.info { "UPDATE group with name '${name}'." }
-            val group = call.receive<Group>()
 
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(HttpStatusCode.OK, group)
+                is Ok -> call.respond(OK, group.withLinks())
             }
         }
 
         delete("{name?}") {
-            val name = parameter(call, "name") ?: return@delete
+            val name = call.path("name") ?: return@delete
             logger.info { "DELETE group with name '${name}'." }
 
-            when(val result = groupService.delete(name)) {
+            when (val result = groupService.delete(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(HttpStatusCode.NoContent)
+                is Ok -> call.respond(OK, Index())
             }
         }
     }
@@ -87,11 +80,11 @@ fun Route.groupPage(groupService: GroupService) {
 private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlreadyExists<*>) {
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
-    call.respond(Conflict, Failure(409, msg))
+    call.respond(Conflict, Failure.onGroup(404, msg, result.groupName))
 }
 
 private suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {
     val msg = "Group '${result.groupName}' does not exists."
     logger.warn { msg }
-    call.respond(NotFound, Failure(404, msg))
+    call.respond(NotFound, Failure.onIndex(404, msg))
 }

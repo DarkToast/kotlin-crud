@@ -7,14 +7,12 @@ import de.tarent.crud.service.DeviceDontExists
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupDontExists
 import de.tarent.crud.service.Ok
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Conflict
+import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.request.receive
-import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -29,13 +27,13 @@ val logger = KotlinLogging.logger("de.tarent.crud.controller.devicesKt")
 fun Route.devicePage(deviceService: DeviceService) {
     route("/groups/{groupName?}/devices") {
         get {
-            val groupName = parameter(call, "groupName") ?: return@get
+            val groupName = call.path("groupName") ?: return@get
 
             logger.info { "READ list of devices for group $groupName" }
             when (val result = deviceService.listDevices(groupName)) {
                 is Ok -> {
                     logger.debug { "${result.value.size}' devices loaded of group '$groupName'." }
-                    call.respond(HttpStatusCode.OK, result.value)
+                    call.respond(OK, result.value.map { it.withLinks(groupName) })
                 }
                 is GroupDontExists -> groupDontExist(call, result)
             }
@@ -43,14 +41,14 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         get("{deviceName?}") {
-            val groupName = parameter(call, "groupName") ?: return@get
-            val deviceName = parameter(call, "deviceName") ?: return@get
+            val groupName = call.path("groupName") ?: return@get
+            val deviceName = call.path("deviceName") ?: return@get
 
             logger.info { "READ device '$deviceName' for group '$groupName'." }
             when (val result = deviceService.read(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' loaded" }
-                    call.respond(HttpStatusCode.OK, result.value)
+                    call.respond(OK, result.value.withLinks(groupName))
                 }
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
@@ -59,37 +57,37 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         post {
-            val device = call.receive<Device>()
-            val groupName = parameter(call, "groupName") ?: return@post
+            val groupName = call.path("groupName") ?: return@post
+            val device = call.body<Device> { msg ->
+                Failure.onGroup(400, msg, groupName)
+            } ?: return@post
 
             logger.info { "CREATE a new device in the group $groupName" }
 
             when (val result = deviceService.create(groupName, device)) {
                 is Ok -> {
-                    val response = call.response
-                    response.header(
-                        HttpHeaders.Location,
-                        "/groups/${result.value.first}/devices/${result.value.second}"
-                    )
-                    response.status(HttpStatusCode.Created)
-                    logger.debug { "Device '${result.value.first}' created" }
+                    logger.debug { "Device '${result.value.name}' created" }
+                    call.respond(Created, result.value.withLinks(groupName))
                 }
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
             }
         }
 
+
         put("{deviceName?}") {
-            val groupName: String = parameter(call, "groupName") ?: return@put
-            val deviceName: String = parameter(call, "deviceName") ?: return@put
-            val device = call.receive<Device>()
+            val groupName: String = call.path("groupName") ?: return@put
+            val deviceName: String = call.path("deviceName") ?: return@put
+            val device = call.body<Device> { msg ->
+                Failure.onGroup(400, msg, groupName)
+            } ?: return@put
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
 
             when (val result = deviceService.update(groupName, deviceName, device)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' updated" }
-                    call.respond(HttpStatusCode.OK, result.value)
+                    call.respond(OK, result.value.withLinks(groupName))
                 }
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
                 is GroupDontExists -> groupDontExist(call, result)
@@ -99,15 +97,15 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         delete("{deviceName?}") {
-            val groupName: String = parameter(call, "groupName") ?: return@delete
-            val deviceName: String = parameter(call, "deviceName") ?: return@delete
+            val groupName: String = call.path("groupName") ?: return@delete
+            val deviceName: String = call.path("deviceName") ?: return@delete
 
             logger.info { "DELETE device '$deviceName' for group '$groupName'." }
 
             when (val result = deviceService.delete(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' deleted" }
-                    call.respond(HttpStatusCode.NoContent)
+                    call.respond(OK, result.value.withLinks())
                 }
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
@@ -119,17 +117,17 @@ fun Route.devicePage(deviceService: DeviceService) {
 private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlreadyExists<*>) {
     val msg = "Device '${result.deviceName}' of group '${result.groupName}' already exists."
     logger.warn { msg }
-    call.respond(Conflict, Failure(409, msg))
+    call.respond(Conflict, Failure.onGroup(409, msg, result.groupName))
 }
 
 private suspend fun deviceDontExist(call: ApplicationCall, result: DeviceDontExists<*>) {
     val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
     logger.warn { msg }
-    call.respond(NotFound, Failure(404, msg))
+    call.respond(NotFound, Failure.onGroup(404, msg, result.groupName))
 }
 
 private suspend fun groupDontExist(call: ApplicationCall, result: GroupDontExists<*>) {
     val msg = "Group ${result.groupName} was not found!"
     logger.warn { msg }
-    call.respond(NotFound, Failure(404, msg))
+    call.respond(NotFound, Failure.onGroup(404, msg, result.groupName))
 }

@@ -1,16 +1,18 @@
 package de.tarent.crud.tests.groups
 
+import de.tarent.crud.dtos.Failure
+import de.tarent.crud.dtos.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
-import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.Conflict
-import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
+import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -33,6 +35,15 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
         // and: The returned group is the updated
         assertGroup(DEFAULT_GROUP_NAME, "New description", response)
+
+        // and: with further links
+        val group: Group = json.decodeFromString(response.bodyAsText())
+        assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
+        assertLink("index", "/", "GET", group.links)
+        assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)
+        assertLink("update", "/groups/$DEFAULT_GROUP_NAME", "PUT", group.links)
+        assertLink("add_device", "/groups/$DEFAULT_GROUP_NAME/devices", "POST", group.links)
+        assertLink("list_devices", "/groups/$DEFAULT_GROUP_NAME/devices", "GET", group.links)
     }
 
     @Test
@@ -51,7 +62,16 @@ class UpdateGroupSpec : BaseGroupSpec() {
         assertEquals(OK, response.status)
 
         // and: The response is the request body
-        assertGroup("NEW_ID", "New description", response)
+        val group: Group = json.decodeFromString(response.bodyAsText())
+        assertGroup("NEW_ID", "New description", group)
+
+        // and: with further links
+        assertLink("_self", "/groups/NEW_ID", "GET", group.links)
+        assertLink("index", "/", "GET", group.links)
+        assertLink("delete", "/groups/NEW_ID", "DELETE", group.links)
+        assertLink("update", "/groups/NEW_ID", "PUT", group.links)
+        assertLink("add_device", "/groups/NEW_ID/devices", "POST", group.links)
+        assertLink("list_devices", "/groups/NEW_ID/devices", "GET", group.links)
 
         // when: We get the group
         response = client.get("/groups/NEW_ID") {
@@ -74,6 +94,13 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
         // then: not found is returned
         assertEquals(NotFound, response.status)
+
+        // and: has index links
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertEquals(3, failure.links.size)
+        assertLink("index", "/", "GET", failure.links)
+        assertLink("get_groups", "/groups", "GET", failure.links)
+        assertLink("add_group", "/groups", "POST", failure.links)
     }
 
     @Test
@@ -82,16 +109,10 @@ class UpdateGroupSpec : BaseGroupSpec() {
         createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
         // and: another group
-        var response = client.post("/groups") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(groupJson("OTHER_GROUP", "New description"))
-        }
-
-        assertEquals(Created, response.status)
+        createGroup(this, "OTHER_GROUP", "Hauswirtschaftsraum")
 
         // when: We change the ID of the other group to the first group
-        response = client.put("/groups/OTHER_GROUP") {
+        val response = client.put("/groups/OTHER_GROUP") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(groupJson(DEFAULT_GROUP_NAME, "New description"))
@@ -99,5 +120,12 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
         // then: we get a conflict
         assertEquals(Conflict, response.status)
+
+        // and: It has all further links
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("index", "/", "GET", failure.links)
+        assertLink("get_groups", "/groups", "GET", failure.links)
+        assertLink("add_group", "/groups", "POST", failure.links)
+        assertLink("get_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
     }
 }
