@@ -33,6 +33,7 @@ data class Failure(
 
         fun onGroup(code: Int, message: String, groupName: String) = onIndex(code, message).apply {
             addLink("get_group", GET, URI("/groups/$groupName"))
+            addLink("get_devices", GET, URI("/groups/$groupName/devices"))
         }
     }
 }
@@ -42,7 +43,14 @@ data class Device(
     val name: String,
     val description: String,
     val type: String,
-) : Linked<Group>()
+) : Linked<Device>() {
+    fun withLinks(groupName: String): Device =
+        this.addLink("_self", GET, URI("/groups/$groupName/devices/$name"))
+            .addLink("update", PUT, URI("/groups/$groupName/devices/$name"))
+            .addLink("delete", DELETE, URI("/groups/$groupName/devices/$name"))
+            .addLink("get_devices", GET, URI("/groups/$groupName/devices"))
+            .addLink("get_group", GET, URI("/groups/$groupName"))
+}
 
 @Serializable
 data class Group(
