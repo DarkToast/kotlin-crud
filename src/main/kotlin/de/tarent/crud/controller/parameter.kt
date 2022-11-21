@@ -9,15 +9,15 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 
-suspend fun parameter(call: ApplicationCall, parameterName: String): String? {
-    val parameter = call.parameters[parameterName]
+suspend fun ApplicationCall.path(parameterName: String): String? {
+    val parameter = this.parameters[parameterName]
     if(parameter == null) {
-        call.respond(BadRequest, Failure(400, "Parameter '$parameterName' not found"))
+        this.respond(BadRequest, Failure(400, "Parameter '$parameterName' not found"))
     }
     return parameter
 }
 
-suspend inline fun <reified T : Any> ApplicationCall.receive(
+suspend inline fun <reified T : Any> ApplicationCall.body(
     failure: (msg: String) -> Failure = { Failure.onIndex(400, it) }
 ): T? = try {
     this.receive()

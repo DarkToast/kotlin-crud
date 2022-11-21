@@ -27,7 +27,7 @@ val logger = KotlinLogging.logger("de.tarent.crud.controller.devicesKt")
 fun Route.devicePage(deviceService: DeviceService) {
     route("/groups/{groupName?}/devices") {
         get {
-            val groupName = parameter(call, "groupName") ?: return@get
+            val groupName = call.path("groupName") ?: return@get
 
             logger.info { "READ list of devices for group $groupName" }
             when (val result = deviceService.listDevices(groupName)) {
@@ -41,8 +41,8 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         get("{deviceName?}") {
-            val groupName = parameter(call, "groupName") ?: return@get
-            val deviceName = parameter(call, "deviceName") ?: return@get
+            val groupName = call.path("groupName") ?: return@get
+            val deviceName = call.path("deviceName") ?: return@get
 
             logger.info { "READ device '$deviceName' for group '$groupName'." }
             when (val result = deviceService.read(groupName, deviceName)) {
@@ -57,8 +57,8 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         post {
-            val groupName = parameter(call, "groupName") ?: return@post
-            val device = call.receive<Device> { msg ->
+            val groupName = call.path("groupName") ?: return@post
+            val device = call.body<Device> { msg ->
                 Failure.onGroup(400, msg, groupName)
             } ?: return@post
 
@@ -75,9 +75,9 @@ fun Route.devicePage(deviceService: DeviceService) {
         }
 
         put("{deviceName?}") {
-            val groupName: String = parameter(call, "groupName") ?: return@put
-            val deviceName: String = parameter(call, "deviceName") ?: return@put
-            val device = call.receive<Device> { msg ->
+            val groupName: String = call.path("groupName") ?: return@put
+            val deviceName: String = call.path("deviceName") ?: return@put
+            val device = call.body<Device> { msg ->
                 Failure.onGroup(400, msg, groupName)
             } ?: return@put
 
@@ -96,8 +96,8 @@ fun Route.devicePage(deviceService: DeviceService) {
 
 
         delete("{deviceName?}") {
-            val groupName: String = parameter(call, "groupName") ?: return@delete
-            val deviceName: String = parameter(call, "deviceName") ?: return@delete
+            val groupName: String = call.path("groupName") ?: return@delete
+            val deviceName: String = call.path("deviceName") ?: return@delete
 
             logger.info { "DELETE device '$deviceName' for group '$groupName'." }
 

@@ -34,7 +34,7 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         get("{name?}") {
-            val name = parameter(call, "name") ?: return@get
+            val name = call.path("name") ?: return@get
             logger.info { "READ group by name '$name'" }
 
             when (val result = groupService.read(name)) {
@@ -44,7 +44,7 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         post {
-            val group = call.receive<Group>() ?: return@post
+            val group = call.body<Group>() ?: return@post
             logger.info { "CREATE group with name '${group.name}'." }
 
             when (val result = groupService.create(group)) {
@@ -54,8 +54,8 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         put("{name?}") {
-            val name = parameter(call, "name") ?: return@put
-            val group = call.receive<Group>() ?: return@put
+            val name = call.path("name") ?: return@put
+            val group = call.body<Group>() ?: return@put
             logger.info { "UPDATE group with name '${name}'." }
 
             when (val result = groupService.update(name, group)) {
@@ -66,7 +66,7 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         delete("{name?}") {
-            val name = parameter(call, "name") ?: return@delete
+            val name = call.path("name") ?: return@delete
             logger.info { "DELETE group with name '${name}'." }
 
             when (val result = groupService.delete(name)) {
