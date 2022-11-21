@@ -3,11 +3,12 @@
 package de.tarent.crud.service
 
 import de.tarent.crud.dtos.Device
+import de.tarent.crud.dtos.Group
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
-    fun create(groupName: String, device: Device): CreateDeviceResult<Pair<String, String>> {
+    fun create(groupName: String, device: Device): CreateDeviceResult<Device> {
         if (!groupRepo.exists(groupName)) {
             return GroupDontExists(groupName)
         }
@@ -16,8 +17,8 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
             return DeviceAlreadyExists(groupName, device.name)
         }
 
-        val deviceName = deviceRepo.insert(groupName, device)
-        return Ok(Pair(groupName, deviceName))
+        deviceRepo.insert(groupName, device)
+        return Ok(device)
     }
 
     fun read(groupName: String, name: String): DeviceReadResult<Device> = if (groupRepo.exists(groupName)) {
@@ -47,9 +48,9 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
     }
 
 
-    fun delete(groupName: String, deviceName: String): DeviceDeleteResult<Unit> = if (groupRepo.exists(groupName)) {
+    fun delete(groupName: String, deviceName: String): DeviceDeleteResult<Group> = if (groupRepo.exists(groupName)) {
         if (deviceRepo.delete(groupName, deviceName) == 1) {
-            Ok(Unit)
+            groupRepo.load(groupName)?.let { Ok(it) } ?: GroupDontExists(groupName)
         } else {
             DeviceDontExists(groupName, deviceName)
         }
