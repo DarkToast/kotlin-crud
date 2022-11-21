@@ -17,7 +17,7 @@ suspend fun parameter(call: ApplicationCall, parameterName: String): String? {
     return parameter
 }
 
-suspend inline fun <reified T : Any> ApplicationCall.receiveFailed(
+suspend inline fun <reified T : Any> ApplicationCall.receive(
     failure: (msg: String) -> Failure = { Failure.onIndex(400, it) }
 ): T? = try {
     this.receive()

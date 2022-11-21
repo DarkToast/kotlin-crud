@@ -58,7 +58,7 @@ fun Route.devicePage(deviceService: DeviceService) {
 
         post {
             val groupName = parameter(call, "groupName") ?: return@post
-            val device = call.receiveFailed<Device> { msg ->
+            val device = call.receive<Device> { msg ->
                 Failure.onGroup(400, msg, groupName)
             } ?: return@post
 
@@ -77,7 +77,7 @@ fun Route.devicePage(deviceService: DeviceService) {
         put("{deviceName?}") {
             val groupName: String = parameter(call, "groupName") ?: return@put
             val deviceName: String = parameter(call, "deviceName") ?: return@put
-            val device = call.receiveFailed<Device> { msg ->
+            val device = call.receive<Device> { msg ->
                 Failure.onGroup(400, msg, groupName)
             } ?: return@put
 

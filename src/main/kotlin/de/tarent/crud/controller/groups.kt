@@ -44,7 +44,7 @@ fun Route.groupPage(groupService: GroupService) {
         }
 
         post {
-            val group = call.receiveFailed<Group>() ?: return@post
+            val group = call.receive<Group>() ?: return@post
             logger.info { "CREATE group with name '${group.name}'." }
 
             when (val result = groupService.create(group)) {
@@ -55,7 +55,7 @@ fun Route.groupPage(groupService: GroupService) {
 
         put("{name?}") {
             val name = parameter(call, "name") ?: return@put
-            val group = call.receiveFailed<Group>() ?: return@put
+            val group = call.receive<Group>() ?: return@put
             logger.info { "UPDATE group with name '${name}'." }
 
             when (val result = groupService.update(name, group)) {
