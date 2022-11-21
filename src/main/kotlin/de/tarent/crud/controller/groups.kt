@@ -30,7 +30,7 @@ fun Route.groupPage(groupService: GroupService) {
         get {
             logger.info { "READ list of groups" }
             when (val result = groupService.list()) {
-                is Ok -> call.respond(OK, result.value)
+                is Ok -> call.respond(OK, result.value.map { it.withLinks() })
             }
         }
 
@@ -40,7 +40,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(OK, result.value)
+                is Ok -> call.respond(OK, result.value.withLinks())
             }
         }
 
@@ -49,7 +49,7 @@ fun Route.groupPage(groupService: GroupService) {
             logger.info { "CREATE group with name '${group.name}'." }
 
             when (val result = groupService.create(group)) {
-                is Ok -> call.respond(Created, result.value)
+                is Ok -> call.respond(Created, result.value.withLinks())
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
             }
         }
@@ -63,7 +63,7 @@ fun Route.groupPage(groupService: GroupService) {
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(OK, group)
+                is Ok -> call.respond(OK, group.withLinks())
             }
         }
 

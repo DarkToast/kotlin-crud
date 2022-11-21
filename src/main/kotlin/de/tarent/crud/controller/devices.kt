@@ -105,7 +105,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.delete(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' deleted" }
-                    call.respond(OK, result.value)
+                    call.respond(OK, result.value.withLinks())
                 }
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
