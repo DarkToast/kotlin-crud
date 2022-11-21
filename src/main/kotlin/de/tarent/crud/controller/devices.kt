@@ -63,7 +63,9 @@ fun Route.devicePage(deviceService: DeviceService) {
 
         post {
             val groupName = parameter(call, "groupName") ?: return@post
-            val device = call.receiveWithFallback<Device>(groupName) ?: return@post
+            val device = call.receiveFailed<Device> { msg ->
+                Failure.onGroup(400, msg, groupName)
+            } ?: return@post
 
             logger.info { "CREATE a new device in the group $groupName" }
 
@@ -80,7 +82,9 @@ fun Route.devicePage(deviceService: DeviceService) {
         put("{deviceName?}") {
             val groupName: String = parameter(call, "groupName") ?: return@put
             val deviceName: String = parameter(call, "deviceName") ?: return@put
-            val device = call.receiveWithFallback<Device>(groupName) ?: return@put
+            val device = call.receiveFailed<Device> { msg ->
+                Failure.onGroup(400, msg, groupName)
+            } ?: return@put
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
 
@@ -114,13 +118,14 @@ fun Route.devicePage(deviceService: DeviceService) {
     }
 }
 
-suspend inline fun <reified T : Any> ApplicationCall.receiveWithFallback(groupName: String): T? = try {
+suspend inline fun <reified T : Any> ApplicationCall.receiveFailed(
+    failure: (msg: String) -> Failure = { Failure.onIndex(400, it) }
+): T? = try {
     this.receive()
 } catch (e: BadRequestException) {
     val req = "${this.request.httpMethod} ${this.request.path()}"
     val msg = "Bad request body on call '$req'!"
-    val failure = Failure.onGroup(409, msg, groupName)
-    this.respond(BadRequest, failure)
+    this.respond(BadRequest, failure(msg))
     null
 }
 
