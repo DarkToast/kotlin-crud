@@ -4,6 +4,7 @@ import de.tarent.crud.controller.adminPage
 import de.tarent.crud.controller.devicePage
 import de.tarent.crud.controller.groupPage
 import de.tarent.crud.controller.indexPage
+import de.tarent.crud.controller.metricsPage
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
@@ -52,5 +53,6 @@ fun Application.server() {
         adminPage()
         groupPage(groupService)
         devicePage(deviceService)
+        metricsPage()
     }
 }
