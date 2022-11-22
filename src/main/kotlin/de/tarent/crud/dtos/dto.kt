@@ -4,8 +4,10 @@ import de.tarent.crud.dtos.Method.DELETE
 import de.tarent.crud.dtos.Method.GET
 import de.tarent.crud.dtos.Method.POST
 import de.tarent.crud.dtos.Method.PUT
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import java.net.URI
+import java.util.UUID
 
 @Serializable
 class Index : Linked<Index>() {
@@ -64,4 +66,20 @@ data class Group(
             .addLink("update", PUT, URI("/groups/$name"))
             .addLink("add_device", POST, URI("/groups/$name/devices"))
             .addLink("list_devices", GET, URI("/groups/$name/devices"))
+}
+
+
+@Serializable
+data class Metric(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID = UUID.randomUUID(),
+    val unit: String,
+    val value: Double,
+    val timestamp: LocalDateTime
+) : Linked<Metric>() {
+    fun withLinks(groupName: String, deviceName: String): Metric =
+        this.addLink("_self", GET, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
+            .addLink("delete", DELETE, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
+            .addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
+            .addLink("get_group", GET, URI("/groups/$groupName"))
 }
