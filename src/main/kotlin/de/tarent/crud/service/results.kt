@@ -1,40 +1,41 @@
 package de.tarent.crud.service
 
-sealed interface CreateGroupResult<T>
-sealed interface CreateDeviceResult<T>
+sealed interface GroupCreateResult<T>
 sealed interface GroupReadResult<T>
+sealed interface GroupUpdateResult<T>
+sealed interface GroupDeleteResult<T>
+sealed interface GroupListResult<T>
+
+sealed interface DeviceCreateResult<T>
 sealed interface DeviceReadResult<T>
 sealed interface DeviceUpdateResult<T>
-sealed interface GroupUpdateResult<T>
 sealed interface DeviceDeleteResult<T>
-sealed interface GroupDeleteResult<T>
-sealed interface ListDeviceResult<T>
-sealed interface ListGroupResult<T>
+sealed interface DeviceListResult<T>
 
 data class Ok<T>(val value: T) :
-    CreateDeviceResult<T>,
-    CreateGroupResult<T>,
-    DeviceReadResult<T>,
+    GroupCreateResult<T>,
     GroupReadResult<T>,
-    DeviceUpdateResult<T>,
     GroupUpdateResult<T>,
-    DeviceDeleteResult<T>,
     GroupDeleteResult<T>,
-    ListDeviceResult<T>,
-    ListGroupResult<T>
+    GroupListResult<T>,
+    DeviceCreateResult<T>,
+    DeviceReadResult<T>,
+    DeviceUpdateResult<T>,
+    DeviceDeleteResult<T>,
+    DeviceListResult<T>
 
 data class GroupDontExists<T>(val groupName: String) :
-    CreateDeviceResult<T>,
-    DeviceReadResult<T>,
     GroupReadResult<T>,
-    DeviceUpdateResult<T>,
     GroupUpdateResult<T>,
-    DeviceDeleteResult<T>,
     GroupDeleteResult<T>,
-    ListDeviceResult<T>
+    DeviceReadResult<T>,
+    DeviceCreateResult<T>,
+    DeviceUpdateResult<T>,
+    DeviceDeleteResult<T>,
+    DeviceListResult<T>
 
 data class GroupAlreadyExists<T>(val groupName: String) :
-    CreateGroupResult<T>,
+    GroupCreateResult<T>,
     GroupUpdateResult<T>
 
 data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
@@ -43,5 +44,5 @@ data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
     DeviceDeleteResult<T>
 
 data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
-    CreateDeviceResult<T>,
+    DeviceCreateResult<T>,
     DeviceUpdateResult<T>
