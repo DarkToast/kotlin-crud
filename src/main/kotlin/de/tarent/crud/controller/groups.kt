@@ -3,10 +3,10 @@ package de.tarent.crud.controller
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.dtos.Index
-import de.tarent.crud.service.GroupAlreadyExists
-import de.tarent.crud.service.GroupDontExists
+import de.tarent.crud.service.results.GroupAlreadyExists
+import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.GroupService
-import de.tarent.crud.service.Ok
+import de.tarent.crud.service.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound

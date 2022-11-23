@@ -6,6 +6,15 @@ import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.service.results.DeviceAlreadyExists
+import de.tarent.crud.service.results.DeviceCreateResult
+import de.tarent.crud.service.results.DeviceDeleteResult
+import de.tarent.crud.service.results.DeviceDontExists
+import de.tarent.crud.service.results.DeviceListResult
+import de.tarent.crud.service.results.DeviceReadResult
+import de.tarent.crud.service.results.DeviceUpdateResult
+import de.tarent.crud.service.results.GroupDontExists
+import de.tarent.crud.service.results.Ok
 
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
     fun create(groupName: String, device: Device): DeviceCreateResult<Device> {

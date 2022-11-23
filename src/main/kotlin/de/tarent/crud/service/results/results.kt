@@ -1,16 +1,4 @@
-package de.tarent.crud.service
-
-sealed interface GroupCreateResult<T>
-sealed interface GroupReadResult<T>
-sealed interface GroupUpdateResult<T>
-sealed interface GroupDeleteResult<T>
-sealed interface GroupListResult<T>
-
-sealed interface DeviceCreateResult<T>
-sealed interface DeviceReadResult<T>
-sealed interface DeviceUpdateResult<T>
-sealed interface DeviceDeleteResult<T>
-sealed interface DeviceListResult<T>
+package de.tarent.crud.service.results
 
 data class Ok<T>(val value: T) :
     GroupCreateResult<T>,

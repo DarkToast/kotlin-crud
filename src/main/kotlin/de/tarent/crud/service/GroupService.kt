@@ -2,6 +2,14 @@ package de.tarent.crud.service
 
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.service.results.GroupAlreadyExists
+import de.tarent.crud.service.results.GroupCreateResult
+import de.tarent.crud.service.results.GroupDeleteResult
+import de.tarent.crud.service.results.GroupDontExists
+import de.tarent.crud.service.results.GroupListResult
+import de.tarent.crud.service.results.GroupReadResult
+import de.tarent.crud.service.results.GroupUpdateResult
+import de.tarent.crud.service.results.Ok
 
 class GroupService(private val repo: GroupRepository) {
     fun create(group: Group): GroupCreateResult<Group> = if(repo.exists(group.name)) {
