@@ -6,6 +6,7 @@ import de.tarent.crud.dtos.Link
 import de.tarent.crud.dtos.Linked
 import de.tarent.crud.persistance.DeviceEntity
 import de.tarent.crud.persistance.GroupEntity
+import de.tarent.crud.persistance.MetricEntity
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -36,6 +37,7 @@ abstract class BaseComponentSpec {
         private val cleanDatabase: testBlock = {
             val db: ExposedDatabase by inject(ExposedDatabase::class.java)
             transaction(db) {
+                MetricEntity.deleteAll()
                 DeviceEntity.deleteAll()
                 GroupEntity.deleteAll()
             }

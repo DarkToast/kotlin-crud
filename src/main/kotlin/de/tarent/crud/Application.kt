@@ -8,6 +8,8 @@ import de.tarent.crud.persistance.DeviceEntity
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupEntity
 import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.persistance.MetricEntity
+import de.tarent.crud.persistance.MetricRepository
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.MetricService
@@ -31,6 +33,7 @@ val serviceModule = { configuration: ApplicationConfig ->
         singleOf(::DeviceRepository)
         singleOf(::DeviceService)
         singleOf(::MetricService)
+        singleOf(::MetricRepository)
 
         single<Configuration> { Configuration.load(configuration) }
 
@@ -55,7 +58,7 @@ val serviceModule = { configuration: ApplicationConfig ->
 
             transaction(database) {
                 addLogger(StdOutSqlLogger)
-                SchemaUtils.create(GroupEntity, DeviceEntity)
+                SchemaUtils.create(GroupEntity, DeviceEntity, MetricEntity)
             }
 
             database
