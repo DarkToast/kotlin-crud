@@ -7,12 +7,16 @@ import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import mu.KotlinLogging
+import java.time.OffsetDateTime.now
+import java.util.UUID
 
 fun Route.metricsPage(metricService: MetricService) {
     val logger = KotlinLogging.logger {}
@@ -29,6 +33,16 @@ fun Route.metricsPage(metricService: MetricService) {
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is Ok -> call.respond(Created, metric.withLinks(groupName, deviceName))
             }
+        }
+
+        get("/{metricId}") {
+            @Suppress("UNUSED_VARIABLE")
+            val metricId: UUID = call.path("metricId")
+                ?.let { UUID.fromString(it) }
+                ?: return@get
+
+            call.respond(OK, Metric(unit = "W", value = 64.5, timestamp = now()))
+
         }
     }
 
