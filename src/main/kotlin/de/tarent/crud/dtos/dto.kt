@@ -50,20 +50,6 @@ data class Failure(
 }
 
 @Serializable
-data class Device(
-    val name: String,
-    val description: String,
-    val type: String,
-) : Linked<Device>() {
-    fun withLinks(groupName: String): Device =
-        this.addLink("_self", GET, URI("/groups/$groupName/devices/$name"))
-            .addLink("update", PUT, URI("/groups/$groupName/devices/$name"))
-            .addLink("delete", DELETE, URI("/groups/$groupName/devices/$name"))
-            .addLink("get_devices", GET, URI("/groups/$groupName/devices"))
-            .addLink("get_group", GET, URI("/groups/$groupName"))
-}
-
-@Serializable
 data class Group(
     val name: String,
     val description: String
@@ -77,6 +63,21 @@ data class Group(
             .addLink("list_devices", GET, URI("/groups/$name/devices"))
 }
 
+@Serializable
+data class Device(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID = UUID.randomUUID(),
+    val name: String,
+    val description: String,
+    val type: String,
+) : Linked<Device>() {
+    fun withLinks(groupName: String): Device =
+        this.addLink("_self", GET, URI("/groups/$groupName/devices/$name"))
+            .addLink("update", PUT, URI("/groups/$groupName/devices/$name"))
+            .addLink("delete", DELETE, URI("/groups/$groupName/devices/$name"))
+            .addLink("get_devices", GET, URI("/groups/$groupName/devices"))
+            .addLink("get_group", GET, URI("/groups/$groupName"))
+}
 
 @Serializable
 data class Metric(
