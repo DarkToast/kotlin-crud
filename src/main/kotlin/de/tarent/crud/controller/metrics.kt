@@ -5,9 +5,12 @@ import de.tarent.crud.dtos.Metric
 import de.tarent.crud.service.MetricService
 import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.results.GroupDontExists
+import de.tarent.crud.service.results.MetricDontNotExists
 import de.tarent.crud.service.results.Ok
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -15,7 +18,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import mu.KotlinLogging
-import java.time.OffsetDateTime.now
 import java.util.UUID
 
 fun Route.metricsPage(metricService: MetricService) {
@@ -26,6 +28,7 @@ fun Route.metricsPage(metricService: MetricService) {
             val groupName = call.path("groupName") ?: return@post
             val deviceName = call.path("deviceName") ?: return@post
             val metric: Metric = call.body { msg -> Failure.onDevice(400, msg, groupName, deviceName) } ?: return@post
+
             logger.info { "POST new metric on device '$deviceName' of group '$groupName'" }
 
             when (val result = metricService.create(groupName, deviceName, metric)) {
@@ -36,14 +39,27 @@ fun Route.metricsPage(metricService: MetricService) {
         }
 
         get("/{metricId}") {
-            @Suppress("UNUSED_VARIABLE")
+            val groupName = call.path("groupName") ?: return@get
+            val deviceName = call.path("deviceName") ?: return@get
             val metricId: UUID = call.path("metricId")
                 ?.let { UUID.fromString(it) }
                 ?: return@get
 
-            call.respond(OK, Metric(unit = "W", value = 64.5, timestamp = now()))
+            logger.info { "GET metric '$metricId' on device '$deviceName' of group '$groupName'" }
 
+            when (val result = metricService.read(groupName, deviceName, metricId)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
+                is MetricDontNotExists -> metricDontExist(call, result)
+                is Ok -> call.respond(OK, result.value)
+            }
         }
     }
+}
 
+private suspend fun metricDontExist(call: ApplicationCall, result: MetricDontNotExists<*>) {
+    val msg =
+        "Metric '${result.metricId}' of device '${result.deviceName}' of group '${result.groupName}' was not found!"
+    logger.warn { msg }
+    call.respond(HttpStatusCode.NotFound, Failure.onDevice(404, msg, result.groupName, result.deviceName))
 }

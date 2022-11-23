@@ -1,5 +1,7 @@
 package de.tarent.crud.service.results
 
+import java.util.UUID
+
 data class Ok<T>(val value: T) :
     GroupCreateResult<T>,
     GroupReadResult<T>,
@@ -11,7 +13,8 @@ data class Ok<T>(val value: T) :
     DeviceUpdateResult<T>,
     DeviceDeleteResult<T>,
     DeviceListResult<T>,
-    MetricCreateResult<T>
+    MetricCreateResult<T>,
+    MetricReadResult<T>
 
 data class GroupDontExists<T>(val groupName: String) :
     GroupReadResult<T>,
@@ -22,7 +25,8 @@ data class GroupDontExists<T>(val groupName: String) :
     DeviceUpdateResult<T>,
     DeviceDeleteResult<T>,
     DeviceListResult<T>,
-    MetricCreateResult<T>
+    MetricCreateResult<T>,
+    MetricReadResult<T>
 
 data class GroupAlreadyExists<T>(val groupName: String) :
     GroupCreateResult<T>,
@@ -32,8 +36,12 @@ data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
     DeviceReadResult<T>,
     DeviceUpdateResult<T>,
     DeviceDeleteResult<T>,
-    MetricCreateResult<T>
+    MetricCreateResult<T>,
+    MetricReadResult<T>
 
 data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
     DeviceCreateResult<T>,
     DeviceUpdateResult<T>
+
+data class MetricDontNotExists<T>(val groupName: String, val deviceName: String, val metricId: UUID):
+    MetricReadResult<T>

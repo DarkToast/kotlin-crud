@@ -44,4 +44,39 @@ class ReadMetricSpec : BaseMetricSpec() {
         assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
         assertLink("get_device", "/groups/$testGroupName/devices/$testDeviceName", "GET", failure.links)
     }
+
+    @Test
+    fun `device not found`() = spec.componentSpec {
+        // given: not existing url
+        val url = "/groups/$testGroupName/devices/unknown/metrics/$metricId"
+
+        // when: post on metrics
+        val response = client.get(url)
+
+        // then: Status BadRequest
+        assertEquals(NotFound, response.status)
+
+        // and: It has all related links
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("index", "/", "GET", failure.links)
+        assertLink("get_groups", "/groups", "GET", failure.links)
+        assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
+    }
+
+    @Test
+    fun `group not found`() = spec.componentSpec {
+        // given: not existing url
+        val url = "/groups/unknown/devices/$testDeviceName/metrics/$metricId"
+
+        // when: post on metrics
+        val response = client.get(url)
+
+        // then: Status BadRequest
+        assertEquals(NotFound, response.status)
+
+        // and: It has all related links
+        val failure: Failure = json.decodeFromString(response.bodyAsText())
+        assertLink("index", "/", "GET", failure.links)
+        assertLink("get_groups", "/groups", "GET", failure.links)
+    }
 }
