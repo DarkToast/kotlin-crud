@@ -120,12 +120,6 @@ private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlr
     call.respond(Conflict, Failure.onGroup(409, msg, result.groupName))
 }
 
-private suspend fun deviceDontExist(call: ApplicationCall, result: DeviceDontExists<*>) {
-    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
-    logger.warn { msg }
-    call.respond(NotFound, Failure.onGroup(404, msg, result.groupName))
-}
-
 private suspend fun groupDontExist(call: ApplicationCall, result: GroupDontExists<*>) {
     val msg = "Group ${result.groupName} was not found!"
     logger.warn { msg }
