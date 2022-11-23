@@ -2,17 +2,27 @@ package de.tarent.crud.tests.metrics
 
 import de.tarent.crud.dtos.Metric
 import de.tarent.crud.tests.BaseComponentSpec
+import io.ktor.client.request.accept
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import kotlinx.datetime.LocalDateTime
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.server.testing.ApplicationTestBuilder
 import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
+import java.time.OffsetDateTime
 
 abstract class BaseMetricSpec : BaseComponentSpec() {
     val testGroupName = "testGroup"
     val testDeviceName = "testDevice"
 
-    protected val spec = Spec().withSetup {
+    protected val metricsUrl = "/groups/$testGroupName/devices/$testDeviceName/metrics"
+    protected val timestamp: OffsetDateTime = OffsetDateTime.now()
+
+    protected open val spec = Spec().withSetup {
         createGroup(this, testGroupName, "my-test-group")
         createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
     }
@@ -20,7 +30,7 @@ abstract class BaseMetricSpec : BaseComponentSpec() {
     protected suspend fun assertMetric(
         unit: String,
         value: Double,
-        timestamp: LocalDateTime,
+        timestamp: OffsetDateTime,
         response: HttpResponse
     ): Boolean {
         val metric: Metric = json.decodeFromString(response.bodyAsText())
@@ -30,7 +40,7 @@ abstract class BaseMetricSpec : BaseComponentSpec() {
     protected fun assertMetric(
         unit: String,
         value: Double,
-        timestamp: LocalDateTime,
+        timestamp: OffsetDateTime,
         metric: Metric
     ): Boolean {
         assertEquals(unit, metric.unit)

@@ -84,7 +84,6 @@ abstract class BaseComponentSpec {
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
 
-    @Suppress("SameParameterValue")
     protected fun deviceJson(name: String, description: String, type: String): String =
         """
          |{

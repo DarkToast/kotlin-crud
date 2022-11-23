@@ -4,9 +4,9 @@ import de.tarent.crud.dtos.Method.DELETE
 import de.tarent.crud.dtos.Method.GET
 import de.tarent.crud.dtos.Method.POST
 import de.tarent.crud.dtos.Method.PUT
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import java.net.URI
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Serializable
@@ -84,7 +84,8 @@ data class Metric(
     val id: UUID = UUID.randomUUID(),
     val unit: String,
     val value: Double,
-    val timestamp: LocalDateTime
+    @Serializable(with = OffsetDateTimeIsoSerializer::class)
+    val timestamp: OffsetDateTime
 ) : Linked<Metric>() {
     fun withLinks(groupName: String, deviceName: String): Metric =
         this.addLink("_self", GET, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
