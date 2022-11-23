@@ -8,6 +8,7 @@ import de.tarent.crud.controller.metricsPage
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
+import de.tarent.crud.service.MetricService
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -47,12 +48,13 @@ fun Application.server() {
 
     val groupService: GroupService by inject()
     val deviceService: DeviceService by inject()
+    val metricService: MetricService by inject()
 
     routing {
         indexPage()
         adminPage()
         groupPage(groupService)
         devicePage(deviceService)
-        metricsPage()
+        metricsPage(metricService)
     }
 }

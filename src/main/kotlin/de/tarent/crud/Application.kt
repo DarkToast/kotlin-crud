@@ -10,6 +10,7 @@ import de.tarent.crud.persistance.GroupEntity
 import de.tarent.crud.persistance.GroupRepository
 import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
+import de.tarent.crud.service.MetricService
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.EngineMain
 import org.jetbrains.exposed.sql.Database
@@ -29,6 +30,7 @@ val serviceModule = { configuration: ApplicationConfig ->
         singleOf(::GroupRepository)
         singleOf(::DeviceRepository)
         singleOf(::DeviceService)
+        singleOf(::MetricService)
 
         single<Configuration> { Configuration.load(configuration) }
 
