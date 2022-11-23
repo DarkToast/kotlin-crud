@@ -27,6 +27,31 @@ abstract class BaseMetricSpec : BaseComponentSpec() {
         createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
     }
 
+    protected suspend fun createMetric(
+        builder: ApplicationTestBuilder,
+        groupName: String,
+        deviceName: String,
+        metricJson: String
+    ): Metric {
+        val response = builder.client.post("/groups/$groupName/devices/$deviceName/metrics") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(metricJson)
+        }
+
+        assertEquals(HttpStatusCode.Created, response.status)
+        return json.decodeFromString(response.bodyAsText())
+    }
+
+    protected fun metricJson(unit: String, value: Double, datetime: OffsetDateTime) =
+        """
+        | {
+        |     "unit": "$unit",
+        |     "value": $value,
+        |     "timestamp": "$datetime"
+        | }
+        """.trimMargin("|")
+
     protected suspend fun assertMetric(
         unit: String,
         value: Double,
