@@ -19,10 +19,7 @@ import org.junit.jupiter.api.Test
 class UpdateGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `Update an existing group`() = Spec().componentSpec {
-        // given: The default group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
-
+    fun `Update an existing group`() = spec.componentSpec {
         // when: We update the group
         val response = client.put("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
@@ -47,10 +44,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Overwrite an existing group id`() = Spec().componentSpec {
-        // given: The default group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
-
+    fun `Overwrite an existing group id`() = spec.componentSpec {
         // when: We update the group
         var response = client.put("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
@@ -84,7 +78,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Failed - group unknown`() = Spec().componentSpec {
+    fun `Failed - group unknown`() = spec.componentSpec {
         // when: An unknown group is updated
         val response = client.put("/groups/UNKNOWN") {
             contentType(ContentType.Application.Json)
@@ -103,11 +97,8 @@ class UpdateGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Failed - new id conflicts`() = Spec().componentSpec {
-        // given: The default group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
-
-        // and: another group
+    fun `Failed - new id conflicts`() = spec.componentSpec {
+        // given: another group
         createGroup(this, "OTHER_GROUP", "Hauswirtschaftsraum")
 
         // when: We change the ID of the other group to the first group

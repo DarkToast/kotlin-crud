@@ -16,12 +16,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class UpdateDeviceSpec : BaseDeviceSpec() {
-    private val spec = Spec().withSetup {
-        createGroup(this, testGroupName, "my-test-group")
-        createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
-
-        createDevice(this, testGroupName, deviceJson("conflicting_device", "test-device-2", "plug"))
-    }
 
     @Test
     fun `update existing device`() = spec.componentSpec {
@@ -97,7 +91,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         val url = "/groups/$testGroupName/devices/$testDeviceName"
 
         // and: A new client json
-        val request = deviceJson("conflicting_device", "my-new-description", "switch")
+        val request = deviceJson(testDeviceName2, "my-new-description", "switch")
 
         // when: We make a PUT
         val response = client.put(url) {
