@@ -8,7 +8,7 @@ import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 
 class DeviceService(private val deviceRepo: DeviceRepository, private val groupRepo: GroupRepository) {
-    fun create(groupName: String, device: Device): CreateDeviceResult<Device> {
+    fun create(groupName: String, device: Device): DeviceCreateResult<Device> {
         if (!groupRepo.exists(groupName)) {
             return GroupDontExists(groupName)
         }
@@ -58,7 +58,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         GroupDontExists(groupName)
     }
 
-    fun listDevices(groupName: String): ListDeviceResult<List<Device>> = if (groupRepo.exists(groupName)) {
+    fun listDevices(groupName: String): DeviceListResult<List<Device>> = if (groupRepo.exists(groupName)) {
         Ok(deviceRepo.findForGroup(groupName))
     } else {
         GroupDontExists(groupName)
