@@ -25,10 +25,14 @@ data class Failure(
         addLink("index", GET, URI("/"))
     }
 
+    override fun addLink(name: String, method: Method, href: URI): Failure {
+        require(method == GET) { "Failure only support reading methods "}
+        return super.addLink(name, method, href)
+    }
+
     companion object {
         fun onIndex(code: Int, message: String): Failure = Failure(code, message).apply {
             addLink("get_groups", GET, URI("/groups"))
-            addLink("add_group", POST, URI("/groups"))
         }
 
         fun onGroup(code: Int, message: String, groupName: String) = onIndex(code, message).apply {

@@ -92,6 +92,5 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
         val failure: Failure = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
-        assertLink("add_group", "/groups", "POST", failure.links)
     }
 }
