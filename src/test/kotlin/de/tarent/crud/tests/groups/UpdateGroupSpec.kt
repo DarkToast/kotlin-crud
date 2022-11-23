@@ -97,10 +97,9 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
         // and: has index links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
-        assertEquals(3, failure.links.size)
+        assertEquals(2, failure.links.size)
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
-        assertLink("add_group", "/groups", "POST", failure.links)
     }
 
     @Test
@@ -125,7 +124,6 @@ class UpdateGroupSpec : BaseGroupSpec() {
         val failure: Failure = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
-        assertLink("add_group", "/groups", "POST", failure.links)
         assertLink("get_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
     }
 }

@@ -128,7 +128,6 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         val failure: Failure = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
-        assertLink("add_group", "/groups", "POST", failure.links)
     }
 
     private val deviceJson = deviceJson("steckdose_lüftung", "Steckdose für die Lüftung", "plug")
