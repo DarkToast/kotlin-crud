@@ -13,14 +13,14 @@ enum class Method {
 }
 
 @Serializable
-data class Link(val name: String, val href: String, val method: String)
+data class Link(val href: String, val method: String)
 
 @Suppress("MemberVisibilityCanBePrivate")
 @Serializable
 abstract class Linked<out T : Linked<T>>(val links: MutableMap<String, Link> = mutableMapOf()) {
     @Suppress("UNCHECKED_CAST")
     open fun addLink(name: String, method: Method, href: URI): T {
-        links[name] = Link(name, href.toString(), method.toString())
+        links[name] = Link(href.toString(), method.toString())
         return this as T
     }
 }

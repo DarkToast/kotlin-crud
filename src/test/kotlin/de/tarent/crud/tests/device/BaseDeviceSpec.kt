@@ -10,6 +10,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 abstract class BaseDeviceSpec : BaseComponentSpec() {
     val testGroupName = "testGroup"
     val testDeviceName = "deviceName"
+    val testDeviceName2 = "deviceName-2"
+
+    protected val spec = Spec().withSetup {
+        createGroup(this, testGroupName, "my-test-group")
+        createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
+        createDevice(this, testGroupName, deviceJson(testDeviceName2, "test-device-2", "plug"))
+    }
 
     protected suspend fun assertDevice(
         name: String,

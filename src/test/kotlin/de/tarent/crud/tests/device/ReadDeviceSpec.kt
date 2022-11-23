@@ -13,11 +13,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class ReadDeviceSpec : BaseDeviceSpec() {
-    private val spec = Spec().withSetup {
-        createGroup(this, testGroupName, "my-test-group")
-        createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
-        createDevice(this, testGroupName, deviceJson("$testDeviceName-2", "test-device-2", "plug"))
-    }
 
     @Test
     fun `get all devices for group`() = spec.componentSpec {

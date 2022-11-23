@@ -13,11 +13,6 @@ import kotlin.test.assertEquals
 
 class DeleteDeviceSpec : BaseDeviceSpec() {
 
-    private val spec = Spec().withSetup {
-        createGroup(this, testGroupName, "my-test-group")
-        createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
-    }
-
     @Test
     fun `deleting existing device`() = spec.componentSpec {
         // given: The device url
