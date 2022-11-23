@@ -10,7 +10,8 @@ data class Ok<T>(val value: T) :
     DeviceReadResult<T>,
     DeviceUpdateResult<T>,
     DeviceDeleteResult<T>,
-    DeviceListResult<T>
+    DeviceListResult<T>,
+    MetricCreateResult<T>
 
 data class GroupDontExists<T>(val groupName: String) :
     GroupReadResult<T>,
@@ -20,7 +21,8 @@ data class GroupDontExists<T>(val groupName: String) :
     DeviceCreateResult<T>,
     DeviceUpdateResult<T>,
     DeviceDeleteResult<T>,
-    DeviceListResult<T>
+    DeviceListResult<T>,
+    MetricCreateResult<T>
 
 data class GroupAlreadyExists<T>(val groupName: String) :
     GroupCreateResult<T>,
@@ -29,7 +31,8 @@ data class GroupAlreadyExists<T>(val groupName: String) :
 data class DeviceDontExists<T>(val groupName: String, val deviceName: String) :
     DeviceReadResult<T>,
     DeviceUpdateResult<T>,
-    DeviceDeleteResult<T>
+    DeviceDeleteResult<T>,
+    MetricCreateResult<T>
 
 data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String) :
     DeviceCreateResult<T>,
