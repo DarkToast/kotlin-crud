@@ -51,17 +51,13 @@ GET localhost:8080/groups/1/devices
 GET localhost:8080/groups/HWR/devices
 
 ### CREATE A NEW DEVICE FOR GROUP 1
-POST localhost:8080/groups/1/devices
+POST localhost:8080/groups/HWR/devices
 Content-Type: application/json
 
 {
   "name": "Wetterstation1",
   "description": "",
-  "type": "",
-  "sensors": {
-    "thermometer": "C",
-    "humidity": "%"
-  }
+  "type": "weather_station"
 }
 
 ### GET DEVICE INFORMATION FOR DEVICE 1 in GROUP 1
@@ -70,3 +66,12 @@ GET localhost:8080/groups/1/devices/1
 ### GET DEVICE INFORMATION FOR DEVICE Wetterstation1
 GET localhost:8080/groups/1/devices/Wetterstation1
 
+### CREATE A NEW METRIC FOR GROUP 1
+POST localhost:8080/groups/HWR/devices/Wetterstation1/metrics
+Content-Type: application/json
+
+{
+  "name": "Wetterstation1",
+  "description": "",
+  "type": "weather_station"
+}

@@ -130,7 +130,6 @@ abstract class BaseComponentSpec {
         assertNotNull(links[name], "No link found by $name. Links: $links")
 
         val link = links[name]
-        assertEquals(name, link?.name)
         assertEquals(href, link?.href)
         assertEquals(method, link?.method)
         return true
