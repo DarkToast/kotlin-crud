@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 class ReadGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `GET a list of groups`() = Spec().componentSpec {
+    fun `GET a list of groups`() = spec.componentSpec {
         // given: Two exiting groups
         createGroup(this, "group1", "first_group")
         createGroup(this, "group2", "second_group")
@@ -34,16 +34,14 @@ class ReadGroupSpec : BaseGroupSpec() {
         val list: List<Group> = json.decodeFromString(ListSerializer(Group.serializer()), body)
 
         // then: A list is returned
-        assertEquals(2, list.size)
-        assertGroup("group1", "first_group", list[0])
-        assertGroup("group2", "second_group", list[1])
+        assertEquals(3, list.size)
+        assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", list[0])
+        assertGroup("group1", "first_group", list[1])
+        assertGroup("group2", "second_group", list[2])
     }
 
     @Test
-    fun `GET existing group`() = Spec().componentSpec {
-        // given: An exiting group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
-
+    fun `GET existing group`() = spec.componentSpec {
         // when: We get the default group
         val response = client.get("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
@@ -67,7 +65,7 @@ class ReadGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `GET group not known`() = Spec().componentSpec {
+    fun `GET group not known`() = spec.componentSpec {
         // when: We get an unknown group
         val response = client.get("/groups/NOT_KNOWN") {
             contentType(ContentType.Application.Json)

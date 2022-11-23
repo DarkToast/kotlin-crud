@@ -17,9 +17,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class CreateDeviceSpec : BaseDeviceSpec() {
-    private val spec = Spec().withSetup {
-        createGroup(this, testGroupName, "my-test-group")
-    }
 
     @Test
     fun `Create a device`() = spec.componentSpec {

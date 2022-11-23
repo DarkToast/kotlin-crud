@@ -16,10 +16,7 @@ import org.junit.jupiter.api.Test
 class DeleteGroupSpec : BaseGroupSpec() {
 
     @Test
-    fun `Delete group`() = Spec().componentSpec {
-        // given: An exiting group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
-
+    fun `Delete group`() = spec.componentSpec {
         // when: the group is deleted
         var response = client.delete("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
@@ -40,10 +37,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Delete response has index links`() = Spec().componentSpec {
-        // given: An exiting group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
-
+    fun `Delete response has index links`() = spec.componentSpec {
         // when: the group is deleted
         val response = client.delete("/groups/$DEFAULT_GROUP_NAME") {
             contentType(ContentType.Application.Json)
@@ -63,7 +57,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
     }
 
     @Test
-    fun `Delete unknown group - not found`() = Spec().componentSpec {
+    fun `Delete unknown group - not found`() = spec.componentSpec {
         // when: an unknown group is received
         val response = client.get("/groups/UNKNOWN") {
             contentType(ContentType.Application.Json)
