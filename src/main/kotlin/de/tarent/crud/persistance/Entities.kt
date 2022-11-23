@@ -11,13 +11,15 @@ object GroupEntity : Table("group") {
     override val primaryKey = PrimaryKey(name, name = "group_pk")
 }
 
-object DeviceEntity : Table("device") {
+object DeviceEntity : UUIDTable("device") {
     val name = varchar("name", 50)
     val description = varchar("description", 250)
     val type = varchar("type", 32)
     val groupId = varchar("group_id", 50) references GroupEntity.name
 
-    override val primaryKey = PrimaryKey(arrayOf(name, groupId), name = "device_pk")
+    init {
+        uniqueIndex(name, groupId)
+    }
 }
 
 @Suppress("unused")
@@ -25,7 +27,7 @@ object MetricEntity : UUIDTable("metric") {
     val unit = varchar("unit", 8)
     val value = decimal("value", 10, 2)
     val timestamp = datetime("timestamp")
-    val deviceId = varchar("device_id", 50) references DeviceEntity.name
+    val deviceId = uuid("device_id").references(DeviceEntity.id)
 
     init {
         uniqueIndex(timestamp, unit, deviceId)
