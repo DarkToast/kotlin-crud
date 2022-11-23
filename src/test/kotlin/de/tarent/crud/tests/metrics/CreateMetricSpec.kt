@@ -33,9 +33,9 @@ class CreateMetricSpec : BaseMetricSpec() {
         // when: post on metrics
         val response = postMetric(url, body)
 
-        println(response.bodyAsText())
         // then: Status Created
         assertEquals(Created, response.status)
+
         // and: response is the metric
         assertMetric("°C", 12.6, timestamp, response)
     }
@@ -107,6 +107,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val failure: Failure = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
+        assertLink("get_devices", "/groups/$testGroupName/devices", "GET", failure.links)
         assertLink("get_device", "/groups/$testGroupName/devices/$testDeviceName", "GET", failure.links)
     }
 

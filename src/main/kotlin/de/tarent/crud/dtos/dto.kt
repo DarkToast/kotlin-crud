@@ -28,7 +28,7 @@ data class Failure(
     }
 
     override fun addLink(name: String, method: Method, href: URI): Failure {
-        require(method == GET) { "Failure only support reading methods "}
+        require(method == GET) { "Failure only support reading methods." }
         return super.addLink(name, method, href)
     }
 
@@ -41,6 +41,11 @@ data class Failure(
             addLink("get_group", GET, URI("/groups/$groupName"))
             addLink("get_devices", GET, URI("/groups/$groupName/devices"))
         }
+
+        fun onDevice(code: Int, message: String, groupName: String, deviceName: String) =
+            onGroup(code, message, groupName).apply {
+                addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
+            }
     }
 }
 

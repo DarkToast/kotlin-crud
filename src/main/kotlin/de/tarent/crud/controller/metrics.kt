@@ -1,5 +1,6 @@
 package de.tarent.crud.controller
 
+import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Metric
 import de.tarent.crud.service.MetricService
 import de.tarent.crud.service.results.DeviceDontExists
@@ -20,7 +21,7 @@ fun Route.metricsPage(metricService: MetricService) {
         post {
             val groupName = call.path("groupName") ?: return@post
             val deviceName = call.path("deviceName") ?: return@post
-            val metric: Metric = call.body() ?: return@post
+            val metric: Metric = call.body { msg -> Failure.onDevice(400, msg, groupName, deviceName) } ?: return@post
             logger.info { "POST new metric on device '$deviceName' of group '$groupName'" }
 
             when (val result = metricService.create(groupName, deviceName, metric)) {
