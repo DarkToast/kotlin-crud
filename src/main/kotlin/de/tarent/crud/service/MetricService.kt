@@ -3,6 +3,7 @@ package de.tarent.crud.service
 import de.tarent.crud.dtos.Metric
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
+import de.tarent.crud.persistance.MetricRepository
 import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.results.MetricCreateResult
@@ -11,7 +12,11 @@ import de.tarent.crud.service.results.MetricReadResult
 import de.tarent.crud.service.results.Ok
 import java.util.UUID
 
-class MetricService(private val groupRepository: GroupRepository, private val deviceRepository: DeviceRepository) {
+class MetricService(
+    private val groupRepository: GroupRepository,
+    private val deviceRepository: DeviceRepository,
+    private val metricRepository: MetricRepository
+) {
     fun create(groupName: String, deviceName: String, metric: Metric): MetricCreateResult<Metric> {
         if (!groupRepository.exists(groupName)) {
             return GroupDontExists(groupName)
@@ -21,6 +26,7 @@ class MetricService(private val groupRepository: GroupRepository, private val de
             return DeviceDontExists(groupName, deviceName)
         }
 
+        metricRepository.insert(groupName, deviceName, metric)
         return Ok(metric)
     }
 
@@ -33,6 +39,8 @@ class MetricService(private val groupRepository: GroupRepository, private val de
             return DeviceDontExists(groupName, deviceName)
         }
 
-        return MetricDontNotExists(groupName, deviceName, metricId)
+        return metricRepository.load(metricId)
+            ?.let { Ok(it) }
+            ?: MetricDontNotExists(groupName, deviceName, metricId)
     }
 }
