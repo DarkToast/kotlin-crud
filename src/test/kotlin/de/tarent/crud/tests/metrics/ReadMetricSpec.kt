@@ -50,7 +50,7 @@ class ReadMetricSpec : BaseMetricSpec() {
         // given: not existing url
         val url = "/groups/$testGroupName/devices/unknown/metrics/$metricId"
 
-        // when: post on metrics
+        // when: Get on metrics
         val response = client.get(url)
 
         // then: Status BadRequest
@@ -68,7 +68,7 @@ class ReadMetricSpec : BaseMetricSpec() {
         // given: not existing url
         val url = "/groups/unknown/devices/$testDeviceName/metrics/$metricId"
 
-        // when: post on metrics
+        // when: Get on metrics
         val response = client.get(url)
 
         // then: Status BadRequest
