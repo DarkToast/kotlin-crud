@@ -2,7 +2,9 @@ package de.tarent.crud.persistance
 
 import de.tarent.crud.dtos.Metric
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -40,5 +42,9 @@ class MetricRepository(private val database: Database) {
                 )
             }
             .firstOrNull()
+    }
+
+    fun delete(metricId: UUID): Int = transaction(database) {
+        MetricEntity.deleteWhere { MetricEntity.id eq metricId }
     }
 }
