@@ -2,10 +2,11 @@ package de.tarent.crud.tests.metrics
 
 import de.tarent.crud.dtos.Metric
 import de.tarent.crud.tests.BaseComponentSpec
+import de.tarent.crud.tests.asserts.DeviceAssertion
+import de.tarent.crud.tests.asserts.MetricAssertion
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -15,7 +16,7 @@ import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.OffsetDateTime
 
-abstract class BaseMetricSpec : BaseComponentSpec() {
+abstract class BaseMetricSpec : BaseComponentSpec(), MetricAssertion, DeviceAssertion {
     val testGroupName = "testGroup"
     val testDeviceName = "testDevice"
 
@@ -51,26 +52,4 @@ abstract class BaseMetricSpec : BaseComponentSpec() {
         |     "timestamp": "$datetime"
         | }
         """.trimMargin("|")
-
-    protected suspend fun assertMetric(
-        unit: String,
-        value: Double,
-        timestamp: OffsetDateTime,
-        response: HttpResponse
-    ): Boolean {
-        val metric: Metric = json.decodeFromString(response.bodyAsText())
-        return assertMetric(unit, value, timestamp, metric)
-    }
-
-    protected fun assertMetric(
-        unit: String,
-        value: Double,
-        timestamp: OffsetDateTime,
-        metric: Metric
-    ): Boolean {
-        assertEquals(unit, metric.unit)
-        assertEquals(value, metric.value)
-        assertEquals(timestamp, metric.timestamp)
-        return true
-    }
 }

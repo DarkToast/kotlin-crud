@@ -1,13 +1,10 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.dtos.Device
 import de.tarent.crud.tests.BaseComponentSpec
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import de.tarent.crud.tests.asserts.DeviceAssertion
+import de.tarent.crud.tests.asserts.GroupAssertion
 
-abstract class BaseDeviceSpec : BaseComponentSpec() {
+abstract class BaseDeviceSpec : BaseComponentSpec(), DeviceAssertion, GroupAssertion {
     val testGroupName = "testGroup"
     val testDeviceName = "deviceName"
     val testDeviceName2 = "deviceName-2"
@@ -16,22 +13,5 @@ abstract class BaseDeviceSpec : BaseComponentSpec() {
         createGroup(this, testGroupName, "my-test-group")
         createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
         createDevice(this, testGroupName, deviceJson(testDeviceName2, "test-device-2", "plug"))
-    }
-
-    protected suspend fun assertDevice(
-        name: String,
-        description: String,
-        type: String,
-        response: HttpResponse
-    ): Boolean {
-        val device: Device = json.decodeFromString(response.bodyAsText())
-        return assertDevice(name, description, type, device)
-    }
-
-    protected fun assertDevice(name: String, description: String, type: String, device: Device): Boolean {
-        assertEquals(name, device.name)
-        assertEquals(description, device.description)
-        assertEquals(type, device.type)
-        return true
     }
 }
