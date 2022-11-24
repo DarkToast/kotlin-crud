@@ -14,6 +14,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -48,6 +49,23 @@ fun Route.metricsPage(metricService: MetricService) {
             logger.info { "GET metric '$metricId' on device '$deviceName' of group '$groupName'" }
 
             when (val result = metricService.read(groupName, deviceName, metricId)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
+                is MetricDontNotExists -> metricDontExist(call, result)
+                is Ok -> call.respond(OK, result.value)
+            }
+        }
+
+        delete("/{metricId}") {
+            val groupName = call.path("groupName") ?: return@delete
+            val deviceName = call.path("deviceName") ?: return@delete
+            val metricId: UUID = call.path("metricId")
+                ?.let { UUID.fromString(it) }
+                ?: return@delete
+
+            logger.info { "DELETE metric '$metricId' on device '$deviceName' of group '$groupName'" }
+
+            when (val result = metricService.delete(groupName, deviceName, metricId)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is MetricDontNotExists -> metricDontExist(call, result)
