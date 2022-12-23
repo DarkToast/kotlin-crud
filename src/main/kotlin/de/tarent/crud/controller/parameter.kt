@@ -26,7 +26,7 @@ suspend fun ApplicationCall.path(parameterName: String): String? {
 }
 
 suspend inline fun <reified T : Any> ApplicationCall.body(
-    failure: (msg: String) -> Failure = { Failure.onIndex(400, it) }
+    failure: (msg: String, cause: String) -> Failure = { m, c -> Failure.onIndex(400, m, c) }
 ): T? {
     return try {
         this.receive()
@@ -37,7 +37,16 @@ suspend inline fun <reified T : Any> ApplicationCall.body(
         val logger = KotlinLogging.logger {}
         logger.warn(e) { msg }
 
-        this.respond(BadRequest, failure(msg))
+        this.respond(BadRequest, failure(msg, cause(e)))
         null
     }
+}
+
+fun cause(e: Throwable): String {
+    tailrec fun step(e: Throwable): Throwable {
+        val cause = e.cause
+        return if(cause != null) step(cause) else e
+    }
+
+    return step(e).message ?: "n/a"
 }

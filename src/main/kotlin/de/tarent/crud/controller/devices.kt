@@ -58,8 +58,8 @@ fun Route.devicePage(deviceService: DeviceService) {
 
         post {
             val groupName = call.path("groupName") ?: return@post
-            val device = call.body<Device> { msg ->
-                Failure.onGroup(400, msg, groupName)
+            val device = call.body<Device> { msg, cause ->
+                Failure.onGroup(400, msg, cause, groupName)
             } ?: return@post
 
             logger.info { "CREATE a new device in the group $groupName" }
@@ -78,8 +78,8 @@ fun Route.devicePage(deviceService: DeviceService) {
         put("{deviceName?}") {
             val groupName: String = call.path("groupName") ?: return@put
             val deviceName: String = call.path("deviceName") ?: return@put
-            val device = call.body<Device> { msg ->
-                Failure.onGroup(400, msg, groupName)
+            val device = call.body<Device> { msg, cause ->
+                Failure.onGroup(400, msg, cause, groupName)
             } ?: return@put
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
@@ -117,11 +117,11 @@ fun Route.devicePage(deviceService: DeviceService) {
 private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlreadyExists<*>) {
     val msg = "Device '${result.deviceName}' of group '${result.groupName}' already exists."
     logger.warn { msg }
-    call.respond(Conflict, Failure.onGroup(409, msg, result.groupName))
+    call.respond(Conflict, Failure.onGroup(409, msg, "", result.groupName))
 }
 
 private suspend fun groupDontExist(call: ApplicationCall, result: GroupDontExists<*>) {
     val msg = "Group ${result.groupName} was not found!"
     logger.warn { msg }
-    call.respond(NotFound, Failure.onGroup(404, msg, result.groupName))
+    call.respond(NotFound, Failure.onGroup(404, msg, "", result.groupName))
 }

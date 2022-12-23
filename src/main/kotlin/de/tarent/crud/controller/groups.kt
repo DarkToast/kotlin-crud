@@ -79,5 +79,5 @@ fun Route.groupPage(groupService: GroupService) {
 private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlreadyExists<*>) {
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
-    call.respond(Conflict, Failure.onGroup(404, msg, result.groupName))
+    call.respond(Conflict, Failure.onGroup(404, msg, "", result.groupName))
 }
