@@ -16,5 +16,5 @@ suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {
 suspend fun deviceDontExist(call: ApplicationCall, result: DeviceDontExists<*>) {
     val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
     logger.warn { msg }
-    call.respond(HttpStatusCode.NotFound, Failure.onGroup(404, msg, result.groupName))
+    call.respond(HttpStatusCode.NotFound, Failure.onGroup(404, msg, "", result.groupName))
 }

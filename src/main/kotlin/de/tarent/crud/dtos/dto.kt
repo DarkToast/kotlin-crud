@@ -21,7 +21,8 @@ class Index : Linked<Index>() {
 @Serializable
 data class Failure(
     val code: Int,
-    val message: String
+    val message: String,
+    val cause: String = ""
 ) : Linked<Failure>() {
     init {
         addLink("index", GET, URI("/"))
@@ -33,17 +34,17 @@ data class Failure(
     }
 
     companion object {
-        fun onIndex(code: Int, message: String): Failure = Failure(code, message).apply {
+        fun onIndex(code: Int, message: String, cause: String = ""): Failure = Failure(code, message, cause).apply {
             addLink("get_groups", GET, URI("/groups"))
         }
 
-        fun onGroup(code: Int, message: String, groupName: String) = onIndex(code, message).apply {
+        fun onGroup(code: Int, message: String, cause: String = "", groupName: String) = onIndex(code, message, cause).apply {
             addLink("get_group", GET, URI("/groups/$groupName"))
             addLink("get_devices", GET, URI("/groups/$groupName/devices"))
         }
 
-        fun onDevice(code: Int, message: String, groupName: String, deviceName: String) =
-            onGroup(code, message, groupName).apply {
+        fun onDevice(code: Int, message: String, cause: String = "", groupName: String, deviceName: String) =
+            onGroup(code, message, cause, groupName).apply {
                 addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
             }
     }

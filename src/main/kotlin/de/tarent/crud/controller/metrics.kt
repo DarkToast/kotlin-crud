@@ -28,7 +28,7 @@ fun Route.metricsPage(metricService: MetricService) {
         post {
             val groupName = call.path("groupName") ?: return@post
             val deviceName = call.path("deviceName") ?: return@post
-            val metric: Metric = call.body { msg -> Failure.onDevice(400, msg, groupName, deviceName) } ?: return@post
+            val metric: Metric = call.body { msg, cause  -> Failure.onDevice(400, msg, cause, groupName, deviceName) } ?: return@post
 
             logger.info { "POST new metric on device '$deviceName' of group '$groupName'" }
 
@@ -79,5 +79,5 @@ private suspend fun metricDontExist(call: ApplicationCall, result: MetricDontNot
     val msg =
         "Metric '${result.metricId}' of device '${result.deviceName}' of group '${result.groupName}' was not found!"
     logger.warn { msg }
-    call.respond(HttpStatusCode.NotFound, Failure.onDevice(404, msg, result.groupName, result.deviceName))
+    call.respond(HttpStatusCode.NotFound, Failure.onDevice(404, msg, "", result.groupName, result.deviceName))
 }
