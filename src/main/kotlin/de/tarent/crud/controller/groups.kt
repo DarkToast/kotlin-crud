@@ -3,13 +3,12 @@ package de.tarent.crud.controller
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.dtos.Index
-import de.tarent.crud.service.GroupAlreadyExists
-import de.tarent.crud.service.GroupDontExists
+import de.tarent.crud.service.results.GroupAlreadyExists
+import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.GroupService
-import de.tarent.crud.service.Ok
+import de.tarent.crud.service.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
-import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
@@ -81,10 +80,4 @@ private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlrea
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
     call.respond(Conflict, Failure.onGroup(404, msg, result.groupName))
-}
-
-private suspend fun groupDontExists(call: ApplicationCall, result: GroupDontExists<*>) {
-    val msg = "Group '${result.groupName}' does not exists."
-    logger.warn { msg }
-    call.respond(NotFound, Failure.onIndex(404, msg))
 }

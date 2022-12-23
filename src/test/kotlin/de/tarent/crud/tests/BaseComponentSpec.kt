@@ -2,14 +2,12 @@ package de.tarent.crud.tests
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Group
-import de.tarent.crud.dtos.Link
-import de.tarent.crud.dtos.Linked
 import de.tarent.crud.persistance.DeviceEntity
 import de.tarent.crud.persistance.GroupEntity
+import de.tarent.crud.persistance.MetricEntity
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -22,7 +20,6 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.java.KoinJavaComponent.inject
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
@@ -36,6 +33,7 @@ abstract class BaseComponentSpec {
         private val cleanDatabase: testBlock = {
             val db: ExposedDatabase by inject(ExposedDatabase::class.java)
             transaction(db) {
+                MetricEntity.deleteAll()
                 DeviceEntity.deleteAll()
                 GroupEntity.deleteAll()
             }
@@ -84,7 +82,6 @@ abstract class BaseComponentSpec {
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
 
-    @Suppress("SameParameterValue")
     protected fun deviceJson(name: String, description: String, type: String): String =
         """
          |{
@@ -115,34 +112,4 @@ abstract class BaseComponentSpec {
          |  "description": "$description"
          |}
         """.trimMargin("|")
-
-    protected suspend inline fun <reified T : Linked<T>> assertLink(
-        name: String,
-        href: String,
-        method: String,
-        response: HttpResponse
-    ): Boolean {
-        val linked: Linked<T> = json.decodeFromString(response.bodyAsText())
-        return assertLink(name, href, method, linked.links)
-    }
-
-    protected fun assertLink(name: String, href: String, method: String, links: Map<String, Link>): Boolean {
-        assertNotNull(links[name], "No link found by $name. Links: $links")
-
-        val link = links[name]
-        assertEquals(href, link?.href)
-        assertEquals(method, link?.method)
-        return true
-    }
-
-    protected suspend fun assertGroup(name: String, description: String, response: HttpResponse): Boolean {
-        val group: Group = json.decodeFromString(response.bodyAsText())
-        return assertGroup(name, description, group)
-    }
-
-    protected fun assertGroup(name: String, description: String, group: Group): Boolean {
-        assertEquals(name, group.name)
-        assertEquals(description, group.description)
-        return true
-    }
 }

@@ -2,11 +2,11 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Failure
-import de.tarent.crud.service.DeviceAlreadyExists
-import de.tarent.crud.service.DeviceDontExists
+import de.tarent.crud.service.results.DeviceAlreadyExists
+import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.DeviceService
-import de.tarent.crud.service.GroupDontExists
-import de.tarent.crud.service.Ok
+import de.tarent.crud.service.results.GroupDontExists
+import de.tarent.crud.service.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -118,12 +118,6 @@ private suspend fun deviceAlreadyExists(call: ApplicationCall, result: DeviceAlr
     val msg = "Device '${result.deviceName}' of group '${result.groupName}' already exists."
     logger.warn { msg }
     call.respond(Conflict, Failure.onGroup(409, msg, result.groupName))
-}
-
-private suspend fun deviceDontExist(call: ApplicationCall, result: DeviceDontExists<*>) {
-    val msg = "Device '${result.deviceName}' of group '${result.groupName}' was not found!"
-    logger.warn { msg }
-    call.respond(NotFound, Failure.onGroup(404, msg, result.groupName))
 }
 
 private suspend fun groupDontExist(call: ApplicationCall, result: GroupDontExists<*>) {

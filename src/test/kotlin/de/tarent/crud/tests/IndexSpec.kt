@@ -1,6 +1,7 @@
 package de.tarent.crud.tests
 
 import de.tarent.crud.dtos.Index
+import de.tarent.crud.tests.asserts.LinkAssertion
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -11,7 +12,7 @@ import kotlinx.serialization.decodeFromString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class IndexSpec : BaseComponentSpec() {
+class IndexSpec : BaseComponentSpec(), LinkAssertion {
 
     @Test
     fun `GET on index page returns link list`() = Spec().componentSpec {
