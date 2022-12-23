@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class ReadMetricSpec : BaseMetricSpec() {
-    lateinit var metricId: UUID
+    private lateinit var metricId: UUID
 
     override val spec = super.spec.withSetup {
         val metric = createMetric(this, testGroupName, testDeviceName, metricJson("°C", 12.6, timestamp))

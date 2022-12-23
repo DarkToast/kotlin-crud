@@ -1,7 +1,8 @@
 package de.tarent.crud.service.results
 
-sealed interface DeviceReadResult<T>
-sealed interface DeviceCreateResult<T>
-sealed interface DeviceUpdateResult<T>
-sealed interface DeviceDeleteResult<T>
-sealed interface DeviceListResult<T>
+sealed interface DeviceResult<T>
+sealed interface DeviceReadResult<T>: DeviceResult<T>
+sealed interface DeviceCreateResult<T>: DeviceResult<T>
+sealed interface DeviceUpdateResult<T>: DeviceResult<T>
+sealed interface DeviceDeleteResult<T>: DeviceResult<T>
+sealed interface DeviceListResult<T>: DeviceResult<T>
