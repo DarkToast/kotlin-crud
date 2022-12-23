@@ -12,7 +12,7 @@ import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.contentType
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CreateGroupSpec : BaseGroupSpec() {
@@ -27,7 +27,7 @@ class CreateGroupSpec : BaseGroupSpec() {
         }
 
         // then: Status created in response
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
 
         // and: The group as body
         assertGroup("HWR", "Hauswirtschaftsraum", response)
@@ -55,7 +55,7 @@ class CreateGroupSpec : BaseGroupSpec() {
         }
 
         // then: bad request is returned
-        assertEquals(BadRequest, response.status)
+        assertThat(response.status).isEqualTo(BadRequest)
         val failure: Failure = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", failure.links)
         assertLink("get_groups", "/groups", "GET", failure.links)
@@ -77,7 +77,7 @@ class CreateGroupSpec : BaseGroupSpec() {
         }
 
         // then: Conflict is returned
-        assertEquals(Conflict, response.status)
+        assertThat(response.status).isEqualTo(Conflict)
 
         // and: It has further links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

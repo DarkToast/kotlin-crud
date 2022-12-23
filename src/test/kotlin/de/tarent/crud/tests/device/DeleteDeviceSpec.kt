@@ -8,8 +8,8 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.decodeFromString
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 class DeleteDeviceSpec : BaseDeviceSpec() {
 
@@ -22,13 +22,13 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
         var response = client.delete(url)
 
         // then: Status No Content
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // when: We make GET
         response = client.get(url)
 
         // then: Status Not Found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 
     @Test
@@ -40,7 +40,7 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
         val response = client.delete(url)
 
         // then: Status Ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The group is returned
         val group: Group = json.decodeFromString(response.bodyAsText())
@@ -63,7 +63,7 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
         val response = client.delete(url)
 
         // then: Status Not Found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -81,7 +81,7 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
         val response = client.delete(url)
 
         // then: Status Not Found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: The failure has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

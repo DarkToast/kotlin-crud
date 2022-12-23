@@ -13,7 +13,7 @@ import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.contentType
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CreateDeviceSpec : BaseDeviceSpec() {
@@ -31,7 +31,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Created with an URL
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
 
         //and: the device is returned
         val device: Device = json.decodeFromString(response.bodyAsText())
@@ -62,7 +62,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Created
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
     }
 
     @Test
@@ -78,7 +78,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status is Bad Request
-        assertEquals(BadRequest, response.status)
+        assertThat(response.status).isEqualTo(BadRequest)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -100,7 +100,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Conflict
-        assertEquals(Conflict, response.status)
+        assertThat(response.status).isEqualTo(Conflict)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -119,7 +119,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Not Found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: The failure has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

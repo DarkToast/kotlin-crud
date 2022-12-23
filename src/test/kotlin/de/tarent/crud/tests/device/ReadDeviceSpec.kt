@@ -9,6 +9,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -25,7 +26,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: status ok is returned
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The list contains two devices
         val body: String = response.bodyAsText()
@@ -63,7 +64,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: status ok is returned
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The list contains two devices
         val body: String = response.bodyAsText()
@@ -87,7 +88,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: status not found is returned
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 
     @Test
@@ -101,7 +102,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: status ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: the device is returned
         val device: Device = json.decodeFromString(response.bodyAsText())
@@ -126,7 +127,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: status not found is returned
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 
     @Test
@@ -140,7 +141,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: status not found is returned
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 
 

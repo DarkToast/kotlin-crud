@@ -13,6 +13,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.decodeFromString
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -28,7 +29,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
         }
 
         // Then: The status is ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The returned group is the updated
         assertGroup(DEFAULT_GROUP_NAME, "New description", response)
@@ -53,7 +54,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
         }
 
         // Then: The status is ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The response is the request body
         val group: Group = json.decodeFromString(response.bodyAsText())
@@ -74,7 +75,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
         }
 
         // then: The status is ok and the group is returned
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
     }
 
     @Test
@@ -87,7 +88,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
         }
 
         // then: not found is returned
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: has index links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -109,7 +110,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
         }
 
         // then: we get a conflict
-        assertEquals(Conflict, response.status)
+        assertThat(response.status).isEqualTo(Conflict)
 
         // and: It has all further links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

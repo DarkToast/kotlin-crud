@@ -8,7 +8,6 @@ plugins {
 def ktor_version = '2.2.1'
 def koin_version = '3.2.2'
 def exposed_version = '0.40.1'
-def kotlin_version = '1.7.22'
 
 repositories {
     mavenCentral()
@@ -42,10 +41,9 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql:42.5.1'
 
-
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.9.1"
+    testImplementation "org.assertj:assertj-core:3.23.1"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
-
     testImplementation("io.insert-koin:koin-test:$koin_version") {
         exclude group: "org.jetbrains.kotlin", module: "kotlin-test-junit"
     }

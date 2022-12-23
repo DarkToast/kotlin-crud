@@ -6,7 +6,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -24,7 +24,7 @@ class ReadMetricSpec : BaseMetricSpec() {
         val response = client.get("$metricsUrl/$metricId")
 
         // then: Status Ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: response is the metric
         assertMetric("°C", 12.6, timestamp, response)
@@ -36,7 +36,7 @@ class ReadMetricSpec : BaseMetricSpec() {
         val response = client.get("$metricsUrl/${UUID.randomUUID()}")
 
         // then: Status Ok
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -54,7 +54,7 @@ class ReadMetricSpec : BaseMetricSpec() {
         val response = client.get(url)
 
         // then: Status BadRequest
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -72,7 +72,7 @@ class ReadMetricSpec : BaseMetricSpec() {
         val response = client.get(url)
 
         // then: Status BadRequest
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

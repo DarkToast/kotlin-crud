@@ -13,7 +13,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.testing.ApplicationTestBuilder
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import java.time.OffsetDateTime
 
 abstract class BaseMetricSpec : BaseComponentSpec(), MetricAssertion, DeviceAssertion {
@@ -40,7 +40,7 @@ abstract class BaseMetricSpec : BaseComponentSpec(), MetricAssertion, DeviceAsse
             setBody(metricJson)
         }
 
-        assertEquals(HttpStatusCode.Created, response.status)
+        assertThat(response.status).isEqualTo(HttpStatusCode.Created)
         return json.decodeFromString(response.bodyAsText())
     }
 
