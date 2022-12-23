@@ -12,7 +12,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class UpdateDeviceSpec : BaseDeviceSpec() {
@@ -33,7 +33,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status OK is returned
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The new device as body
         val device: Device = json.decodeFromString(response.bodyAsText())
@@ -63,7 +63,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status OK is returned
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: The renamed device as body
         val device: Device = json.decodeFromString(response.bodyAsText())
@@ -81,7 +81,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         response = client.get(url)
 
         // then: Status OK is returned
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
         assertDevice("my-new-name", "my-new-description", "switch", response)
     }
 
@@ -101,7 +101,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Conflict is returned
-        assertEquals(Conflict, response.status)
+        assertThat(response.status).isEqualTo(Conflict)
     }
 
     @Test
@@ -120,7 +120,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Conflict is returned
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 
     @Test
@@ -139,6 +139,6 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         }
 
         // then: Status Conflict is returned
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 }

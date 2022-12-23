@@ -11,6 +11,7 @@ import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -29,7 +30,7 @@ class ReadGroupSpec : BaseGroupSpec() {
         }
 
         // then: Status is OK
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
         val body = response.bodyAsText()
         val list: List<Group> = json.decodeFromString(ListSerializer(Group.serializer()), body)
 
@@ -49,7 +50,7 @@ class ReadGroupSpec : BaseGroupSpec() {
         }
 
         // then: The status is ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: the group is returned
         assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", response)
@@ -73,7 +74,7 @@ class ReadGroupSpec : BaseGroupSpec() {
         }
 
         // then: It is not found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has further links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

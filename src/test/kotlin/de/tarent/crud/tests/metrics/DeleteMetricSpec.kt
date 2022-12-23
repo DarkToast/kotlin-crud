@@ -7,7 +7,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -25,7 +25,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
         val response = client.delete("$metricsUrl/$metricId")
 
         // then: Status Ok
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         val device: Device = json.decodeFromString(response.bodyAsText())
         assertDevice(testDeviceName, "test-device", "plug", device)
@@ -37,7 +37,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
         val response = client.delete("$metricsUrl/${UUID.randomUUID()}")
 
         // then: Status Ok
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -55,7 +55,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
         val response = client.delete(url)
 
         // then: Status BadRequest
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -73,7 +73,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
         val response = client.delete(url)
 
         // then: Status BadRequest
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

@@ -14,7 +14,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.contentType
 import io.ktor.server.testing.ApplicationTestBuilder
 import kotlinx.serialization.decodeFromString
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CreateMetricSpec : BaseMetricSpec() {
@@ -28,7 +28,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(metricsUrl, body)
 
         // then: Status Created
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
 
         // and: response is the metric
         assertMetric("°C", 12.6, timestamp, response)
@@ -43,7 +43,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(metricsUrl, body)
 
         // then: Status Created
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
 
         // and: response is the metric
         assertMetric("hPa", 1002.0, timestamp, response)
@@ -58,7 +58,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(metricsUrl, body)
 
         // then: Status Created
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
 
         // and: response is the metric
         assertMetric("W", 64.2, timestamp, response)
@@ -73,7 +73,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(metricsUrl, body)
 
         // then: Status Created
-        assertEquals(Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
 
         val metric: Metric = json.decodeFromString(response.bodyAsText())
         assertMetric("W", 64.2, timestamp, metric)
@@ -95,7 +95,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(metricsUrl, body)
 
         // then: Status BadRequest
-        assertEquals(BadRequest, response.status)
+        assertThat(response.status).isEqualTo(BadRequest)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -117,7 +117,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(url, body)
 
         // then: Status BadRequest
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())
@@ -137,7 +137,7 @@ class CreateMetricSpec : BaseMetricSpec() {
         val response = postMetric(url, body)
 
         // then: Status BadRequest
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
 
         // and: It has all related links
         val failure: Failure = json.decodeFromString(response.bodyAsText())

@@ -19,6 +19,22 @@ class MetricService(
     private val deviceRepository: DeviceRepository,
     private val metricRepository: MetricRepository
 ) {
+//    private inline fun <reified T: Any> create() {
+//
+//    }
+//
+//    private fun <T> checkedOperation(groupName: String, deviceName: String): T
+//        where T: MetricCreateResult<Metric>, T: MetricReadResult<Metric>
+//    {
+//        if (!groupRepository.exists(groupName)) {
+//            return GroupDontExists(groupName) as T
+//        }
+//
+//        if (!deviceRepository.exists(groupName, deviceName)) {
+//            return DeviceDontExists(groupName, deviceName)
+//        }
+//    }
+
     fun create(groupName: String, deviceName: String, metric: Metric): MetricCreateResult<Metric> {
         if (!groupRepository.exists(groupName)) {
             return GroupDontExists(groupName)

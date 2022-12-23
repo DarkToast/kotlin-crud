@@ -10,16 +10,16 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.java.KoinJavaComponent.inject
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
@@ -77,7 +77,7 @@ abstract class BaseComponentSpec {
             setBody(deviceJson)
         }
 
-        assertEquals(HttpStatusCode.Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
         return json.decodeFromString<Device>(response.bodyAsText()).links["_self"]?.href
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
@@ -98,7 +98,7 @@ abstract class BaseComponentSpec {
             setBody(groupJson(groupName, description))
         }
 
-        assertEquals(HttpStatusCode.Created, response.status)
+        assertThat(response.status).isEqualTo(Created)
         val group: Group = json.decodeFromString(response.bodyAsText())
 
         return group.links["_self"]?.href

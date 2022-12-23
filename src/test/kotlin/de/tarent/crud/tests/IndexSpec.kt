@@ -9,6 +9,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.decodeFromString
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -21,7 +22,7 @@ class IndexSpec : BaseComponentSpec(), LinkAssertion {
             accept(ContentType.Application.Json)
         }
 
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
         val index: Index = json.decodeFromString(response.bodyAsText())
 
         assertEquals(3, index.links.size)

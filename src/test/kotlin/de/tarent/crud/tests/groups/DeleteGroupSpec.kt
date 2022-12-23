@@ -10,6 +10,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
 import kotlinx.serialization.decodeFromString
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -24,7 +25,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
         }
 
         // then: return is no content
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // when: The deleted group is received
         response = client.get("/groups/$DEFAULT_GROUP_NAME") {
@@ -33,7 +34,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
         }
 
         // then: it is not found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 
     @Test
@@ -45,7 +46,7 @@ class DeleteGroupSpec : BaseGroupSpec() {
         }
 
         // then: return is no content
-        assertEquals(OK, response.status)
+        assertThat(response.status).isEqualTo(OK)
 
         // and: has index links
         val index: Index = json.decodeFromString(response.bodyAsText())
@@ -65,6 +66,6 @@ class DeleteGroupSpec : BaseGroupSpec() {
         }
 
         // then: it is not found
-        assertEquals(NotFound, response.status)
+        assertThat(response.status).isEqualTo(NotFound)
     }
 }
