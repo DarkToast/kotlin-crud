@@ -10,6 +10,15 @@ services:
     ports:
       - "5432:5432"
 
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: christian.iwanzik@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: "s3cr3t"
+    ports:
+      - "8443:443"
+      - "8081:80"
+
   iot:
     image: crud:latest
     environment:
