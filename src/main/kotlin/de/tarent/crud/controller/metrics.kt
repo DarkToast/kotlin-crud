@@ -2,6 +2,7 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Metric
+import de.tarent.crud.dtos.MetricList
 import de.tarent.crud.service.MetricService
 import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.results.GroupDontExists
@@ -39,6 +40,14 @@ fun Route.metricsPage(metricService: MetricService) {
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is Ok -> call.respond(Created, metric.withLinks(groupName, deviceName))
             }
+        }
+
+        get {
+            val from = call.request.from()
+            val to = call.request.to()
+            val type = call.request.type()
+
+            call.respond(OK, MetricList(from, to, type, emptyList()))
         }
 
         get("/{metricId}") {

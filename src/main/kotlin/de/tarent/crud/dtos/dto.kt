@@ -95,3 +95,13 @@ data class Metric(
             .addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
             .addLink("get_group", GET, URI("/groups/$groupName"))
 }
+
+@Serializable
+data class MetricList(
+    @Serializable(with = OffsetDateTimeIsoSerializer::class)
+    val from: OffsetDateTime,
+    @Serializable(with = OffsetDateTimeIsoSerializer::class)
+    val to: OffsetDateTime,
+    val type: String?,
+    val metrics: List<Metric>
+)
