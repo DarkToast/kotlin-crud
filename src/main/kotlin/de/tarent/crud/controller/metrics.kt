@@ -12,6 +12,7 @@ import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.request.ApplicationRequest
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -19,6 +20,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import mu.KotlinLogging
+import java.time.OffsetDateTime
 import java.util.UUID
 
 fun Route.metricsPage(metricService: MetricService) {
@@ -74,6 +76,16 @@ fun Route.metricsPage(metricService: MetricService) {
         }
     }
 }
+
+private fun ApplicationRequest.from(): OffsetDateTime = this.queryParameters["from"]
+    ?.let { parseDateTime(it) }
+    ?: OffsetDateTime.now().minusHours(6)
+
+private fun ApplicationRequest.to(): OffsetDateTime = this.queryParameters["to"]
+    ?.let { parseDateTime(it) }
+    ?: OffsetDateTime.now()
+
+private fun ApplicationRequest.type(): String? = this.queryParameters["type"]
 
 private suspend fun metricDontExist(call: ApplicationCall, result: MetricDontNotExists<*>) {
     val msg =
