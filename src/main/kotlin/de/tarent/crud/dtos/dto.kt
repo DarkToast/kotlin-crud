@@ -5,6 +5,7 @@ import de.tarent.crud.dtos.Method.GET
 import de.tarent.crud.dtos.Method.POST
 import de.tarent.crud.dtos.Method.PUT
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.net.URI
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -97,11 +98,15 @@ data class Metric(
 }
 
 @Serializable
-data class MetricList(
-    @Serializable(with = OffsetDateTimeIsoSerializer::class)
-    val from: OffsetDateTime,
-    @Serializable(with = OffsetDateTimeIsoSerializer::class)
-    val to: OffsetDateTime,
-    val type: String?,
+class MetricList(
+    @Transient private val query: MetricQuery = MetricQuery(),
     val metrics: List<Metric>
-)
+){
+    @Serializable(with = OffsetDateTimeIsoSerializer::class)
+    val from: OffsetDateTime = query.from
+
+    @Serializable(with = OffsetDateTimeIsoSerializer::class)
+    val to: OffsetDateTime = query.to
+
+    val type: String? = query.type
+}

@@ -2,7 +2,7 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Metric
-import de.tarent.crud.dtos.MetricList
+import de.tarent.crud.dtos.MetricQuery
 import de.tarent.crud.service.MetricService
 import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.results.GroupDontExists
@@ -13,7 +13,6 @@ import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
-import io.ktor.server.request.ApplicationRequest
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -21,7 +20,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import mu.KotlinLogging
-import java.time.OffsetDateTime
 import java.util.UUID
 
 fun Route.metricsPage(metricService: MetricService) {
@@ -43,9 +41,9 @@ fun Route.metricsPage(metricService: MetricService) {
         }
 
         get {
-            val from = call.request.from()
-            val to = call.request.to()
-            val type = call.request.type()
+            val groupName = call.path("groupName") ?: return@get
+            val deviceName = call.path("deviceName") ?: return@get
+            val query = call.metricQuery()
 
             call.respond(OK, MetricList(from, to, type, emptyList()))
         }
@@ -86,15 +84,11 @@ fun Route.metricsPage(metricService: MetricService) {
     }
 }
 
-private fun ApplicationRequest.from(): OffsetDateTime = this.queryParameters["from"]
-    ?.let { parseDateTime(it) }
-    ?: OffsetDateTime.now().minusHours(6)
-
-private fun ApplicationRequest.to(): OffsetDateTime = this.queryParameters["to"]
-    ?.let { parseDateTime(it) }
-    ?: OffsetDateTime.now()
-
-private fun ApplicationRequest.type(): String? = this.queryParameters["type"]
+private fun ApplicationCall.metricQuery(): MetricQuery = MetricQuery(
+    from = this.request.queryParameters["from"]?.let { parseDateTime(it) },
+    to = this.request.queryParameters["to"]?.let { parseDateTime(it) },
+    type = this.request.queryParameters["type"]
+)
 
 private suspend fun metricDontExist(call: ApplicationCall, result: MetricDontNotExists<*>) {
     val msg =
