@@ -2,6 +2,8 @@ package de.tarent.crud.service
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Metric
+import de.tarent.crud.dtos.MetricList
+import de.tarent.crud.dtos.MetricQuery
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 import de.tarent.crud.persistance.MetricRepository
@@ -62,4 +64,7 @@ class MetricService(
             }
         }
     }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun query(groupName: String, deviceName: String, query: MetricQuery): MetricList = MetricList(query, emptyList())
 }
