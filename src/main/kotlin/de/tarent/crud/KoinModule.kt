@@ -1,5 +1,3 @@
-@file:Suppress("RemoveExplicitTypeArguments")
-
 package de.tarent.crud
 
 import com.zaxxer.hikari.HikariConfig
@@ -14,7 +12,6 @@ import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.MetricService
 import io.ktor.server.config.ApplicationConfig
-import io.ktor.server.netty.EngineMain
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -23,9 +20,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-
-fun main(args: Array<String>) = EngineMain.main(args)
-
+@Suppress("RemoveExplicitTypeArguments")
 val serviceModule = { configuration: ApplicationConfig ->
     module {
         singleOf(::GroupService)
