@@ -9,6 +9,11 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import mu.KotlinLogging
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.temporal.TemporalAmount
 
 suspend fun ApplicationCall.path(parameterName: String): String? {
     val parameter = this.parameters[parameterName]
@@ -49,4 +54,48 @@ fun cause(e: Throwable): String {
     }
 
     return step(e).message ?: "n/a"
+}
+
+fun parseDateTime(value: String): OffsetDateTime {
+    fun OffsetDateTime.transform(op: String, amount: String, unit: String): OffsetDateTime {
+        val transform = if (op.lowercase() == "-") {
+            { tu: TemporalAmount -> this.minus(tu) }
+        } else {
+            { tu: TemporalAmount -> this.plus(tu) }
+        }
+
+        val duration: Duration = if (unit == "D") {
+            Duration.parse("P${amount}D")
+        } else {
+            Duration.parse("PT${amount}${unit}")
+        }
+
+        return transform(duration)
+    }
+
+    // eg. now; now-4d; now+5m
+    val periodPattern = "^now(([+-])(\\d{0,6})([dhms]))?\$".toRegex()
+    // eg. 2022-12-29T15:30:18
+    val dateTimePattern = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$".toRegex()
+
+    val periodResult = periodPattern.find(value)
+    if (periodResult != null) {
+        return if (periodResult.value == "now") {
+            OffsetDateTime.now()
+        } else {
+            val op = periodResult.groupValues[2].lowercase()
+            val amount = periodResult.groupValues[3].lowercase()
+            val unit = periodResult.groupValues[4].uppercase()
+
+            OffsetDateTime.now().transform(op, amount, unit)
+        }
+    }
+
+    val dateTimeResult = dateTimePattern.find(value)
+    if (dateTimeResult != null) {
+        val local = LocalDateTime.parse(dateTimeResult.value)
+        return local.atZone(ZoneId.systemDefault()).toOffsetDateTime()
+    }
+
+    throw IllegalArgumentException("'$value' could not be parsed.")
 }
