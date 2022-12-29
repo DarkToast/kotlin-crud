@@ -12,6 +12,7 @@ import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.results.MetricCreateResult
 import de.tarent.crud.service.results.MetricDeleteResult
 import de.tarent.crud.service.results.MetricDontNotExists
+import de.tarent.crud.service.results.MetricQueryResult
 import de.tarent.crud.service.results.MetricReadResult
 import de.tarent.crud.service.results.MetricResult
 import de.tarent.crud.service.results.Ok
@@ -66,5 +67,9 @@ class MetricService(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun query(groupName: String, deviceName: String, query: MetricQuery): MetricList = MetricList(query, emptyList())
+    fun query(groupName: String, deviceName: String, query: MetricQuery): MetricQueryResult<MetricList> {
+        return check<MetricList, MetricQueryResult<MetricList>>(groupName, deviceName) {
+            Ok(MetricList(query, emptyList()))
+        }
+    }
 }

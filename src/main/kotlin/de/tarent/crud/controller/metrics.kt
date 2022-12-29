@@ -45,7 +45,12 @@ fun Route.metricsPage(metricService: MetricService) {
             val deviceName = call.path("deviceName") ?: return@get
             val query = call.metricQuery()
 
-            call.respond(OK, metricService.query(groupName, deviceName, query))
+            when(val result = metricService.query(groupName, deviceName, query)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
+                is Ok -> call.respond(OK, result.value)
+            }
+
         }
 
         get("/{metricId}") {
