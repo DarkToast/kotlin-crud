@@ -1,4 +1,4 @@
-package de.tarent.crud.service.results
+package de.tarent.crud.application.results
 
 import java.util.UUID
 

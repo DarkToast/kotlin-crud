@@ -1,6 +1,6 @@
-package de.tarent.crud.controller
+package de.tarent.crud.driver.rest
 
-import de.tarent.crud.dtos.Failure
+import de.tarent.crud.domain.Failure
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.plugins.BadRequestException

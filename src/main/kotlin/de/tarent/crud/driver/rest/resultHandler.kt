@@ -1,8 +1,8 @@
-package de.tarent.crud.controller
+package de.tarent.crud.driver.rest
 
-import de.tarent.crud.dtos.Failure
-import de.tarent.crud.service.results.DeviceDontExists
-import de.tarent.crud.service.results.GroupDontExists
+import de.tarent.crud.domain.Failure
+import de.tarent.crud.application.results.DeviceDontExists
+import de.tarent.crud.application.results.GroupDontExists
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond

@@ -1,6 +1,6 @@
-package de.tarent.crud.persistance
+package de.tarent.crud.driven.database
 
-import de.tarent.crud.dtos.Group
+import de.tarent.crud.domain.Group
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

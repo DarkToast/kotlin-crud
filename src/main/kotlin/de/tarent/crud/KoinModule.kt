@@ -2,15 +2,15 @@ package de.tarent.crud
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import de.tarent.crud.persistance.DeviceEntity
-import de.tarent.crud.persistance.DeviceRepository
-import de.tarent.crud.persistance.GroupEntity
-import de.tarent.crud.persistance.GroupRepository
-import de.tarent.crud.persistance.MetricEntity
-import de.tarent.crud.persistance.MetricRepository
-import de.tarent.crud.service.DeviceService
-import de.tarent.crud.service.GroupService
-import de.tarent.crud.service.MetricService
+import de.tarent.crud.driven.database.DeviceEntity
+import de.tarent.crud.driven.database.DeviceRepository
+import de.tarent.crud.driven.database.GroupEntity
+import de.tarent.crud.driven.database.GroupRepository
+import de.tarent.crud.driven.database.MetricEntity
+import de.tarent.crud.driven.database.MetricRepository
+import de.tarent.crud.application.DeviceService
+import de.tarent.crud.application.GroupService
+import de.tarent.crud.application.MetricService
 import io.ktor.server.config.ApplicationConfig
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

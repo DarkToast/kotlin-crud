@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.dtos.Device
+import de.tarent.crud.domain.Device
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText

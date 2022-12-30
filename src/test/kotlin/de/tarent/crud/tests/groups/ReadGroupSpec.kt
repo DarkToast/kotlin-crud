@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.groups
 
-import de.tarent.crud.dtos.Failure
-import de.tarent.crud.dtos.Group
+import de.tarent.crud.domain.Failure
+import de.tarent.crud.domain.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText

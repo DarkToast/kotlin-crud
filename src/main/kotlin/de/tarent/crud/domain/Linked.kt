@@ -1,6 +1,6 @@
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 
-package de.tarent.crud.dtos
+package de.tarent.crud.domain
 
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.Serializable

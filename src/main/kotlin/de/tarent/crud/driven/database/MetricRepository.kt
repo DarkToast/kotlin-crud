@@ -1,8 +1,8 @@
-package de.tarent.crud.persistance
+package de.tarent.crud.driven.database
 
-import de.tarent.crud.dtos.Metric
-import de.tarent.crud.dtos.MetricList
-import de.tarent.crud.dtos.MetricQuery
+import de.tarent.crud.domain.Metric
+import de.tarent.crud.domain.MetricList
+import de.tarent.crud.domain.MetricQuery
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.ResultRow

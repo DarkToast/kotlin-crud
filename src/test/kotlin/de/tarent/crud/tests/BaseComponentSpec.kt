@@ -1,10 +1,10 @@
 package de.tarent.crud.tests
 
-import de.tarent.crud.dtos.Device
-import de.tarent.crud.dtos.Group
-import de.tarent.crud.persistance.DeviceEntity
-import de.tarent.crud.persistance.GroupEntity
-import de.tarent.crud.persistance.MetricEntity
+import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Group
+import de.tarent.crud.driven.database.DeviceEntity
+import de.tarent.crud.driven.database.GroupEntity
+import de.tarent.crud.driven.database.MetricEntity
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody

@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.dtos.Device
-import de.tarent.crud.dtos.Failure
+import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Failure
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody

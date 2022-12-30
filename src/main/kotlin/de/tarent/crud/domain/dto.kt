@@ -1,9 +1,9 @@
-package de.tarent.crud.dtos
+package de.tarent.crud.domain
 
-import de.tarent.crud.dtos.Method.DELETE
-import de.tarent.crud.dtos.Method.GET
-import de.tarent.crud.dtos.Method.POST
-import de.tarent.crud.dtos.Method.PUT
+import de.tarent.crud.domain.Method.DELETE
+import de.tarent.crud.domain.Method.GET
+import de.tarent.crud.domain.Method.POST
+import de.tarent.crud.domain.Method.PUT
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.net.URI

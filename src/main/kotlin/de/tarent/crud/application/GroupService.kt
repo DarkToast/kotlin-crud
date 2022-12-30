@@ -1,15 +1,15 @@
-package de.tarent.crud.service
+package de.tarent.crud.application
 
-import de.tarent.crud.dtos.Group
-import de.tarent.crud.persistance.GroupRepository
-import de.tarent.crud.service.results.GroupAlreadyExists
-import de.tarent.crud.service.results.GroupCreateResult
-import de.tarent.crud.service.results.GroupDeleteResult
-import de.tarent.crud.service.results.GroupDontExists
-import de.tarent.crud.service.results.GroupListResult
-import de.tarent.crud.service.results.GroupReadResult
-import de.tarent.crud.service.results.GroupUpdateResult
-import de.tarent.crud.service.results.Ok
+import de.tarent.crud.domain.Group
+import de.tarent.crud.driven.database.GroupRepository
+import de.tarent.crud.application.results.GroupAlreadyExists
+import de.tarent.crud.application.results.GroupCreateResult
+import de.tarent.crud.application.results.GroupDeleteResult
+import de.tarent.crud.application.results.GroupDontExists
+import de.tarent.crud.application.results.GroupListResult
+import de.tarent.crud.application.results.GroupReadResult
+import de.tarent.crud.application.results.GroupUpdateResult
+import de.tarent.crud.application.results.Ok
 
 class GroupService(private val repo: GroupRepository) {
     fun create(group: Group): GroupCreateResult<Group> = if (repo.exists(group.name)) {

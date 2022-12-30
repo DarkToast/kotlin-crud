@@ -1,4 +1,4 @@
-package de.tarent.crud.persistance
+package de.tarent.crud.driven.database
 
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Table

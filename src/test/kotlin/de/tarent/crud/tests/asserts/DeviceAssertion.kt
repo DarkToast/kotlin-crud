@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.asserts
 
-import de.tarent.crud.dtos.Device
+import de.tarent.crud.domain.Device
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions
 

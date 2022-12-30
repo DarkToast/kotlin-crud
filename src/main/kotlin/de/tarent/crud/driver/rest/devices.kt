@@ -1,12 +1,12 @@
-package de.tarent.crud.controller
+package de.tarent.crud.driver.rest
 
-import de.tarent.crud.dtos.Device
-import de.tarent.crud.dtos.Failure
-import de.tarent.crud.service.DeviceService
-import de.tarent.crud.service.results.DeviceAlreadyExists
-import de.tarent.crud.service.results.DeviceDontExists
-import de.tarent.crud.service.results.GroupDontExists
-import de.tarent.crud.service.results.Ok
+import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Failure
+import de.tarent.crud.application.DeviceService
+import de.tarent.crud.application.results.DeviceAlreadyExists
+import de.tarent.crud.application.results.DeviceDontExists
+import de.tarent.crud.application.results.GroupDontExists
+import de.tarent.crud.application.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound

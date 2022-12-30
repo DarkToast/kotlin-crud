@@ -1,6 +1,6 @@
-package de.tarent.crud.persistance
+package de.tarent.crud.driven.database
 
-import de.tarent.crud.dtos.Device
+import de.tarent.crud.domain.Device
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -15,10 +15,10 @@ class DeviceRepository(private val database: Database) {
     fun insert(groupId: String, device: Device): String = transaction(database) {
         DeviceEntity.insert {
             it[this.id] = device.id
-            it[this.name] = device.name
-            it[this.description] = device.description
-            it[this.type] = device.type
-            it[this.groupId] = groupId
+            it[name] = device.name
+            it[description] = device.description
+            it[type] = device.type
+            it[DeviceEntity.groupId] = groupId
         }
 
         device.name

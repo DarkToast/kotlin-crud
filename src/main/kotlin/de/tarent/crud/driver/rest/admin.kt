@@ -1,8 +1,8 @@
-package de.tarent.crud.controller
+package de.tarent.crud.driver.rest
 
 import com.zaxxer.hikari.HikariDataSource
-import de.tarent.crud.controller.HealthStatus.DOWN
-import de.tarent.crud.controller.HealthStatus.UP
+import de.tarent.crud.driver.rest.HealthStatus.DOWN
+import de.tarent.crud.driver.rest.HealthStatus.UP
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond

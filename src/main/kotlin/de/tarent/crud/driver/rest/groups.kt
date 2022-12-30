@@ -1,12 +1,12 @@
-package de.tarent.crud.controller
+package de.tarent.crud.driver.rest
 
-import de.tarent.crud.dtos.Failure
-import de.tarent.crud.dtos.Group
-import de.tarent.crud.dtos.Index
-import de.tarent.crud.service.GroupService
-import de.tarent.crud.service.results.GroupAlreadyExists
-import de.tarent.crud.service.results.GroupDontExists
-import de.tarent.crud.service.results.Ok
+import de.tarent.crud.domain.Failure
+import de.tarent.crud.domain.Group
+import de.tarent.crud.domain.Index
+import de.tarent.crud.application.GroupService
+import de.tarent.crud.application.results.GroupAlreadyExists
+import de.tarent.crud.application.results.GroupDontExists
+import de.tarent.crud.application.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK

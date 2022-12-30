@@ -1,21 +1,21 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-package de.tarent.crud.service
+package de.tarent.crud.application
 
-import de.tarent.crud.dtos.Device
-import de.tarent.crud.dtos.Group
-import de.tarent.crud.persistance.DeviceRepository
-import de.tarent.crud.persistance.GroupRepository
-import de.tarent.crud.service.results.DeviceAlreadyExists
-import de.tarent.crud.service.results.DeviceCreateResult
-import de.tarent.crud.service.results.DeviceDeleteResult
-import de.tarent.crud.service.results.DeviceDontExists
-import de.tarent.crud.service.results.DeviceListResult
-import de.tarent.crud.service.results.DeviceReadResult
-import de.tarent.crud.service.results.DeviceResult
-import de.tarent.crud.service.results.DeviceUpdateResult
-import de.tarent.crud.service.results.GroupDontExists
-import de.tarent.crud.service.results.Ok
+import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Group
+import de.tarent.crud.driven.database.DeviceRepository
+import de.tarent.crud.driven.database.GroupRepository
+import de.tarent.crud.application.results.DeviceAlreadyExists
+import de.tarent.crud.application.results.DeviceCreateResult
+import de.tarent.crud.application.results.DeviceDeleteResult
+import de.tarent.crud.application.results.DeviceDontExists
+import de.tarent.crud.application.results.DeviceListResult
+import de.tarent.crud.application.results.DeviceReadResult
+import de.tarent.crud.application.results.DeviceResult
+import de.tarent.crud.application.results.DeviceUpdateResult
+import de.tarent.crud.application.results.GroupDontExists
+import de.tarent.crud.application.results.Ok
 
 typealias ListResult = DeviceListResult<List<Device>>
 

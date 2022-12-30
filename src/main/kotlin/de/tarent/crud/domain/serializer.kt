@@ -1,4 +1,4 @@
-package de.tarent.crud.dtos
+package de.tarent.crud.domain
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

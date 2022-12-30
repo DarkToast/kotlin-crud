@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.metrics
 
-import de.tarent.crud.dtos.MetricList
+import de.tarent.crud.domain.MetricList
 import de.tarent.crud.tests.asserts.Assertion
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode.Companion.NotFound

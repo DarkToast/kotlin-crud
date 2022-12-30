@@ -1,14 +1,14 @@
 package de.tarent.crud
 
-import de.tarent.crud.controller.adminPage
-import de.tarent.crud.controller.devicePage
-import de.tarent.crud.controller.groupPage
-import de.tarent.crud.controller.indexPage
-import de.tarent.crud.controller.metricsPage
-import de.tarent.crud.dtos.Failure
-import de.tarent.crud.service.DeviceService
-import de.tarent.crud.service.GroupService
-import de.tarent.crud.service.MetricService
+import de.tarent.crud.driver.rest.adminPage
+import de.tarent.crud.driver.rest.devicePage
+import de.tarent.crud.driver.rest.groupPage
+import de.tarent.crud.driver.rest.indexPage
+import de.tarent.crud.driver.rest.metricsPage
+import de.tarent.crud.domain.Failure
+import de.tarent.crud.application.DeviceService
+import de.tarent.crud.application.GroupService
+import de.tarent.crud.application.MetricService
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
