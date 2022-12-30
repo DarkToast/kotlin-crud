@@ -7,7 +7,10 @@ import de.tarent.crud.dtos.Method.PUT
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.net.URI
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Serializable
@@ -97,6 +100,9 @@ data class Metric(
             .addLink("get_group", GET, URI("/groups/$groupName"))
 }
 
+/**
+ * Using `OffsetDateTime` as response type to give clients the ability to get information of the servers time zone.
+ */
 @Serializable
 class MetricList(
     @Transient private val query: MetricQuery = MetricQuery(),
@@ -106,16 +112,16 @@ class MetricList(
     val metrics: List<Metric> = metricList
 
     @Serializable(with = OffsetDateTimeIsoSerializer::class)
-    val from: OffsetDateTime = query.from
+    val from: OffsetDateTime = query.from.atZone(ZoneId.systemDefault()).toOffsetDateTime()
 
     @Serializable(with = OffsetDateTimeIsoSerializer::class)
-    val to: OffsetDateTime = query.to
+    val to: OffsetDateTime = query.to.atZone(ZoneId.systemDefault()).toOffsetDateTime()
 
     val type: String? = query.type
 
     fun withLinks(groupName: String, deviceName: String): MetricList {
         val type = if (type != null) "&type=$type" else ""
-        val query = "?from=${from}&to=${to}$type"
+        val query = "?from=${from.toLocalDateTime()}&to=${to.toLocalDateTime()}$type"
 
         metricList = metricList.map { it.withLinks(groupName, deviceName) }
 

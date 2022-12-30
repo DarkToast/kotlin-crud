@@ -52,8 +52,8 @@ class MetricRepository(private val database: Database) {
             .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
 
         val filterDeviceId = MetricEntity.deviceId inSubQuery deviceIdQuery
-        val greaterEqFrom = MetricEntity.timestamp greaterEq queryData.from.toLocalDateTime()
-        val lessEqTo = MetricEntity.timestamp lessEq queryData.to.toLocalDateTime()
+        val greaterEqFrom = MetricEntity.timestamp greaterEq queryData.from
+        val lessEqTo = MetricEntity.timestamp lessEq queryData.to
         val filterUnit = { type: String -> MetricEntity.unit eq type }
 
         MetricEntity

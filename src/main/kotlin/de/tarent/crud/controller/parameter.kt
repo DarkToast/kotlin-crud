@@ -11,8 +11,6 @@ import io.ktor.server.response.respond
 import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
 import java.time.temporal.ChronoUnit.SECONDS
 import java.time.temporal.TemporalAmount
 
@@ -51,14 +49,14 @@ suspend inline fun <reified T : Any> ApplicationCall.body(
 fun cause(e: Throwable): String {
     tailrec fun step(e: Throwable): Throwable {
         val cause = e.cause
-        return if(cause != null) step(cause) else e
+        return if (cause != null) step(cause) else e
     }
 
     return step(e).message ?: "n/a"
 }
 
-fun parseDateTime(value: String): OffsetDateTime {
-    fun OffsetDateTime.transform(op: String, amount: String, unit: String): OffsetDateTime {
+fun parseDateTime(value: String): LocalDateTime {
+    fun LocalDateTime.transform(op: String, amount: String, unit: String): LocalDateTime {
         val transform = if (op.lowercase() == "-") {
             { tu: TemporalAmount -> this.minus(tu) }
         } else {
@@ -74,7 +72,7 @@ fun parseDateTime(value: String): OffsetDateTime {
         return transform(duration)
     }
 
-    val now = OffsetDateTime.now().truncatedTo(SECONDS)
+    val now = LocalDateTime.now().truncatedTo(SECONDS)
 
     // eg. now; now-4d; now+5m
     val periodPattern = "^now(([+-])(\\d{0,6})([dhms]))?\$".toRegex()
@@ -95,8 +93,7 @@ fun parseDateTime(value: String): OffsetDateTime {
 
     val dateTimeResult = dateTimePattern.find(value)
     if (dateTimeResult != null) {
-        val local = LocalDateTime.parse(dateTimeResult.value)
-        return local.atZone(ZoneId.systemDefault()).toOffsetDateTime()
+        return LocalDateTime.parse(dateTimeResult.value)
     }
 
     throw IllegalArgumentException("'$value' could not be parsed.")
