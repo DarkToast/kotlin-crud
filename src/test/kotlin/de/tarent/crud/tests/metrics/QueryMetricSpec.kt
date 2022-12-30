@@ -41,8 +41,8 @@ class QueryMetricSpec : BaseMetricSpec() {
         // and: The time range is six hours to now.
         // and: The list consists of all metrics.
         Assertion.assert<MetricList>(response) {
-            assertThat(it.from).isCloseTo(sixHours, within(1, SECONDS))
-            assertThat(it.to).isCloseTo(now, within(1, SECONDS))
+            assertThat(it.from).isCloseTo(sixHours, within(2, SECONDS))
+            assertThat(it.to).isCloseTo(now, within(2, SECONDS))
             assertThat(it.type).isNull()
             assertThat(it.metrics).hasSize(10)
             true
@@ -60,8 +60,8 @@ class QueryMetricSpec : BaseMetricSpec() {
         // and: The time range is six hours to now.
         // and: The list consists only °C
         Assertion.assert<MetricList>(response) {
-            assertThat(it.from).isCloseTo(sixHours, within(1, SECONDS))
-            assertThat(it.to).isCloseTo(now, within(1, SECONDS))
+            assertThat(it.from).isCloseTo(sixHours, within(2, SECONDS))
+            assertThat(it.to).isCloseTo(now, within(2, SECONDS))
             assertThat(it.type).isEqualTo("°C")
             assertThat(it.metrics).hasSize(5)
             assertThat(it.metrics).allMatch { metric -> metric.unit == "°C" }
@@ -77,8 +77,8 @@ class QueryMetricSpec : BaseMetricSpec() {
         // and: The time range is six hours to now.
         // and: The list consists only °C
         Assertion.assert<MetricList>(response) {
-            assertThat(it.from).isCloseTo(sixHours, within(1, SECONDS))
-            assertThat(it.to).isCloseTo(now, within(1, SECONDS))
+            assertThat(it.from).isCloseTo(sixHours, within(2, SECONDS))
+            assertThat(it.to).isCloseTo(now, within(2, SECONDS))
             assertThat(it.type).isEqualTo("hPa")
             assertThat(it.metrics).hasSize(5)
             assertThat(it.metrics).allMatch { metric -> metric.unit == "hPa" }
@@ -87,9 +87,9 @@ class QueryMetricSpec : BaseMetricSpec() {
     }
 
     @Test
-    fun `filter last 10 minutes`() = spec.componentSpec {
+    fun `filter last 11 minutes`() = spec.componentSpec {
         // when: Get on metrics
-        val response = client.get("$metricsUrl?from=now-10m")
+        val response = client.get("$metricsUrl?from=now-11m")
 
         // then: Status Ok
         assertThat(response.status).isEqualTo(OK)
@@ -97,7 +97,7 @@ class QueryMetricSpec : BaseMetricSpec() {
         // and: The time range is six hours to now.
         // and: The list consists only °C
         Assertion.assert<MetricList>(response) {
-            val tenMinutes = now.minusMinutes(10)
+            val tenMinutes = now.minusMinutes(11)
             assertThat(it.from).isCloseTo(tenMinutes, within(1, SECONDS))
             assertThat(it.to).isCloseTo(now, within(1, SECONDS))
             assertThat(it.type).isNull()
@@ -107,9 +107,9 @@ class QueryMetricSpec : BaseMetricSpec() {
     }
 
     @Test
-    fun `filter last 20 minutes to last 5minutes`() = spec.componentSpec {
+    fun `filter last 21 minutes to last 4 minutes`() = spec.componentSpec {
         // when: Get on metrics
-        val response = client.get("$metricsUrl?from=now-20m&to=now-5m")
+        val response = client.get("$metricsUrl?from=now-21m&to=now-4m")
 
         // then: Status Ok
         assertThat(response.status).isEqualTo(OK)
@@ -117,11 +117,11 @@ class QueryMetricSpec : BaseMetricSpec() {
         // and: The time range is six hours to now.
         // and: The list consists only °C
         Assertion.assert<MetricList>(response) {
-            val twentyMinutes = now.minusMinutes(20)
-            val fiveMinutes = now.minusMinutes(5)
+            val twentyMinutes = now.minusMinutes(21)
+            val fiveMinutes = now.minusMinutes(4)
 
-            assertThat(it.from).isCloseTo(twentyMinutes, within(1, SECONDS))
-            assertThat(it.to).isCloseTo(fiveMinutes, within(1, SECONDS))
+            assertThat(it.from).isCloseTo(twentyMinutes, within(2, SECONDS))
+            assertThat(it.to).isCloseTo(fiveMinutes, within(2, SECONDS))
             assertThat(it.type).isNull()
             assertThat(it.metrics).hasSize(8)
             true
@@ -131,7 +131,7 @@ class QueryMetricSpec : BaseMetricSpec() {
     @Test
     fun combined() = spec.componentSpec {
         // when: Get on metrics
-        val response = client.get("$metricsUrl?from=now-20m&to=now-5m&type=hPa")
+        val response = client.get("$metricsUrl?from=now-21m&to=now-4m&type=hPa")
 
         // then: Status Ok
         assertThat(response.status).isEqualTo(OK)
@@ -139,8 +139,8 @@ class QueryMetricSpec : BaseMetricSpec() {
         // and: The time range is six hours to now.
         // and: The list consists only °C
         Assertion.assert<MetricList>(response) {
-            val twentyMinutes = now.minusMinutes(20)
-            val fiveMinutes = now.minusMinutes(5)
+            val twentyMinutes = now.minusMinutes(21)
+            val fiveMinutes = now.minusMinutes(4)
 
             assertThat(it.from).isCloseTo(twentyMinutes, within(1, SECONDS))
             assertThat(it.to).isCloseTo(fiveMinutes, within(1, SECONDS))
