@@ -57,7 +57,6 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
             Ok(device)
         }
 
-
     fun delete(groupName: String, deviceName: String): DeviceDeleteResult<Group> = groupExists(groupName) {
         if (deviceRepo.delete(groupName, deviceName) == 1) {
             groupRepo.load(groupName)?.let { Ok(it) } ?: GroupDontExists(groupName)
@@ -71,4 +70,3 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
             Ok(deviceRepo.findForGroup(groupName))
         }
 }
-

@@ -11,5 +11,4 @@ object Assertion {
         val element: T = json.decodeFromString(response.bodyAsText())
         return assertion(element)
     }
-
 }

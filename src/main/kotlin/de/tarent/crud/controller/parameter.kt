@@ -66,7 +66,7 @@ fun parseDateTime(value: String): LocalDateTime {
         val duration: Duration = if (unit == "D") {
             Duration.parse("P${amount}D")
         } else {
-            Duration.parse("PT${amount}${unit}")
+            Duration.parse("PT${amount}$unit")
         }
 
         return transform(duration)

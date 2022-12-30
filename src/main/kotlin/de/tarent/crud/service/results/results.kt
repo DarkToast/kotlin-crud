@@ -49,6 +49,6 @@ data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String)
     DeviceCreateResult<T>,
     DeviceUpdateResult<T>
 
-data class MetricDontNotExists<T>(val groupName: String, val deviceName: String, val metricId: UUID):
+data class MetricDontNotExists<T>(val groupName: String, val deviceName: String, val metricId: UUID) :
     MetricReadResult<T>,
     MetricDeleteResult<T>

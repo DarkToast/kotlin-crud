@@ -145,7 +145,6 @@ class CreateMetricSpec : BaseMetricSpec() {
         assertLink("get_groups", "/groups", "GET", failure.links)
     }
 
-
     private suspend fun ApplicationTestBuilder.postMetric(url: String, body: String): HttpResponse =
         client.post(url) {
             contentType(ContentType.Application.Json)

@@ -6,9 +6,9 @@
     </appender>
 
     <logger name="de.tarent.crud" level="info" />
-    <logger name="Exposed" level="debug" />
+    <logger name="Exposed" level="info" />
 
-    <root level="info">
+    <root level="error">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

@@ -68,5 +68,4 @@ class DeviceRepository(private val database: Database) {
             .andWhere { DeviceEntity.groupId eq groupName }
             .count() == 1L
     }
-
 }

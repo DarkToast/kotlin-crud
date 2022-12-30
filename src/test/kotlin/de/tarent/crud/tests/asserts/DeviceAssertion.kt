@@ -4,7 +4,7 @@ import de.tarent.crud.dtos.Device
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions
 
-interface DeviceAssertion: LinkAssertion {
+interface DeviceAssertion : LinkAssertion {
     suspend fun assertDevice(name: String, description: String, type: String, response: HttpResponse): Boolean {
         return Assertion.assert<Device>(response) { assertDevice(name, description, type, it) }
     }
