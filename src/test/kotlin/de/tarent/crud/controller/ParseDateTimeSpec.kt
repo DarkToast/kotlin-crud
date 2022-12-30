@@ -11,7 +11,7 @@ internal class ParseDateTimeSpec {
     @Test
     fun `parses iso`() {
         val dateTime: OffsetDateTime = parseDateTime("2022-12-29T13:55:56")
-        assertThat(dateTime).isEqualTo(OffsetDateTime.parse("2022-12-29T13:55:56+01:00"))
+        assertThat(dateTime).isEqualTo(OffsetDateTime.parse("2022-12-29T13:55:56+01:00").trim())
     }
 
     @Test
