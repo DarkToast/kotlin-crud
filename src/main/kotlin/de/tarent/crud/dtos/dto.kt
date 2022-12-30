@@ -100,8 +100,11 @@ data class Metric(
 @Serializable
 class MetricList(
     @Transient private val query: MetricQuery = MetricQuery(),
-    val metrics: List<Metric>
-){
+    @Transient private var metricList: List<Metric> = emptyList()
+) : Linked<MetricList>() {
+
+    val metrics: List<Metric> = metricList
+
     @Serializable(with = OffsetDateTimeIsoSerializer::class)
     val from: OffsetDateTime = query.from
 
@@ -109,4 +112,16 @@ class MetricList(
     val to: OffsetDateTime = query.to
 
     val type: String? = query.type
+
+    fun withLinks(groupName: String, deviceName: String): MetricList {
+        val type = if (type != null) "&type=$type" else ""
+        val query = "?from=${from}&to=${to}$type"
+
+        metricList = metricList.map { it.withLinks(groupName, deviceName) }
+
+        return this
+            .addLink("_self", GET, URI("/groups/$groupName/devices/$deviceName/metrics$query"))
+            .addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
+            .addLink("get_group", GET, URI("/groups/$groupName"))
+    }
 }
