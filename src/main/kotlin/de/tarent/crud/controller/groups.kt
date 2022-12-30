@@ -3,9 +3,9 @@ package de.tarent.crud.controller
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Group
 import de.tarent.crud.dtos.Index
+import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.results.GroupAlreadyExists
 import de.tarent.crud.service.results.GroupDontExists
-import de.tarent.crud.service.GroupService
 import de.tarent.crud.service.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -55,7 +55,7 @@ fun Route.groupPage(groupService: GroupService) {
         put("{name?}") {
             val name = call.path("name") ?: return@put
             val group = call.body<Group>() ?: return@put
-            logger.info { "UPDATE group with name '${name}'." }
+            logger.info { "UPDATE group with name '$name'." }
 
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
@@ -66,7 +66,7 @@ fun Route.groupPage(groupService: GroupService) {
 
         delete("{name?}") {
             val name = call.path("name") ?: return@delete
-            logger.info { "DELETE group with name '${name}'." }
+            logger.info { "DELETE group with name '$name'." }
 
             when (val result = groupService.delete(name)) {
                 is GroupDontExists -> groupDontExists(call, result)

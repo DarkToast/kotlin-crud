@@ -1,6 +1,11 @@
 stages:
   - build
 
+linter:
+  image: gradle:jdk17
+  stage: build
+  script: "gradle clean ktlintCheck"
+
 test/build:
   image: gradle:jdk17
   stage: build

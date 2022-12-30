@@ -143,6 +143,4 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         // then: status not found is returned
         assertThat(response.status).isEqualTo(NotFound)
     }
-
-
 }

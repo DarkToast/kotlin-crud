@@ -29,7 +29,7 @@ fun Route.metricsPage(metricService: MetricService) {
         post {
             val groupName = call.path("groupName") ?: return@post
             val deviceName = call.path("deviceName") ?: return@post
-            val metric: Metric = call.body { msg, cause  -> Failure.onDevice(400, msg, cause, groupName, deviceName) } ?: return@post
+            val metric: Metric = call.body { msg, cause -> Failure.onDevice(400, msg, cause, groupName, deviceName) } ?: return@post
 
             logger.info { "POST new metric on device '$deviceName' of group '$groupName'" }
 
@@ -47,7 +47,7 @@ fun Route.metricsPage(metricService: MetricService) {
 
             logger.info { "QUERY metrics on device '$deviceName' of group '$groupName'" }
 
-            when(val result = metricService.query(groupName, deviceName, query)) {
+            when (val result = metricService.query(groupName, deviceName, query)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is Ok -> {
@@ -55,7 +55,6 @@ fun Route.metricsPage(metricService: MetricService) {
                     call.respond(OK, result.value.withLinks(groupName, deviceName))
                 }
             }
-
         }
 
         get("/{metricId}") {

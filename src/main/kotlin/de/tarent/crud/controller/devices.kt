@@ -2,9 +2,9 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Failure
+import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.results.DeviceAlreadyExists
 import de.tarent.crud.service.results.DeviceDontExists
-import de.tarent.crud.service.DeviceService
 import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.results.Ok
 import io.ktor.http.HttpStatusCode.Companion.Conflict
@@ -39,7 +39,6 @@ fun Route.devicePage(deviceService: DeviceService) {
             }
         }
 
-
         get("{deviceName?}") {
             val groupName = call.path("groupName") ?: return@get
             val deviceName = call.path("deviceName") ?: return@get
@@ -54,7 +53,6 @@ fun Route.devicePage(deviceService: DeviceService) {
                 is DeviceDontExists -> deviceDontExist(call, result)
             }
         }
-
 
         post {
             val groupName = call.path("groupName") ?: return@post
@@ -73,7 +71,6 @@ fun Route.devicePage(deviceService: DeviceService) {
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
             }
         }
-
 
         put("{deviceName?}") {
             val groupName: String = call.path("groupName") ?: return@put
@@ -94,7 +91,6 @@ fun Route.devicePage(deviceService: DeviceService) {
                 is DeviceDontExists -> deviceDontExist(call, result)
             }
         }
-
 
         delete("{deviceName?}") {
             val groupName: String = call.path("groupName") ?: return@delete

@@ -4,7 +4,7 @@ import de.tarent.crud.dtos.Group
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions
 
-interface GroupAssertion: LinkAssertion {
+interface GroupAssertion : LinkAssertion {
     suspend fun assertGroup(name: String, description: String, response: HttpResponse): Boolean {
         return Assertion.assert<Group>(response) { assertGroup(name, description, it) }
     }

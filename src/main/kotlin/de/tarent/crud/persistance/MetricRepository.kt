@@ -19,7 +19,6 @@ import java.math.BigDecimal
 import java.time.ZoneId.systemDefault
 import java.util.UUID
 
-
 class MetricRepository(private val database: Database) {
     fun insert(groupName: String, deviceName: String, metric: Metric) = transaction(database) {
         val deviceIdQuery = DeviceEntity

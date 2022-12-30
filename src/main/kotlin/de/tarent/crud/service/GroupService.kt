@@ -12,7 +12,7 @@ import de.tarent.crud.service.results.GroupUpdateResult
 import de.tarent.crud.service.results.Ok
 
 class GroupService(private val repo: GroupRepository) {
-    fun create(group: Group): GroupCreateResult<Group> = if(repo.exists(group.name)) {
+    fun create(group: Group): GroupCreateResult<Group> = if (repo.exists(group.name)) {
         GroupAlreadyExists(group.name)
     } else {
         repo.insert(group)
@@ -24,11 +24,11 @@ class GroupService(private val repo: GroupRepository) {
         ?: GroupDontExists(name)
 
     fun update(name: String, group: Group): GroupUpdateResult<Group> {
-        if(!repo.exists(name)) {
+        if (!repo.exists(name)) {
             return GroupDontExists(name)
         }
 
-        if(name != group.name && repo.exists(group.name)) {
+        if (name != group.name && repo.exists(group.name)) {
             return GroupAlreadyExists(group.name)
         }
 
@@ -43,4 +43,3 @@ class GroupService(private val repo: GroupRepository) {
 
     fun list(): GroupListResult<List<Group>> = Ok(repo.list())
 }
-

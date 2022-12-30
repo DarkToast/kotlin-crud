@@ -33,7 +33,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
         // then: Status Created with an URL
         assertThat(response.status).isEqualTo(Created)
 
-        //and: the device is returned
+        // and: the device is returned
         val device: Device = json.decodeFromString(response.bodyAsText())
         assertDevice("steckdose_lüftung", "Steckdose für die Lüftung", "plug", device)
 
