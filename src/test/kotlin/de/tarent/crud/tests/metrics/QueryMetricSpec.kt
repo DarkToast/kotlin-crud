@@ -8,6 +8,7 @@ import io.ktor.http.HttpStatusCode.Companion.OK
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.time.OffsetDateTime.now
 import java.time.temporal.ChronoUnit.SECONDS
 
@@ -46,6 +47,29 @@ class QueryMetricSpec : BaseMetricSpec() {
             assertThat(it.type).isNull()
             assertThat(it.metrics).hasSize(10)
             true
+        }
+    }
+
+    @Test
+    fun `has links`() = spec.componentSpec {
+        // given: a from and to
+        val to = LocalDateTime.now().truncatedTo(SECONDS)
+        val from = to.minusMinutes(10)
+        // when: Get on metrics
+        val response = client.get("$metricsUrl?from=$from&to=$to")
+
+        // then: Status Ok
+        assertThat(response.status).isEqualTo(OK)
+
+        Assertion.assert<MetricList>(response) {
+            assertLink(
+                "_self",
+                "/groups/$testGroupName/devices/$testDeviceName/metrics?from=$from&to=$to",
+                "GET",
+                it.links
+            )
+            assertLink("get_group", "/groups/$testGroupName", "GET", it.links)
+            assertLink("get_device", "/groups/$testGroupName/devices/$testDeviceName", "GET", it.links)
         }
     }
 
