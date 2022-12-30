@@ -1,8 +1,15 @@
 package de.tarent.crud.persistance
 
 import de.tarent.crud.dtos.Metric
+import de.tarent.crud.dtos.MetricList
+import de.tarent.crud.dtos.MetricQuery
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inSubQuery
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -31,20 +38,43 @@ class MetricRepository(private val database: Database) {
     fun load(metricId: UUID): Metric? = transaction(database) {
         MetricEntity
             .select { MetricEntity.id eq metricId }
-            .map {
-                Metric(
-                    id = it[MetricEntity.id].value,
-                    unit = it[MetricEntity.unit],
-                    value = it[MetricEntity.value].toDouble(),
-                    timestamp = it[MetricEntity.timestamp]
-                        .atZone(systemDefault())
-                        .toOffsetDateTime()
-                )
-            }
+            .map(transform)
             .firstOrNull()
     }
 
     fun delete(metricId: UUID): Int = transaction(database) {
         MetricEntity.deleteWhere { MetricEntity.id eq metricId }
+    }
+
+    fun query(groupName: String, deviceName: String, queryData: MetricQuery): MetricList = transaction(database) {
+        val deviceIdQuery: Query = DeviceEntity
+            .slice(DeviceEntity.id)
+            .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+
+        val filterDeviceId = MetricEntity.deviceId inSubQuery deviceIdQuery
+        val greaterEqFrom = MetricEntity.timestamp greaterEq queryData.from.toLocalDateTime()
+        val lessEqTo = MetricEntity.timestamp lessEq queryData.to.toLocalDateTime()
+        val filterUnit = { type: String -> MetricEntity.unit eq type }
+
+        MetricEntity
+            .select {
+                val expr = filterDeviceId and greaterEqFrom and lessEqTo
+                queryData.type
+                    ?.let { expr and filterUnit(it) }
+                    ?: expr
+            }
+            .map(transform)
+            .let { metrics -> MetricList(queryData, metrics) }
+    }
+
+    private val transform = { row: ResultRow ->
+        Metric(
+            id = row[MetricEntity.id].value,
+            unit = row[MetricEntity.unit],
+            value = row[MetricEntity.value].toDouble(),
+            timestamp = row[MetricEntity.timestamp]
+                .atZone(systemDefault())
+                .toOffsetDateTime()
+        )
     }
 }
