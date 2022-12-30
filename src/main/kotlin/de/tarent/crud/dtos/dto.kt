@@ -125,3 +125,21 @@ class MetricList(
             .addLink("get_group", GET, URI("/groups/$groupName"))
     }
 }
+
+/**
+ * Using `LocalDateTime` as request type to have a better URL encoding ability.
+ */
+class MetricQuery(
+    from: LocalDateTime? = null,
+    to: LocalDateTime? = null,
+    val type: String? = null
+) {
+    val from: LocalDateTime
+    val to: LocalDateTime
+
+    init {
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        this.from = from ?: now.minusHours(6)
+        this.to = to ?: now
+    }
+}
