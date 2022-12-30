@@ -13,6 +13,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit.SECONDS
 import java.time.temporal.TemporalAmount
 
 suspend fun ApplicationCall.path(parameterName: String): String? {
@@ -73,6 +74,8 @@ fun parseDateTime(value: String): OffsetDateTime {
         return transform(duration)
     }
 
+    val now = OffsetDateTime.now().truncatedTo(SECONDS)
+
     // eg. now; now-4d; now+5m
     val periodPattern = "^now(([+-])(\\d{0,6})([dhms]))?\$".toRegex()
     // eg. 2022-12-29T15:30:18
@@ -81,13 +84,12 @@ fun parseDateTime(value: String): OffsetDateTime {
     val periodResult = periodPattern.find(value)
     if (periodResult != null) {
         return if (periodResult.value == "now") {
-            OffsetDateTime.now()
+            now
         } else {
             val op = periodResult.groupValues[2].lowercase()
             val amount = periodResult.groupValues[3].lowercase()
             val unit = periodResult.groupValues[4].uppercase()
-
-            OffsetDateTime.now().transform(op, amount, unit)
+            now.transform(op, amount, unit)
         }
     }
 
