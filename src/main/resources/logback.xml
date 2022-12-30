@@ -8,7 +8,7 @@
     <logger name="de.tarent.crud" level="info" />
     <logger name="Exposed" level="debug" />
 
-    <root level="error">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

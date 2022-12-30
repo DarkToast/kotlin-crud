@@ -2,6 +2,8 @@ package de.tarent.crud.service
 
 import de.tarent.crud.dtos.Device
 import de.tarent.crud.dtos.Metric
+import de.tarent.crud.dtos.MetricList
+import de.tarent.crud.dtos.MetricQuery
 import de.tarent.crud.persistance.DeviceRepository
 import de.tarent.crud.persistance.GroupRepository
 import de.tarent.crud.persistance.MetricRepository
@@ -10,6 +12,7 @@ import de.tarent.crud.service.results.GroupDontExists
 import de.tarent.crud.service.results.MetricCreateResult
 import de.tarent.crud.service.results.MetricDeleteResult
 import de.tarent.crud.service.results.MetricDontNotExists
+import de.tarent.crud.service.results.MetricQueryResult
 import de.tarent.crud.service.results.MetricReadResult
 import de.tarent.crud.service.results.MetricResult
 import de.tarent.crud.service.results.Ok
@@ -60,6 +63,14 @@ class MetricService(
             } else {
                 MetricDontNotExists(groupName, deviceName, metricId)
             }
+        }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun query(groupName: String, deviceName: String, query: MetricQuery): MetricQueryResult<MetricList> {
+
+        return check<MetricList, MetricQueryResult<MetricList>>(groupName, deviceName) {
+            Ok(metricRepository.query(groupName, deviceName, query))
         }
     }
 }

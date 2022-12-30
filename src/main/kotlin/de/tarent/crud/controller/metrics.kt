@@ -2,6 +2,7 @@ package de.tarent.crud.controller
 
 import de.tarent.crud.dtos.Failure
 import de.tarent.crud.dtos.Metric
+import de.tarent.crud.dtos.MetricQuery
 import de.tarent.crud.service.MetricService
 import de.tarent.crud.service.results.DeviceDontExists
 import de.tarent.crud.service.results.GroupDontExists
@@ -39,6 +40,24 @@ fun Route.metricsPage(metricService: MetricService) {
             }
         }
 
+        get {
+            val groupName = call.path("groupName") ?: return@get
+            val deviceName = call.path("deviceName") ?: return@get
+            val query = call.metricQuery()
+
+            logger.info { "QUERY metrics on device '$deviceName' of group '$groupName'" }
+
+            when(val result = metricService.query(groupName, deviceName, query)) {
+                is GroupDontExists -> groupDontExists(call, result)
+                is DeviceDontExists -> deviceDontExist(call, result)
+                is Ok -> {
+                    logger.info { "Found ${result.value.metrics.size} metrics" }
+                    call.respond(OK, result.value.withLinks(groupName, deviceName))
+                }
+            }
+
+        }
+
         get("/{metricId}") {
             val groupName = call.path("groupName") ?: return@get
             val deviceName = call.path("deviceName") ?: return@get
@@ -74,6 +93,12 @@ fun Route.metricsPage(metricService: MetricService) {
         }
     }
 }
+
+private fun ApplicationCall.metricQuery(): MetricQuery = MetricQuery(
+    from = this.request.queryParameters["from"]?.let { parseDateTime(it) },
+    to = this.request.queryParameters["to"]?.let { parseDateTime(it) },
+    type = this.request.queryParameters["type"]
+)
 
 private suspend fun metricDontExist(call: ApplicationCall, result: MetricDontNotExists<*>) {
     val msg =
