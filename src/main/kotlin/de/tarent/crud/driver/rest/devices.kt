@@ -5,7 +5,11 @@ import de.tarent.crud.application.results.DeviceAlreadyExists
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
+import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Name
+import de.tarent.crud.domain.Type
+import de.tarent.crud.driver.rest.dtos.CreateUpdateDeviceRequest
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.http.HttpStatusCode.Companion.Conflict
@@ -60,9 +64,14 @@ fun Route.devicePage(deviceService: DeviceService) {
 
         post {
             val groupName = call.path("groupName") ?: return@post
-            val device = call.body<Device> { msg, cause ->
+            val command = call.body<CreateUpdateDeviceRequest> { msg, cause ->
                 Failure.onGroup(400, msg, cause, groupName)
             } ?: return@post
+            val device = Device(
+                name = Name(command.name),
+                description = Description(command.description),
+                type = Type(command.type)
+            )
 
             logger.info { "CREATE a new device in the group $groupName" }
 
@@ -79,9 +88,14 @@ fun Route.devicePage(deviceService: DeviceService) {
         put("{deviceName?}") {
             val groupName: String = call.path("groupName") ?: return@put
             val deviceName: String = call.path("deviceName") ?: return@put
-            val device = call.body<Device> { msg, cause ->
+            val command = call.body<CreateUpdateDeviceRequest> { msg, cause ->
                 Failure.onGroup(400, msg, cause, groupName)
             } ?: return@put
+            val device = Device(
+                name = Name(command.name),
+                description = Description(command.description),
+                type = Type(command.type)
+            )
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
 

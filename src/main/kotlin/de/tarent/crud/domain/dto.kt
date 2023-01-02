@@ -14,14 +14,6 @@ import java.util.UUID
 class DomainException(message: String) : RuntimeException(message)
 
 @Serializable
-data class Device(
-    @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
-    val name: String,
-    val description: String,
-    val type: String,
-)
-
-@Serializable
 data class Metric(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     val unit: String,

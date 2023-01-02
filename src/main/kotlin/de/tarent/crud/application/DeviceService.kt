@@ -29,8 +29,8 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
     }
 
     fun create(groupName: String, device: Device): DeviceCreateResult<Device> = groupExists(groupName) {
-        return if (deviceRepo.exists(groupName, device.name)) {
-            DeviceAlreadyExists(groupName, device.name)
+        return if (deviceRepo.exists(groupName, device.name.toString())) {
+            DeviceAlreadyExists(groupName, device.name.toString())
         } else {
             deviceRepo.insert(groupName, device)
             Ok(device)
@@ -49,7 +49,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
                 return@groupExists DeviceDontExists(groupName, deviceName)
             }
 
-            if (deviceName != device.name && deviceRepo.exists(groupName, device.name)) {
+            if (deviceName != device.name.toString() && deviceRepo.exists(groupName, device.name.toString())) {
                 return@groupExists DeviceAlreadyExists(groupName, deviceName)
             }
 

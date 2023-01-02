@@ -20,9 +20,9 @@ data class DeviceResponse(
     companion object {
         fun from(device: Device) = DeviceResponse(
             id = device.id,
-            name = device.name,
-            description = device.description,
-            type = device.type
+            name = device.name.toString(),
+            description = device.description.toString(),
+            type = device.type.toString()
         )
     }
 
@@ -34,3 +34,10 @@ data class DeviceResponse(
         .addLink("get_devices", Method.GET, URI("/groups/$groupName/devices"))
         .addLink("get_group", Method.GET, URI("/groups/$groupName"))
 }
+
+@Serializable
+data class CreateUpdateDeviceRequest(
+    val name: String,
+    val description: String,
+    val type: String,
+)
