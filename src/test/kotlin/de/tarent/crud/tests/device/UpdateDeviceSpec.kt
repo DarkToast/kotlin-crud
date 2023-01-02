@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.domain.Device
+import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.put
@@ -36,7 +36,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         assertThat(response.status).isEqualTo(OK)
 
         // and: The new device as body
-        val device: Device = json.decodeFromString(response.bodyAsText())
+        val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
         assertDevice(testDeviceName, "my-new-description", "switch", response)
 
         // and: It has all related links
@@ -66,7 +66,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
         assertThat(response.status).isEqualTo(OK)
 
         // and: The renamed device as body
-        val device: Device = json.decodeFromString(response.bodyAsText())
+        val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
         assertDevice("my-new-name", "my-new-description", "switch", response)
 
         // and: It has all related links

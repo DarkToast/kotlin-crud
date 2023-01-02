@@ -1,9 +1,9 @@
 package de.tarent.crud.tests
 
-import de.tarent.crud.domain.Device
 import de.tarent.crud.driven.database.DeviceEntity
 import de.tarent.crud.driven.database.GroupEntity
 import de.tarent.crud.driven.database.MetricEntity
+import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
@@ -78,7 +78,7 @@ abstract class BaseComponentSpec {
         }
 
         assertThat(response.status).isEqualTo(Created)
-        return json.decodeFromString<Device>(response.bodyAsText()).links["_self"]?.href
+        return json.decodeFromString<DeviceResponse>(response.bodyAsText()).links["_self"]?.href
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
 

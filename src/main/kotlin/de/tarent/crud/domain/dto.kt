@@ -2,7 +2,6 @@ package de.tarent.crud.domain
 
 import de.tarent.crud.domain.Method.DELETE
 import de.tarent.crud.domain.Method.GET
-import de.tarent.crud.domain.Method.PUT
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.net.URI
@@ -20,13 +19,7 @@ data class Device(
     val name: String,
     val description: String,
     val type: String,
-) : Linked<Device>() {
-    fun withLinks(groupName: String): Device = this.addLink("_self", GET, URI("/groups/$groupName/devices/$name"))
-        .addLink("update", PUT, URI("/groups/$groupName/devices/$name"))
-        .addLink("delete", DELETE, URI("/groups/$groupName/devices/$name"))
-        .addLink("get_devices", GET, URI("/groups/$groupName/devices"))
-        .addLink("get_group", GET, URI("/groups/$groupName"))
-}
+)
 
 @Serializable
 data class Metric(
