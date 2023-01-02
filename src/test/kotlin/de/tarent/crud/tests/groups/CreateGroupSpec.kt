@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.groups
 
-import de.tarent.crud.domain.Failure
-import de.tarent.crud.domain.Group
+import de.tarent.crud.driver.rest.Failure
+import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -33,7 +33,7 @@ class CreateGroupSpec : BaseGroupSpec() {
         assertGroup("HWR", "Hauswirtschaftsraum", response)
 
         // and: with further links
-        val group: Group = json.decodeFromString(response.bodyAsText())
+        val group: GroupResponse = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", group.links)
         assertLink("_self", "/groups/HWR", "GET", group.links)
         assertLink("delete", "/groups/HWR", "DELETE", group.links)

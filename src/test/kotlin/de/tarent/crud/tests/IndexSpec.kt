@@ -1,6 +1,6 @@
 package de.tarent.crud.tests
 
-import de.tarent.crud.domain.Index
+import de.tarent.crud.driver.rest.Index
 import de.tarent.crud.tests.asserts.LinkAssertion
 import io.ktor.client.request.accept
 import io.ktor.client.request.get

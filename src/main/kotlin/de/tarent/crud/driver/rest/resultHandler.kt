@@ -1,6 +1,5 @@
 package de.tarent.crud.driver.rest
 
-import de.tarent.crud.domain.Failure
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import io.ktor.http.HttpStatusCode

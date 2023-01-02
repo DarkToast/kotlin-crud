@@ -2,10 +2,6 @@
 
 package de.tarent.crud.application
 
-import de.tarent.crud.domain.Device
-import de.tarent.crud.domain.Group
-import de.tarent.crud.driven.database.DeviceRepository
-import de.tarent.crud.driven.database.GroupRepository
 import de.tarent.crud.application.results.DeviceAlreadyExists
 import de.tarent.crud.application.results.DeviceCreateResult
 import de.tarent.crud.application.results.DeviceDeleteResult
@@ -16,6 +12,10 @@ import de.tarent.crud.application.results.DeviceResult
 import de.tarent.crud.application.results.DeviceUpdateResult
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
+import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Group
+import de.tarent.crud.driven.database.DeviceRepository
+import de.tarent.crud.driven.database.GroupRepository
 
 typealias ListResult = DeviceListResult<List<Device>>
 

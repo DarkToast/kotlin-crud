@@ -1,13 +1,12 @@
 package de.tarent.crud.driver.rest
 
-import de.tarent.crud.domain.Failure
-import de.tarent.crud.domain.Metric
-import de.tarent.crud.domain.MetricQuery
 import de.tarent.crud.application.MetricService
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.MetricDontNotExists
 import de.tarent.crud.application.results.Ok
+import de.tarent.crud.domain.Metric
+import de.tarent.crud.domain.MetricQuery
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK

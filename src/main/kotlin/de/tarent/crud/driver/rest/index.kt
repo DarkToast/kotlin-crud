@@ -1,6 +1,5 @@
 package de.tarent.crud.driver.rest
 
-import de.tarent.crud.domain.Index
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond

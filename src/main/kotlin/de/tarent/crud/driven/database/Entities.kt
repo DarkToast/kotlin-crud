@@ -1,14 +1,15 @@
 package de.tarent.crud.driven.database
 
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 
-object GroupEntity : Table("group") {
+object GroupEntity : UUIDTable("group") {
     val name = varchar("name", 50)
     val description = varchar("description", 250)
 
-    override val primaryKey = PrimaryKey(name, name = "group_pk")
+    init {
+        uniqueIndex(name)
+    }
 }
 
 object DeviceEntity : UUIDTable("device") {

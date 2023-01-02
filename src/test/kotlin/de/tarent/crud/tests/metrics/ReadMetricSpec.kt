@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.metrics
 
-import de.tarent.crud.domain.Failure
+import de.tarent.crud.driver.rest.Failure
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound

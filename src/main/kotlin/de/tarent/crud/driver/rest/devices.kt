@@ -1,12 +1,12 @@
 package de.tarent.crud.driver.rest
 
-import de.tarent.crud.domain.Device
-import de.tarent.crud.domain.Failure
 import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.results.DeviceAlreadyExists
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
+import de.tarent.crud.domain.Device
+import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -101,7 +101,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.delete(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' deleted" }
-                    call.respond(OK, result.value.withLinks())
+                    call.respond(OK, result.value.let { GroupResponse.from(it).withLinks() })
                 }
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)

@@ -1,7 +1,5 @@
 package de.tarent.crud.application
 
-import de.tarent.crud.domain.Group
-import de.tarent.crud.driven.database.GroupRepository
 import de.tarent.crud.application.results.GroupAlreadyExists
 import de.tarent.crud.application.results.GroupCreateResult
 import de.tarent.crud.application.results.GroupDeleteResult
@@ -10,10 +8,12 @@ import de.tarent.crud.application.results.GroupListResult
 import de.tarent.crud.application.results.GroupReadResult
 import de.tarent.crud.application.results.GroupUpdateResult
 import de.tarent.crud.application.results.Ok
+import de.tarent.crud.domain.Group
+import de.tarent.crud.driven.database.GroupRepository
 
 class GroupService(private val repo: GroupRepository) {
-    fun create(group: Group): GroupCreateResult<Group> = if (repo.exists(group.name)) {
-        GroupAlreadyExists(group.name)
+    fun create(group: Group): GroupCreateResult<Group> = if (repo.exists(group.name.toString())) {
+        GroupAlreadyExists(group.name.toString())
     } else {
         repo.insert(group)
         Ok(group)
@@ -28,8 +28,8 @@ class GroupService(private val repo: GroupRepository) {
             return GroupDontExists(name)
         }
 
-        if (name != group.name && repo.exists(group.name)) {
-            return GroupAlreadyExists(group.name)
+        if (name != group.name.toString() && repo.exists(group.name.toString())) {
+            return GroupAlreadyExists(group.name.toString())
         }
 
         repo.update(name, group)
