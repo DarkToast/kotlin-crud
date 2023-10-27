@@ -43,7 +43,7 @@ class DeviceRepository(private val database: Database) {
                 Device(
                     id = it[DeviceEntity.id].value,
                     name = Name(it[DeviceEntity.name]),
-                    description = Description( it[DeviceEntity.description]),
+                    description = Description(it[DeviceEntity.description]),
                     type = Type(it[DeviceEntity.type])
                 )
             }

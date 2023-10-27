@@ -68,7 +68,6 @@ class MetricService(
 
     @Suppress("UNUSED_PARAMETER")
     fun query(groupName: String, deviceName: String, query: MetricQuery): MetricQueryResult<MetricList> {
-
         return check<MetricList, MetricQueryResult<MetricList>>(groupName, deviceName) {
             Ok(metricRepository.query(groupName, deviceName, query))
         }

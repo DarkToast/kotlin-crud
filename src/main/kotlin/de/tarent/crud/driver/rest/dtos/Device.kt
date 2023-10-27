@@ -14,7 +14,7 @@ data class DeviceResponse(
     val id: UUID = UUID.randomUUID(),
     val name: String,
     val description: String,
-    val type: String,
+    val type: String
 ) : Linked<DeviceResponse>() {
 
     companion object {
@@ -27,7 +27,9 @@ data class DeviceResponse(
     }
 
     fun withLinks(groupName: String): DeviceResponse = this.addLink(
-        "_self", Method.GET, URI("/groups/$groupName/devices/$name")
+        "_self",
+        Method.GET,
+        URI("/groups/$groupName/devices/$name")
     )
         .addLink("update", Method.PUT, URI("/groups/$groupName/devices/$name"))
         .addLink("delete", Method.DELETE, URI("/groups/$groupName/devices/$name"))
@@ -39,5 +41,5 @@ data class DeviceResponse(
 data class CreateUpdateDeviceRequest(
     val name: String,
     val description: String,
-    val type: String,
+    val type: String
 )
