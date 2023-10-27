@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.metrics
 
-import de.tarent.crud.dtos.Metric
+import de.tarent.crud.domain.Metric
 import de.tarent.crud.tests.BaseComponentSpec
 import de.tarent.crud.tests.asserts.DeviceAssertion
 import de.tarent.crud.tests.asserts.MetricAssertion

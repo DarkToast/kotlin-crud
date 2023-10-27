@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.asserts
 
-import de.tarent.crud.dtos.Metric
+import de.tarent.crud.domain.Metric
 import de.tarent.crud.tests.asserts.Assertion.assert
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions.assertEquals
