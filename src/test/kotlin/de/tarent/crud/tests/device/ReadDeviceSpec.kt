@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.dtos.Device
+import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -30,7 +30,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
 
         // and: The list contains two devices
         val body: String = response.bodyAsText()
-        val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
+        val list: List<DeviceResponse> = json.decodeFromString(ListSerializer(DeviceResponse.serializer()), body)
         assertEquals(2, list.size)
 
         // and: The test devices was returned
@@ -68,7 +68,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
 
         // and: The list contains two devices
         val body: String = response.bodyAsText()
-        val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
+        val list: List<DeviceResponse> = json.decodeFromString(ListSerializer(DeviceResponse.serializer()), body)
 
         assertEquals(2, list.size)
 
@@ -105,7 +105,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
         assertThat(response.status).isEqualTo(OK)
 
         // and: the device is returned
-        val device: Device = json.decodeFromString(response.bodyAsText())
+        val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
         assertDevice(testDeviceName, "test-device", "plug", device)
 
         // and: It has all related links

@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.groups
 
-import de.tarent.crud.dtos.Failure
-import de.tarent.crud.dtos.Group
+import de.tarent.crud.driver.rest.Failure
+import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -32,7 +32,7 @@ class ReadGroupSpec : BaseGroupSpec() {
         // then: Status is OK
         assertThat(response.status).isEqualTo(OK)
         val body = response.bodyAsText()
-        val list: List<Group> = json.decodeFromString(ListSerializer(Group.serializer()), body)
+        val list: List<GroupResponse> = json.decodeFromString(ListSerializer(GroupResponse.serializer()), body)
 
         // then: A list is returned
         assertEquals(3, list.size)
@@ -56,7 +56,7 @@ class ReadGroupSpec : BaseGroupSpec() {
         assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", response)
 
         // and: It has all further links
-        val group: Group = json.decodeFromString(response.bodyAsText())
+        val group: GroupResponse = json.decodeFromString(response.bodyAsText())
         assertLink("index", "/", "GET", group.links)
         assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
         assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)

@@ -48,5 +48,40 @@ GET localhost:8080/groups/HWR/devices/Wetterstation1/metrics?from=now-20m&to=now
 #  "description": "Neuer Raum. Mit Waschmaschine"
 #}
 #
-#### DELETE A GROUP
+### DELETE A GROUP
 #DELETE localhost:8080/groups/hwr
+
+GET http://nas.schmidt:27017/app/unifi
+
+###
+POST https://nas.schmidt:8086/api/v2/query?org=fam-schmidt
+Authorization: Token VPTF5E_wV6kgjT7O1m0roFMtPMAxMA7wNSYZwhWOLvX9Hv4Sv4fiUEHPfMlPP-FK3GzAU4iO73BRoR5gWs_Ytg==
+Content-Type: application/vnd.flux
+
+from(bucket: "haus")
+  |> range(start: -3d)
+  |> filter(fn: (r) => r["_measurement"] == "weather")
+  |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+  |> keep(columns: ["_time", "model", "dewPoint", "heatIndex", "temperature"])
+  |> group(columns: ["model"])
+  |> aggregateWindow(column: "temperature", every: 30s, fn: last)
+  |> filter(fn: (r) => exists r.temperature)
+
+
+###
+#DELETE localhost:8080/groups/hwr
+#   |> aggregateWindow(column: "temperature", every: 30s, fn: last)
+#from(bucket: "haus")
+#  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+#  |> filter(fn: (r) => r["_measurement"] == "weather")
+#  |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+#  |> filter(fn: (r) => r["model"] == "Acurite-606TX")
+#  |> keep(columns: ["_time", "temperature"])
+#  |> aggregateWindow(column: "temperature", every: v.windowPeriod, fn: last)
+#  |> rename(columns: {temperature: "aussen_temp"})
+GET http://nas.schmidt:8086/api/v2/config
+Authorization: Token 8B91D6nLtC_P6EMmpgFOT0obLS0zYhuBiT0Rn0TafNgL1WGGgDU8LnoIGZl8ad5BDPY8tC9gM0uj28ZpASlqbA==
+
+###
+POST http://nas.schmidt:8086/api/v2/signin
+Authorization:
