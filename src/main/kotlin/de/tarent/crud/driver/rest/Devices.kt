@@ -12,6 +12,7 @@ import de.tarent.crud.domain.Type
 import de.tarent.crud.driver.rest.dtos.CreateUpdateDeviceRequest
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.GroupResponse
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -25,7 +26,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import mu.KotlinLogging
 
 val logger = KotlinLogging.logger("de.tarent.crud.controller.devicesKt")
 

@@ -9,6 +9,7 @@ import de.tarent.crud.domain.Group
 import de.tarent.crud.domain.Name
 import de.tarent.crud.driver.rest.dtos.CreateUpdateGroupRequest
 import de.tarent.crud.driver.rest.dtos.GroupResponse
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -21,7 +22,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import mu.KotlinLogging
 
 fun Route.groupPage(groupService: GroupService) {
     val logger = KotlinLogging.logger {}

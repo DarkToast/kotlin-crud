@@ -9,6 +9,7 @@ import de.tarent.crud.driver.rest.devicePage
 import de.tarent.crud.driver.rest.groupPage
 import de.tarent.crud.driver.rest.indexPage
 import de.tarent.crud.driver.rest.metricsPage
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -18,7 +19,6 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
-import mu.KotlinLogging
 import org.koin.core.logger.Level
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin

@@ -1,5 +1,6 @@
 package de.tarent.crud.driver.rest
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.plugins.BadRequestException
@@ -7,7 +8,6 @@ import io.ktor.server.request.httpMethod
 import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.SECONDS

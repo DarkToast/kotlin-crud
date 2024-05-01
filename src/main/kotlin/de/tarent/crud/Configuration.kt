@@ -1,7 +1,7 @@
 package de.tarent.crud
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.config.ApplicationConfig
-import mu.KotlinLogging
 
 data class DatabaseConfig(
     val connection: String,
