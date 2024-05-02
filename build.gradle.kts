@@ -54,7 +54,7 @@ tasks.test {
     testLogging.showStandardStreams = true
 }
 
-//tasks.register("prepareImage", Copy) {
+// tasks.register("prepareImage", Copy) {
 //    from "$buildDir/resources/main/Dockerfile"
 //    into "$buildDir/install"
-//}
+// }

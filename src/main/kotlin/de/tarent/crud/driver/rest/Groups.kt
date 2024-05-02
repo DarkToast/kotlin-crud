@@ -51,10 +51,11 @@ fun Route.groupPage(groupService: GroupService) {
         post {
             val command = call.body<CreateUpdateGroupRequest>() ?: return@post
             logger.info { "CREATE group with name '${command.name}'." }
-            val group = Group(
-                name = Name(command.name),
-                description = Description(command.description)
-            )
+            val group =
+                Group(
+                    name = Name(command.name),
+                    description = Description(command.description),
+                )
 
             when (val result = groupService.create(group)) {
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
@@ -67,10 +68,11 @@ fun Route.groupPage(groupService: GroupService) {
             val command = call.body<CreateUpdateGroupRequest>() ?: return@put
             logger.info { "UPDATE group with name '$name'." }
 
-            val group = Group(
-                name = Name(command.name),
-                description = Description(command.description)
-            )
+            val group =
+                Group(
+                    name = Name(command.name),
+                    description = Description(command.description),
+                )
 
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
@@ -91,7 +93,10 @@ fun Route.groupPage(groupService: GroupService) {
     }
 }
 
-private suspend fun groupAlreadyExists(call: ApplicationCall, result: GroupAlreadyExists<*>) {
+private suspend fun groupAlreadyExists(
+    call: ApplicationCall,
+    result: GroupAlreadyExists<*>,
+) {
     val msg = "Group '${result.groupName}' already exists."
     logger.warn { msg }
     call.respond(Conflict, Failure.onGroup(404, msg, "", result.groupName))

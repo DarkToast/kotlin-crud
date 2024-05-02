@@ -29,7 +29,7 @@ suspend fun ApplicationCall.path(parameterName: String): String? {
 }
 
 suspend inline fun <reified T : Any> ApplicationCall.body(
-    failure: (msg: String, cause: String) -> Failure = { m, c -> Failure.onIndex(400, m, c) }
+    failure: (msg: String, cause: String) -> Failure = { m, c -> Failure.onIndex(400, m, c) },
 ): T? {
     return try {
         this.receive()
@@ -55,18 +55,24 @@ fun cause(e: Throwable): String {
 }
 
 fun parseDateTime(value: String): LocalDateTime {
-    fun LocalDateTime.transform(op: String, amount: String, unit: String): LocalDateTime {
-        val transform = if (op.lowercase() == "-") {
-            { tu: TemporalAmount -> this.minus(tu) }
-        } else {
-            { tu: TemporalAmount -> this.plus(tu) }
-        }
+    fun LocalDateTime.transform(
+        op: String,
+        amount: String,
+        unit: String,
+    ): LocalDateTime {
+        val transform =
+            if (op.lowercase() == "-") {
+                { tu: TemporalAmount -> this.minus(tu) }
+            } else {
+                { tu: TemporalAmount -> this.plus(tu) }
+            }
 
-        val duration: Duration = if (unit == "D") {
-            Duration.parse("P${amount}D")
-        } else {
-            Duration.parse("PT${amount}$unit")
-        }
+        val duration: Duration =
+            if (unit == "D") {
+                Duration.parse("P${amount}D")
+            } else {
+                Duration.parse("PT${amount}$unit")
+            }
 
         return transform(duration)
     }

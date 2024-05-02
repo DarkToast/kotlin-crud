@@ -15,62 +15,84 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
 class DeviceRepository(private val database: Database) {
-    fun insert(groupId: String, device: Device): String = transaction(database) {
-        DeviceEntity.insert {
-            it[id] = device.id
-            it[name] = device.name.toString()
-            it[description] = device.description.toString()
-            it[type] = device.type.toString()
-            it[DeviceEntity.groupId] = groupId
+    fun insert(
+        groupId: String,
+        device: Device,
+    ): String =
+        transaction(database) {
+            DeviceEntity.insert {
+                it[id] = device.id
+                it[name] = device.name.toString()
+                it[description] = device.description.toString()
+                it[type] = device.type.toString()
+                it[DeviceEntity.groupId] = groupId
+            }
+
+            device.name.toString()
         }
 
-        device.name.toString()
-    }
-
-    fun update(groupName: String, deviceName: String, device: Device): Boolean = transaction {
-        DeviceEntity.update({ (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }) {
-            it[name] = device.name.toString()
-            it[description] = device.description.toString()
-            it[type] = device.type.toString()
+    fun update(
+        groupName: String,
+        deviceName: String,
+        device: Device,
+    ): Boolean =
+        transaction {
+            DeviceEntity.update({ (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }) {
+                it[name] = device.name.toString()
+                it[description] = device.description.toString()
+                it[type] = device.type.toString()
+            }
+            true
         }
-        true
-    }
 
-    fun load(groupName: String, deviceName: String): Device? = transaction(database) {
-        DeviceEntity
-            .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
-            .map {
-                Device(
-                    id = it[DeviceEntity.id].value,
-                    name = Name(it[DeviceEntity.name]),
-                    description = Description(it[DeviceEntity.description]),
-                    type = Type(it[DeviceEntity.type])
-                )
-            }
-            .firstOrNull()
-    }
+    fun load(
+        groupName: String,
+        deviceName: String,
+    ): Device? =
+        transaction(database) {
+            DeviceEntity
+                .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+                .map {
+                    Device(
+                        id = it[DeviceEntity.id].value,
+                        name = Name(it[DeviceEntity.name]),
+                        description = Description(it[DeviceEntity.description]),
+                        type = Type(it[DeviceEntity.type]),
+                    )
+                }
+                .firstOrNull()
+        }
 
-    fun delete(groupName: String, deviceName: String): Int = transaction {
-        DeviceEntity.deleteWhere { (groupId eq groupName) and (name eq deviceName) }
-    }
+    fun delete(
+        groupName: String,
+        deviceName: String,
+    ): Int =
+        transaction {
+            DeviceEntity.deleteWhere { (groupId eq groupName) and (name eq deviceName) }
+        }
 
-    fun findForGroup(groupName: String): List<Device> = transaction {
-        DeviceEntity
-            .select { DeviceEntity.groupId.eq(groupName) }
-            .map {
-                Device(
-                    id = it[DeviceEntity.id].value,
-                    name = Name(it[DeviceEntity.name]),
-                    description = Description(it[DeviceEntity.description]),
-                    type = Type(it[DeviceEntity.type])
-                )
-            }
-    }
+    fun findForGroup(groupName: String): List<Device> =
+        transaction {
+            DeviceEntity
+                .select { DeviceEntity.groupId.eq(groupName) }
+                .map {
+                    Device(
+                        id = it[DeviceEntity.id].value,
+                        name = Name(it[DeviceEntity.name]),
+                        description = Description(it[DeviceEntity.description]),
+                        type = Type(it[DeviceEntity.type]),
+                    )
+                }
+        }
 
-    fun exists(groupName: String, deviceName: String): Boolean = transaction(database) {
-        DeviceEntity
-            .select { DeviceEntity.name eq deviceName }
-            .andWhere { DeviceEntity.groupId eq groupName }
-            .count() == 1L
-    }
+    fun exists(
+        groupName: String,
+        deviceName: String,
+    ): Boolean =
+        transaction(database) {
+            DeviceEntity
+                .select { DeviceEntity.name eq deviceName }
+                .andWhere { DeviceEntity.groupId eq groupName }
+                .count() == 1L
+        }
 }

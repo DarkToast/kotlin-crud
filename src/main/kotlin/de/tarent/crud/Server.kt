@@ -35,7 +35,7 @@ fun Application.server() {
             logger.error(e) { "Got an unknown exception! Measure error!" }
             call.respond(
                 InternalServerError,
-                Failure(InternalServerError.value, e.message ?: "Unexpected error")
+                Failure(InternalServerError.value, e.message ?: "Unexpected error"),
             )
         }
     }

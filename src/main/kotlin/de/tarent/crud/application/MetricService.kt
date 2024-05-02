@@ -21,12 +21,12 @@ import java.util.UUID
 class MetricService(
     private val groupRepository: GroupRepository,
     private val deviceRepository: DeviceRepository,
-    private val metricRepository: MetricRepository
+    private val metricRepository: MetricRepository,
 ) {
     private inline fun <T, reified R : MetricResult<T>> check(
         groupName: String,
         deviceName: String,
-        correct: () -> R
+        correct: () -> R,
     ): R {
         if (!groupRepository.exists(groupName)) {
             return GroupDontExists<T>(groupName) as R
@@ -39,14 +39,22 @@ class MetricService(
         return correct()
     }
 
-    fun create(groupName: String, deviceName: String, metric: Metric): MetricCreateResult<Metric> {
+    fun create(
+        groupName: String,
+        deviceName: String,
+        metric: Metric,
+    ): MetricCreateResult<Metric> {
         return check<Metric, MetricCreateResult<Metric>>(groupName, deviceName) {
             metricRepository.insert(groupName, deviceName, metric)
             Ok(metric)
         }
     }
 
-    fun read(groupName: String, deviceName: String, metricId: UUID): MetricReadResult<Metric> {
+    fun read(
+        groupName: String,
+        deviceName: String,
+        metricId: UUID,
+    ): MetricReadResult<Metric> {
         return check(groupName, deviceName) {
             metricRepository.load(metricId)
                 ?.let { Ok(it) }
@@ -54,7 +62,11 @@ class MetricService(
         }
     }
 
-    fun delete(groupName: String, deviceName: String, metricId: UUID): MetricDeleteResult<Device> {
+    fun delete(
+        groupName: String,
+        deviceName: String,
+        metricId: UUID,
+    ): MetricDeleteResult<Device> {
         return check(groupName, deviceName) {
             if (metricRepository.delete(metricId) == 1) {
                 deviceRepository.load(groupName, deviceName)
@@ -67,7 +79,11 @@ class MetricService(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun query(groupName: String, deviceName: String, query: MetricQuery): MetricQueryResult<MetricList> {
+    fun query(
+        groupName: String,
+        deviceName: String,
+        query: MetricQuery,
+    ): MetricQueryResult<MetricList> {
         return check<MetricList, MetricQueryResult<MetricList>>(groupName, deviceName) {
             Ok(metricRepository.query(groupName, deviceName, query))
         }

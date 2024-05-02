@@ -7,7 +7,11 @@ import kotlinx.serialization.json.Json
 
 object Assertion {
     val json = Json { isLenient = true }
-    suspend inline fun <reified T : Any> assert(response: HttpResponse, assertion: (T) -> Boolean): Boolean {
+
+    suspend inline fun <reified T : Any> assert(
+        response: HttpResponse,
+        assertion: (T) -> Boolean,
+    ): Boolean {
         val element: T = json.decodeFromString(response.bodyAsText())
         return assertion(element)
     }

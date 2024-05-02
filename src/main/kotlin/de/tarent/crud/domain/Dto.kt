@@ -18,9 +18,12 @@ data class Metric(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     val unit: String,
     val value: Double,
-    @Serializable(with = OffsetDateTimeIsoSerializer::class) val timestamp: OffsetDateTime
+    @Serializable(with = OffsetDateTimeIsoSerializer::class) val timestamp: OffsetDateTime,
 ) : Linked<Metric>() {
-    fun withLinks(groupName: String, deviceName: String): Metric =
+    fun withLinks(
+        groupName: String,
+        deviceName: String,
+    ): Metric =
         this.addLink("_self", GET, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
             .addLink("delete", DELETE, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
             .addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
@@ -33,9 +36,8 @@ data class Metric(
 @Serializable
 class MetricList(
     @Transient private val query: MetricQuery = MetricQuery(),
-    @Transient private var metricList: List<Metric> = emptyList()
+    @Transient private var metricList: List<Metric> = emptyList(),
 ) : Linked<MetricList>() {
-
     val metrics: List<Metric> = metricList
 
     @Serializable(with = OffsetDateTimeIsoSerializer::class)
@@ -46,7 +48,10 @@ class MetricList(
 
     val type: String? = query.type
 
-    fun withLinks(groupName: String, deviceName: String): MetricList {
+    fun withLinks(
+        groupName: String,
+        deviceName: String,
+    ): MetricList {
         val type = if (type != null) "&type=$type" else ""
         val query = "?from=${from.toLocalDateTime()}&to=${to.toLocalDateTime()}$type"
 
@@ -64,7 +69,7 @@ class MetricList(
 class MetricQuery(
     from: LocalDateTime? = null,
     to: LocalDateTime? = null,
-    val type: String? = null
+    val type: String? = null,
 ) {
     val from: LocalDateTime
     val to: LocalDateTime

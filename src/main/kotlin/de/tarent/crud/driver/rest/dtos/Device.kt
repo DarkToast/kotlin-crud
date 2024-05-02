@@ -14,32 +14,33 @@ data class DeviceResponse(
     val id: UUID = UUID.randomUUID(),
     val name: String,
     val description: String,
-    val type: String
+    val type: String,
 ) : Linked<DeviceResponse>() {
-
     companion object {
-        fun from(device: Device) = DeviceResponse(
-            id = device.id,
-            name = device.name.toString(),
-            description = device.description.toString(),
-            type = device.type.toString()
-        )
+        fun from(device: Device) =
+            DeviceResponse(
+                id = device.id,
+                name = device.name.toString(),
+                description = device.description.toString(),
+                type = device.type.toString(),
+            )
     }
 
-    fun withLinks(groupName: String): DeviceResponse = this.addLink(
-        "_self",
-        Method.GET,
-        URI("/groups/$groupName/devices/$name")
-    )
-        .addLink("update", Method.PUT, URI("/groups/$groupName/devices/$name"))
-        .addLink("delete", Method.DELETE, URI("/groups/$groupName/devices/$name"))
-        .addLink("get_devices", Method.GET, URI("/groups/$groupName/devices"))
-        .addLink("get_group", Method.GET, URI("/groups/$groupName"))
+    fun withLinks(groupName: String): DeviceResponse =
+        this.addLink(
+            "_self",
+            Method.GET,
+            URI("/groups/$groupName/devices/$name"),
+        )
+            .addLink("update", Method.PUT, URI("/groups/$groupName/devices/$name"))
+            .addLink("delete", Method.DELETE, URI("/groups/$groupName/devices/$name"))
+            .addLink("get_devices", Method.GET, URI("/groups/$groupName/devices"))
+            .addLink("get_group", Method.GET, URI("/groups/$groupName"))
 }
 
 @Serializable
 data class CreateUpdateDeviceRequest(
     val name: String,
     val description: String,
-    val type: String
+    val type: String,
 )

@@ -14,70 +14,75 @@ import java.util.UUID
 class DeleteMetricSpec : BaseMetricSpec() {
     private lateinit var metricId: UUID
 
-    override val spec = super.spec.withSetup {
-        val metric = createMetric(this, testGroupName, testDeviceName, metricJson("°C", 12.6, timestamp))
-        metricId = metric.id
-    }
+    override val spec =
+        super.spec.withSetup {
+            val metric = createMetric(this, testGroupName, testDeviceName, metricJson("°C", 12.6, timestamp))
+            metricId = metric.id
+        }
 
     @Test
-    fun `delete a metric`() = spec.componentSpec {
-        // when: Delete on metrics
-        val response = client.delete("$metricsUrl/$metricId")
+    fun `delete a metric`() =
+        spec.componentSpec {
+            // when: Delete on metrics
+            val response = client.delete("$metricsUrl/$metricId")
 
-        // then: Status Ok
-        assertThat(response.status).isEqualTo(OK)
+            // then: Status Ok
+            assertThat(response.status).isEqualTo(OK)
 
-        val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
-        assertDevice(testDeviceName, "test-device", "plug", device)
-    }
-
-    @Test
-    fun `not found`() = spec.componentSpec {
-        // when: Delete on metrics with unknown id
-        val response = client.delete("$metricsUrl/${UUID.randomUUID()}")
-
-        // then: Status Ok
-        assertThat(response.status).isEqualTo(NotFound)
-
-        // and: It has all related links
-        val failure: Failure = json.decodeFromString(response.bodyAsText())
-        assertLink("index", "/", "GET", failure.links)
-        assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
-        assertLink("get_device", "/groups/$testGroupName/devices/$testDeviceName", "GET", failure.links)
-    }
+            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            assertDevice(testDeviceName, "test-device", "plug", device)
+        }
 
     @Test
-    fun `device not found`() = spec.componentSpec {
-        // given: not existing url
-        val url = "/groups/$testGroupName/devices/unknown/metrics/$metricId"
+    fun `not found`() =
+        spec.componentSpec {
+            // when: Delete on metrics with unknown id
+            val response = client.delete("$metricsUrl/${UUID.randomUUID()}")
 
-        // when: Delete on metrics
-        val response = client.delete(url)
+            // then: Status Ok
+            assertThat(response.status).isEqualTo(NotFound)
 
-        // then: Status BadRequest
-        assertThat(response.status).isEqualTo(NotFound)
-
-        // and: It has all related links
-        val failure: Failure = json.decodeFromString(response.bodyAsText())
-        assertLink("index", "/", "GET", failure.links)
-        assertLink("get_groups", "/groups", "GET", failure.links)
-        assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
-    }
+            // and: It has all related links
+            val failure: Failure = json.decodeFromString(response.bodyAsText())
+            assertLink("index", "/", "GET", failure.links)
+            assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
+            assertLink("get_device", "/groups/$testGroupName/devices/$testDeviceName", "GET", failure.links)
+        }
 
     @Test
-    fun `group not found`() = spec.componentSpec {
-        // given: not existing url
-        val url = "/groups/unknown/devices/$testDeviceName/metrics/$metricId"
+    fun `device not found`() =
+        spec.componentSpec {
+            // given: not existing url
+            val url = "/groups/$testGroupName/devices/unknown/metrics/$metricId"
 
-        // when: Delete on metrics
-        val response = client.delete(url)
+            // when: Delete on metrics
+            val response = client.delete(url)
 
-        // then: Status BadRequest
-        assertThat(response.status).isEqualTo(NotFound)
+            // then: Status BadRequest
+            assertThat(response.status).isEqualTo(NotFound)
 
-        // and: It has all related links
-        val failure: Failure = json.decodeFromString(response.bodyAsText())
-        assertLink("index", "/", "GET", failure.links)
-        assertLink("get_groups", "/groups", "GET", failure.links)
-    }
+            // and: It has all related links
+            val failure: Failure = json.decodeFromString(response.bodyAsText())
+            assertLink("index", "/", "GET", failure.links)
+            assertLink("get_groups", "/groups", "GET", failure.links)
+            assertLink("get_group", "/groups/$testGroupName", "GET", failure.links)
+        }
+
+    @Test
+    fun `group not found`() =
+        spec.componentSpec {
+            // given: not existing url
+            val url = "/groups/unknown/devices/$testDeviceName/metrics/$metricId"
+
+            // when: Delete on metrics
+            val response = client.delete(url)
+
+            // then: Status BadRequest
+            assertThat(response.status).isEqualTo(NotFound)
+
+            // and: It has all related links
+            val failure: Failure = json.decodeFromString(response.bodyAsText())
+            assertLink("index", "/", "GET", failure.links)
+            assertLink("get_groups", "/groups", "GET", failure.links)
+        }
 }

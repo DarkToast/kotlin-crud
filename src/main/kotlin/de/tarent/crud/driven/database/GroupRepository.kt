@@ -18,41 +18,50 @@ class GroupRepository(private val database: Database) {
         Group(
             row[GroupEntity.id].value,
             Name(row[GroupEntity.name]),
-            Description(row[GroupEntity.description])
+            Description(row[GroupEntity.description]),
         )
     }
 
-    fun insert(group: Group): Boolean = transaction(database) {
-        GroupEntity.insert {
-            it[name] = group.name.toString()
-            it[description] = group.description.toString()
+    fun insert(group: Group): Boolean =
+        transaction(database) {
+            GroupEntity.insert {
+                it[name] = group.name.toString()
+                it[description] = group.description.toString()
+            }
+            true
         }
-        true
-    }
 
-    fun update(groupName: String, updatedGroup: Group): Boolean = transaction(database) {
-        GroupEntity.update({ GroupEntity.name eq groupName }) {
-            it[name] = updatedGroup.name.toString()
-            it[description] = updatedGroup.description.toString()
+    fun update(
+        groupName: String,
+        updatedGroup: Group,
+    ): Boolean =
+        transaction(database) {
+            GroupEntity.update({ GroupEntity.name eq groupName }) {
+                it[name] = updatedGroup.name.toString()
+                it[description] = updatedGroup.description.toString()
+            }
+            true
         }
-        true
-    }
 
-    fun load(name: String): Group? = transaction(database) {
-        GroupEntity.select { GroupEntity.name eq name }
-            .map(transform)
-            .firstOrNull()
-    }
+    fun load(name: String): Group? =
+        transaction(database) {
+            GroupEntity.select { GroupEntity.name eq name }
+                .map(transform)
+                .firstOrNull()
+        }
 
-    fun delete(name: String): Int = transaction(database) {
-        GroupEntity.deleteWhere { GroupEntity.name eq name }
-    }
+    fun delete(name: String): Int =
+        transaction(database) {
+            GroupEntity.deleteWhere { GroupEntity.name eq name }
+        }
 
-    fun list(): List<Group> = transaction(database) {
-        GroupEntity.selectAll().map(transform)
-    }
+    fun list(): List<Group> =
+        transaction(database) {
+            GroupEntity.selectAll().map(transform)
+        }
 
-    fun exists(name: String): Boolean = transaction(database) {
-        GroupEntity.select { GroupEntity.name eq name }.count() == 1L
-    }
+    fun exists(name: String): Boolean =
+        transaction(database) {
+            GroupEntity.select { GroupEntity.name eq name }.count() == 1L
+        }
 }

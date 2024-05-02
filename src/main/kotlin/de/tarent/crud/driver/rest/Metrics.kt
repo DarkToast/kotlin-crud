@@ -60,9 +60,10 @@ fun Route.metricsPage(metricService: MetricService) {
         get("/{metricId}") {
             val groupName = call.path("groupName") ?: return@get
             val deviceName = call.path("deviceName") ?: return@get
-            val metricId: UUID = call.path("metricId")
-                ?.let { UUID.fromString(it) }
-                ?: return@get
+            val metricId: UUID =
+                call.path("metricId")
+                    ?.let { UUID.fromString(it) }
+                    ?: return@get
 
             logger.info { "GET metric '$metricId' on device '$deviceName' of group '$groupName'" }
 
@@ -77,9 +78,10 @@ fun Route.metricsPage(metricService: MetricService) {
         delete("/{metricId}") {
             val groupName = call.path("groupName") ?: return@delete
             val deviceName = call.path("deviceName") ?: return@delete
-            val metricId: UUID = call.path("metricId")
-                ?.let { UUID.fromString(it) }
-                ?: return@delete
+            val metricId: UUID =
+                call.path("metricId")
+                    ?.let { UUID.fromString(it) }
+                    ?: return@delete
 
             logger.info { "DELETE metric '$metricId' on device '$deviceName' of group '$groupName'" }
 
@@ -93,13 +95,17 @@ fun Route.metricsPage(metricService: MetricService) {
     }
 }
 
-private fun ApplicationCall.metricQuery(): MetricQuery = MetricQuery(
-    from = this.request.queryParameters["from"]?.let { parseDateTime(it) },
-    to = this.request.queryParameters["to"]?.let { parseDateTime(it) },
-    type = this.request.queryParameters["type"]
-)
+private fun ApplicationCall.metricQuery(): MetricQuery =
+    MetricQuery(
+        from = this.request.queryParameters["from"]?.let { parseDateTime(it) },
+        to = this.request.queryParameters["to"]?.let { parseDateTime(it) },
+        type = this.request.queryParameters["type"],
+    )
 
-private suspend fun metricDontExist(call: ApplicationCall, result: MetricDontNotExists<*>) {
+private suspend fun metricDontExist(
+    call: ApplicationCall,
+    result: MetricDontNotExists<*>,
+) {
     val msg =
         "Metric '${result.metricId}' of device '${result.deviceName}' of group '${result.groupName}' was not found!"
     logger.warn { msg }

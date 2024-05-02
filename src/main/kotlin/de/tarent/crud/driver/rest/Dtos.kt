@@ -18,32 +18,50 @@ class Index : Linked<Index>() {
 data class Failure(
     val code: Int,
     val message: String,
-    val cause: String = ""
+    val cause: String = "",
 ) : Linked<Failure>() {
     init {
         addLink("index", Method.GET, URI("/"))
     }
 
-    override fun addLink(name: String, method: Method, href: URI): Failure {
+    override fun addLink(
+        name: String,
+        method: Method,
+        href: URI,
+    ): Failure {
         require(method == Method.GET) { "Failure only support reading methods." }
         return super.addLink(name, method, href)
     }
 
     companion object {
-        fun onIndex(code: Int, message: String, cause: String = ""): Failure = Failure(code, message, cause)
-            .apply {
-                addLink("get_groups", Method.GET, URI("/groups"))
-            }
+        fun onIndex(
+            code: Int,
+            message: String,
+            cause: String = "",
+        ): Failure =
+            Failure(code, message, cause)
+                .apply {
+                    addLink("get_groups", Method.GET, URI("/groups"))
+                }
 
-        fun onGroup(code: Int, message: String, cause: String = "", groupName: String) =
-            onIndex(code, message, cause).apply {
-                addLink("get_group", Method.GET, URI("/groups/$groupName"))
-                addLink("get_devices", Method.GET, URI("/groups/$groupName/devices"))
-            }
+        fun onGroup(
+            code: Int,
+            message: String,
+            cause: String = "",
+            groupName: String,
+        ) = onIndex(code, message, cause).apply {
+            addLink("get_group", Method.GET, URI("/groups/$groupName"))
+            addLink("get_devices", Method.GET, URI("/groups/$groupName/devices"))
+        }
 
-        fun onDevice(code: Int, message: String, cause: String = "", groupName: String, deviceName: String) =
-            onGroup(code, message, cause, groupName).apply {
-                addLink("get_device", Method.GET, URI("/groups/$groupName/devices/$deviceName"))
-            }
+        fun onDevice(
+            code: Int,
+            message: String,
+            cause: String = "",
+            groupName: String,
+            deviceName: String,
+        ) = onGroup(code, message, cause, groupName).apply {
+            addLink("get_device", Method.GET, URI("/groups/$groupName/devices/$deviceName"))
+        }
     }
 }

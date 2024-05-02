@@ -12,13 +12,14 @@ import kotlinx.serialization.Serializable
 import org.koin.ktor.ext.inject
 
 enum class HealthStatus {
-    UP, DOWN
+    UP,
+    DOWN,
 }
 
 @Serializable
 data class Health(
     val httpServer: HealthStatus,
-    val database: HealthStatus
+    val database: HealthStatus,
 )
 
 fun Route.adminPage() {

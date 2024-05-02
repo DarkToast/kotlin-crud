@@ -13,14 +13,15 @@ data class GroupResponse(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
     val name: String,
-    val description: String
+    val description: String,
 ) : Linked<GroupResponse>() {
     companion object {
-        fun from(group: Group) = GroupResponse(
-            id = group.id,
-            name = group.name.toString(),
-            description = group.description.toString()
-        )
+        fun from(group: Group) =
+            GroupResponse(
+                id = group.id,
+                name = group.name.toString(),
+                description = group.description.toString(),
+            )
     }
 
     fun withLinks(): GroupResponse =
@@ -35,5 +36,5 @@ data class GroupResponse(
 @Serializable
 data class CreateUpdateGroupRequest(
     val name: String,
-    val description: String
+    val description: String,
 )

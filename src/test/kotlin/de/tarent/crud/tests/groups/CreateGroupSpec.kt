@@ -16,77 +16,83 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CreateGroupSpec : BaseGroupSpec() {
-
     @Test
-    fun `Create a group`() = Spec().componentSpec {
-        // when: We create a new group
-        val response = client.post("/groups") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(groupJson)
+    fun `Create a group`() =
+        Spec().componentSpec {
+            // when: We create a new group
+            val response =
+                client.post("/groups") {
+                    contentType(ContentType.Application.Json)
+                    accept(ContentType.Application.Json)
+                    setBody(groupJson)
+                }
+
+            // then: Status created in response
+            assertThat(response.status).isEqualTo(Created)
+
+            // and: The group as body
+            assertGroup("HWR", "Hauswirtschaftsraum", response)
+
+            // and: with further links
+            val group: GroupResponse = json.decodeFromString(response.bodyAsText())
+            assertLink("index", "/", "GET", group.links)
+            assertLink("_self", "/groups/HWR", "GET", group.links)
+            assertLink("delete", "/groups/HWR", "DELETE", group.links)
+            assertLink("update", "/groups/HWR", "PUT", group.links)
+            assertLink("add_device", "/groups/HWR/devices", "POST", group.links)
+            assertLink("list_devices", "/groups/HWR/devices", "GET", group.links)
         }
 
-        // then: Status created in response
-        assertThat(response.status).isEqualTo(Created)
-
-        // and: The group as body
-        assertGroup("HWR", "Hauswirtschaftsraum", response)
-
-        // and: with further links
-        val group: GroupResponse = json.decodeFromString(response.bodyAsText())
-        assertLink("index", "/", "GET", group.links)
-        assertLink("_self", "/groups/HWR", "GET", group.links)
-        assertLink("delete", "/groups/HWR", "DELETE", group.links)
-        assertLink("update", "/groups/HWR", "PUT", group.links)
-        assertLink("add_device", "/groups/HWR/devices", "POST", group.links)
-        assertLink("list_devices", "/groups/HWR/devices", "GET", group.links)
-    }
-
     @Test
-    fun `Failed creation - bad request`() = Spec().componentSpec {
-        // given: an invalid json string
-        val body = "{}"
+    fun `Failed creation - bad request`() =
+        Spec().componentSpec {
+            // given: an invalid json string
+            val body = "{}"
 
-        // when: the group is created
-        val response = client.post("/groups") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(body)
+            // when: the group is created
+            val response =
+                client.post("/groups") {
+                    contentType(ContentType.Application.Json)
+                    accept(ContentType.Application.Json)
+                    setBody(body)
+                }
+
+            // then: bad request is returned
+            assertThat(response.status).isEqualTo(BadRequest)
+            val failure: Failure = json.decodeFromString(response.bodyAsText())
+            assertLink("index", "/", "GET", failure.links)
+            assertLink("get_groups", "/groups", "GET", failure.links)
         }
 
-        // then: bad request is returned
-        assertThat(response.status).isEqualTo(BadRequest)
-        val failure: Failure = json.decodeFromString(response.bodyAsText())
-        assertLink("index", "/", "GET", failure.links)
-        assertLink("get_groups", "/groups", "GET", failure.links)
-    }
-
     @Test
-    fun `Failed creation - existing`() = Spec().componentSpec {
-        // given: An existing group
-        createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
+    fun `Failed creation - existing`() =
+        Spec().componentSpec {
+            // given: An existing group
+            createGroup(this, DEFAULT_GROUP_NAME, "Hauswirtschaftsraum")
 
-        // and: A valid json body same to the existing
-        val body = groupJson
+            // and: A valid json body same to the existing
+            val body = groupJson
 
-        // when: the group is created
-        val response = client.post("/groups") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(body)
+            // when: the group is created
+            val response =
+                client.post("/groups") {
+                    contentType(ContentType.Application.Json)
+                    accept(ContentType.Application.Json)
+                    setBody(body)
+                }
+
+            // then: Conflict is returned
+            assertThat(response.status).isEqualTo(Conflict)
+
+            // and: It has further links
+            val failure: Failure = json.decodeFromString(response.bodyAsText())
+            assertLink("index", "/", "GET", failure.links)
+            assertLink("get_groups", "/groups", "GET", failure.links)
+            assertLink("get_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
         }
 
-        // then: Conflict is returned
-        assertThat(response.status).isEqualTo(Conflict)
-
-        // and: It has further links
-        val failure: Failure = json.decodeFromString(response.bodyAsText())
-        assertLink("index", "/", "GET", failure.links)
-        assertLink("get_groups", "/groups", "GET", failure.links)
-        assertLink("get_group", "/groups/$DEFAULT_GROUP_NAME", "GET", failure.links)
-    }
-
-    private val groupJson = """
+    private val groupJson =
+        """
       |{
       |  "name": "HWR",
       |  "description": "Hauswirtschaftsraum"

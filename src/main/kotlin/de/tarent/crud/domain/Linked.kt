@@ -9,7 +9,10 @@ import java.net.URI
 fun HttpMethod.toString() = this.value
 
 enum class Method {
-    POST, GET, DELETE, PUT
+    POST,
+    GET,
+    DELETE,
+    PUT,
 }
 
 @Serializable
@@ -19,7 +22,11 @@ data class Link(val href: String, val method: String)
 @Serializable
 abstract class Linked<out T : Linked<T>>(val links: MutableMap<String, Link> = mutableMapOf()) {
     @Suppress("UNCHECKED_CAST")
-    open fun addLink(name: String, method: Method, href: URI): T {
+    open fun addLink(
+        name: String,
+        method: Method,
+        href: URI,
+    ): T {
         links[name] = Link(href.toString(), method.toString())
         return this as T
     }

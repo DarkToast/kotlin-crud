@@ -56,33 +56,43 @@ abstract class BaseComponentSpec {
             return this
         }
 
-        fun componentSpec(block: testBlock) = testApplication {
-            environment {
-                config = ApplicationConfig("test-application.conf")
-            }
+        fun componentSpec(block: testBlock) =
+            testApplication {
+                environment {
+                    config = ApplicationConfig("test-application.conf")
+                }
 
-            try {
-                setups.forEach { it(this) }
-                block(this)
-            } finally {
-                tearDowns.forEach { it(this) }
+                try {
+                    setups.forEach { it(this) }
+                    block(this)
+                } finally {
+                    tearDowns.forEach { it(this) }
+                }
             }
-        }
     }
 
-    protected suspend fun createDevice(builder: ApplicationTestBuilder, groupName: String, deviceJson: String): String {
-        val response = builder.client.post("/groups/$groupName/devices") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(deviceJson)
-        }
+    protected suspend fun createDevice(
+        builder: ApplicationTestBuilder,
+        groupName: String,
+        deviceJson: String,
+    ): String {
+        val response =
+            builder.client.post("/groups/$groupName/devices") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                setBody(deviceJson)
+            }
 
         assertThat(response.status).isEqualTo(Created)
         return json.decodeFromString<DeviceResponse>(response.bodyAsText()).links["_self"]?.href
             ?: throw IllegalStateException("Illegal creation state. No location header set!")
     }
 
-    protected fun deviceJson(name: String, description: String, type: String): String =
+    protected fun deviceJson(
+        name: String,
+        description: String,
+        type: String,
+    ): String =
         """
          |{
          |  "name": "$name",
@@ -91,12 +101,17 @@ abstract class BaseComponentSpec {
          |}
         """.trimMargin("|")
 
-    protected suspend fun createGroup(builder: ApplicationTestBuilder, groupName: String, description: String): String {
-        val response = builder.client.post("/groups") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(groupJson(groupName, description))
-        }
+    protected suspend fun createGroup(
+        builder: ApplicationTestBuilder,
+        groupName: String,
+        description: String,
+    ): String {
+        val response =
+            builder.client.post("/groups") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                setBody(groupJson(groupName, description))
+            }
 
         assertThat(response.status).isEqualTo(Created)
         val group: GroupResponse = json.decodeFromString(response.bodyAsText())
@@ -105,8 +120,10 @@ abstract class BaseComponentSpec {
             ?: throw IllegalStateException("Illegal creation state. No _self link set!")
     }
 
-    protected fun groupJson(name: String, description: String) =
-        """
+    protected fun groupJson(
+        name: String,
+        description: String,
+    ) = """
          |{
          |  "name": "$name",
          |  "description": "$description"

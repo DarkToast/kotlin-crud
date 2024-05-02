@@ -23,29 +23,34 @@ abstract class BaseMetricSpec : BaseComponentSpec(), MetricAssertion, DeviceAsse
     protected val metricsUrl = "/groups/$testGroupName/devices/$testDeviceName/metrics"
     protected val timestamp: OffsetDateTime = OffsetDateTime.now()
 
-    protected open val spec = Spec().withSetup {
-        createGroup(this, testGroupName, "my-test-group")
-        createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
-    }
+    protected open val spec =
+        Spec().withSetup {
+            createGroup(this, testGroupName, "my-test-group")
+            createDevice(this, testGroupName, deviceJson(testDeviceName, "test-device", "plug"))
+        }
 
     protected suspend fun createMetric(
         builder: ApplicationTestBuilder,
         groupName: String,
         deviceName: String,
-        metricJson: String
+        metricJson: String,
     ): Metric {
-        val response = builder.client.post("/groups/$groupName/devices/$deviceName/metrics") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(metricJson)
-        }
+        val response =
+            builder.client.post("/groups/$groupName/devices/$deviceName/metrics") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                setBody(metricJson)
+            }
 
         assertThat(response.status).isEqualTo(HttpStatusCode.Created)
         return json.decodeFromString(response.bodyAsText())
     }
 
-    protected fun metricJson(unit: String, value: Double, datetime: OffsetDateTime) =
-        """
+    protected fun metricJson(
+        unit: String,
+        value: Double,
+        datetime: OffsetDateTime,
+    ) = """
         | {
         |     "unit": "$unit",
         |     "value": $value,
