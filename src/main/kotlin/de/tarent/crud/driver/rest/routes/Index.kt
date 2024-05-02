@@ -1,4 +1,4 @@
-package de.tarent.crud.driver.rest
+package de.tarent.crud.driver.rest.routes
 
 import de.tarent.crud.driver.rest.dtos.Index
 import io.ktor.http.HttpStatusCode

@@ -3,6 +3,7 @@ package de.tarent.crud.driver.rest
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.driver.rest.dtos.Failure
+import de.tarent.crud.driver.rest.routes.logger
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond

@@ -1,4 +1,4 @@
-package de.tarent.crud.driver.rest
+package de.tarent.crud.driver.rest.routes
 
 import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.results.DeviceAlreadyExists
@@ -9,10 +9,13 @@ import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Name
 import de.tarent.crud.domain.Type
+import de.tarent.crud.driver.rest.body
+import de.tarent.crud.driver.rest.deviceDontExist
 import de.tarent.crud.driver.rest.dtos.CreateUpdateDeviceRequest
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.GroupResponse
+import de.tarent.crud.driver.rest.path
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created

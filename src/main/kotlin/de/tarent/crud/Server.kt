@@ -4,11 +4,11 @@ import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.GroupService
 import de.tarent.crud.application.MetricService
 import de.tarent.crud.driver.rest.dtos.Failure
-import de.tarent.crud.driver.rest.adminPage
-import de.tarent.crud.driver.rest.devicePage
-import de.tarent.crud.driver.rest.groupPage
-import de.tarent.crud.driver.rest.indexPage
-import de.tarent.crud.driver.rest.metricsPage
+import de.tarent.crud.driver.rest.routes.adminPage
+import de.tarent.crud.driver.rest.routes.devicePage
+import de.tarent.crud.driver.rest.routes.groupPage
+import de.tarent.crud.driver.rest.routes.indexPage
+import de.tarent.crud.driver.rest.routes.metricsPage
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.serialization.kotlinx.json.json

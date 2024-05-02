@@ -1,4 +1,4 @@
-package de.tarent.crud.driver.rest
+package de.tarent.crud.driver.rest.routes
 
 import de.tarent.crud.application.GroupService
 import de.tarent.crud.application.results.GroupAlreadyExists
@@ -7,10 +7,13 @@ import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Group
 import de.tarent.crud.domain.Name
+import de.tarent.crud.driver.rest.body
 import de.tarent.crud.driver.rest.dtos.CreateUpdateGroupRequest
 import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.GroupResponse
 import de.tarent.crud.driver.rest.dtos.Index
+import de.tarent.crud.driver.rest.groupDontExists
+import de.tarent.crud.driver.rest.path
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
