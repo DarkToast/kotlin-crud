@@ -20,9 +20,9 @@ data class DeviceResponse(
         fun from(device: Device) =
             DeviceResponse(
                 id = device.id,
-                name = device.name.toString(),
-                description = device.description.toString(),
-                type = device.type.toString(),
+                name = device.name,
+                description = device.description,
+                type = device.type,
             )
     }
 

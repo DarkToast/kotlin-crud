@@ -7,9 +7,13 @@ import de.tarent.crud.application.results.MetricDontNotExists
 import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricQuery
-import de.tarent.crud.driver.rest.*
+import de.tarent.crud.driver.rest.body
+import de.tarent.crud.driver.rest.deviceDontExist
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.Failure
+import de.tarent.crud.driver.rest.groupDontExists
+import de.tarent.crud.driver.rest.parseDateTime
+import de.tarent.crud.driver.rest.path
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -31,7 +35,8 @@ fun Route.metricsPage(metricService: MetricService) {
         post {
             val groupName = call.path("groupName") ?: return@post
             val deviceName = call.path("deviceName") ?: return@post
-            val metric: Metric = call.body { msg, cause -> Failure.onDevice(400, msg, cause, groupName, deviceName) } ?: return@post
+            val metric: Metric =
+                call.body { msg, cause -> Failure.onDevice(400, msg, cause, groupName, deviceName) } ?: return@post
 
             logger.info { "POST new metric on device '$deviceName' of group '$groupName'" }
 

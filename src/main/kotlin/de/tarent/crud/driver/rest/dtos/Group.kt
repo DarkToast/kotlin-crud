@@ -19,8 +19,8 @@ data class GroupResponse(
         fun from(group: Group) =
             GroupResponse(
                 id = group.id,
-                name = group.name.toString(),
-                description = group.description.toString(),
+                name = group.name,
+                description = group.description,
             )
     }
 

@@ -78,7 +78,6 @@ class MetricService(
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
     fun query(
         groupName: String,
         deviceName: String,
