@@ -8,7 +8,6 @@ import de.tarent.crud.domain.Group
 import de.tarent.crud.driver.rest.body
 import de.tarent.crud.driver.rest.dtos.CreateUpdateGroupRequest
 import de.tarent.crud.driver.rest.dtos.Failure
-import de.tarent.crud.driver.rest.dtos.GroupResponse
 import de.tarent.crud.driver.rest.dtos.Index
 import de.tarent.crud.driver.rest.groupDontExists
 import de.tarent.crud.driver.rest.path
@@ -29,14 +28,12 @@ import io.ktor.server.routing.route
 fun Route.groupPage(groupService: GroupService) {
     val logger = KotlinLogging.logger {}
 
-    val toResponse = { group: Group -> GroupResponse.from(group).withLinks() }
-
     route("/groups") {
         get {
             logger.info { "READ list of groups" }
             when (val result = groupService.list()) {
                 is Ok -> {
-                    call.respond(OK, result.value.map(toResponse))
+                    call.respond(OK, result.value.map { it.withLinks() })
                 }
             }
         }
@@ -47,7 +44,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(OK, result.value.let(toResponse))
+                is Ok -> call.respond(OK, result.value.withLinks())
             }
         }
 
@@ -62,7 +59,7 @@ fun Route.groupPage(groupService: GroupService) {
 
             when (val result = groupService.create(group)) {
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(Created, result.value.let(toResponse))
+                is Ok -> call.respond(Created, result.value.withLinks())
             }
         }
 
@@ -80,7 +77,7 @@ fun Route.groupPage(groupService: GroupService) {
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(OK, result.value.let(toResponse))
+                is Ok -> call.respond(OK, result.value.withLinks())
             }
         }
 

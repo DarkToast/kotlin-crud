@@ -23,8 +23,8 @@ class GroupRepository(private val database: Database) {
     fun insert(group: Group): Boolean =
         transaction(database) {
             GroupEntity.insert {
-                it[name] = group.name.toString()
-                it[description] = group.description.toString()
+                it[name] = group.name
+                it[description] = group.description
             }
             true
         }
@@ -35,8 +35,8 @@ class GroupRepository(private val database: Database) {
     ): Boolean =
         transaction(database) {
             GroupEntity.update({ GroupEntity.name eq groupName }) {
-                it[name] = updatedGroup.name.toString()
-                it[description] = updatedGroup.description.toString()
+                it[name] = updatedGroup.name
+                it[description] = updatedGroup.description
             }
             true
         }

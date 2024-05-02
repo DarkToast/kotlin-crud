@@ -9,9 +9,7 @@ import de.tarent.crud.domain.Device
 import de.tarent.crud.driver.rest.body
 import de.tarent.crud.driver.rest.deviceDontExist
 import de.tarent.crud.driver.rest.dtos.CreateUpdateDeviceRequest
-import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.Failure
-import de.tarent.crud.driver.rest.dtos.GroupResponse
 import de.tarent.crud.driver.rest.path
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
@@ -39,9 +37,9 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.listDevices(groupName)) {
                 is Ok -> {
                     logger.debug { "${result.value.size}' devices loaded of group '$groupName'." }
-                    val response: List<DeviceResponse> =
+                    val response: List<Device> =
                         result.value.map {
-                            DeviceResponse.from(it).withLinks(groupName)
+                            it.withLinks(groupName)
                         }
                     call.respond(OK, response)
                 }
@@ -58,7 +56,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.read(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' loaded" }
-                    call.respond(OK, DeviceResponse.from(result.value).withLinks(groupName))
+                    call.respond(OK, result.value.withLinks(groupName))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -84,7 +82,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.create(groupName, device)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' created" }
-                    call.respond(Created, DeviceResponse.from(result.value).withLinks(groupName))
+                    call.respond(Created, result.value.withLinks(groupName))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -111,7 +109,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.update(groupName, deviceName, device)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' updated" }
-                    call.respond(OK, DeviceResponse.from(result.value).withLinks(groupName))
+                    call.respond(OK, result.value.withLinks(groupName))
                 }
 
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
@@ -129,7 +127,7 @@ fun Route.devicePage(deviceService: DeviceService) {
             when (val result = deviceService.delete(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' deleted" }
-                    call.respond(OK, result.value.let { GroupResponse.from(it).withLinks() })
+                    call.respond(OK, result.value.withLinks())
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)

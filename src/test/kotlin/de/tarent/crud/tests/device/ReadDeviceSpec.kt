@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.driver.rest.dtos.DeviceResponse
+import de.tarent.crud.domain.Device
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -8,7 +8,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -31,7 +30,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
 
             // and: The list contains two devices
             val body: String = response.bodyAsText()
-            val list: List<DeviceResponse> = json.decodeFromString(ListSerializer(DeviceResponse.serializer()), body)
+            val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
             assertEquals(2, list.size)
 
             // and: The test devices was returned
@@ -71,7 +70,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
 
             // and: The list contains two devices
             val body: String = response.bodyAsText()
-            val list: List<DeviceResponse> = json.decodeFromString(ListSerializer(DeviceResponse.serializer()), body)
+            val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
 
             assertEquals(2, list.size)
 
@@ -112,7 +111,7 @@ class ReadDeviceSpec : BaseDeviceSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: the device is returned
-            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            val device: Device = json.decodeFromString(response.bodyAsText())
             assertDevice(testDeviceName, "test-device", "plug", device)
 
             // and: It has all related links

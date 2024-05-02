@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.driver.rest.dtos.DeviceResponse
+import de.tarent.crud.domain.Device
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.put
@@ -11,7 +11,6 @@ import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -37,7 +36,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: The new device as body
-            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            val device: Device = json.decodeFromString(response.bodyAsText())
             assertDevice(testDeviceName, "my-new-description", "switch", response)
 
             // and: It has all related links
@@ -69,7 +68,7 @@ class UpdateDeviceSpec : BaseDeviceSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: The renamed device as body
-            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            val device: Device = json.decodeFromString(response.bodyAsText())
             assertDevice("my-new-name", "my-new-description", "switch", response)
 
             // and: It has all related links

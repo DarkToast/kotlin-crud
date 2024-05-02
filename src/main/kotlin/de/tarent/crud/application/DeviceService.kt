@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_PARAMETER")
-
 package de.tarent.crud.application
 
 import de.tarent.crud.application.results.DeviceAlreadyExists
@@ -36,8 +34,8 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
         device: Device,
     ): DeviceCreateResult<Device> =
         groupExists(groupName) {
-            return if (deviceRepo.exists(groupName, device.name.toString())) {
-                DeviceAlreadyExists(groupName, device.name.toString())
+            return if (deviceRepo.exists(groupName, device.name)) {
+                DeviceAlreadyExists(groupName, device.name)
             } else {
                 deviceRepo.insert(groupName, device)
                 Ok(device)
@@ -64,7 +62,7 @@ class DeviceService(private val deviceRepo: DeviceRepository, private val groupR
                 return@groupExists DeviceDontExists(groupName, deviceName)
             }
 
-            if (deviceName != device.name.toString() && deviceRepo.exists(groupName, device.name.toString())) {
+            if (deviceName != device.name && deviceRepo.exists(groupName, device.name)) {
                 return@groupExists DeviceAlreadyExists(groupName, deviceName)
             }
 

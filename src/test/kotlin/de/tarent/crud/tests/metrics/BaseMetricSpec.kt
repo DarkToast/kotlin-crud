@@ -12,7 +12,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.testing.ApplicationTestBuilder
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import java.time.OffsetDateTime
 

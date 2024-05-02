@@ -9,7 +9,6 @@ import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricQuery
 import de.tarent.crud.driver.rest.body
 import de.tarent.crud.driver.rest.deviceDontExist
-import de.tarent.crud.driver.rest.dtos.DeviceResponse
 import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.groupDontExists
 import de.tarent.crud.driver.rest.parseDateTime
@@ -96,7 +95,7 @@ fun Route.metricsPage(metricService: MetricService) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is MetricDontNotExists -> metricDontExist(call, result)
-                is Ok -> call.respond(OK, DeviceResponse.from(result.value).withLinks(groupName))
+                is Ok -> call.respond(OK, result.value.withLinks(groupName))
             }
         }
     }

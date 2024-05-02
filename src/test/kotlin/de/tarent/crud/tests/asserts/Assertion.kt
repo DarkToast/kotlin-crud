@@ -2,7 +2,6 @@ package de.tarent.crud.tests.asserts
 
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 object Assertion {
