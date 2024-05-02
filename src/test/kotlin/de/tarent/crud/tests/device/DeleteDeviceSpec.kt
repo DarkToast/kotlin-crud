@@ -1,13 +1,12 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.driver.rest.Failure
+import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

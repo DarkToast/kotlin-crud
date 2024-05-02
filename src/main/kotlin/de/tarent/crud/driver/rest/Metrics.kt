@@ -8,6 +8,7 @@ import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricQuery
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
+import de.tarent.crud.driver.rest.dtos.Failure
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created

@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.groups
 
-import de.tarent.crud.driver.rest.Failure
+import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
@@ -11,7 +11,6 @@ import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.contentType
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

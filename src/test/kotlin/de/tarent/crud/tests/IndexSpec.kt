@@ -1,6 +1,6 @@
 package de.tarent.crud.tests
 
-import de.tarent.crud.driver.rest.Index
+import de.tarent.crud.driver.rest.dtos.Index
 import de.tarent.crud.tests.asserts.LinkAssertion
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
@@ -8,7 +8,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

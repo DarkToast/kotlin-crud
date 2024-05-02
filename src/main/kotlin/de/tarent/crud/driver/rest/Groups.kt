@@ -8,7 +8,9 @@ import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Group
 import de.tarent.crud.domain.Name
 import de.tarent.crud.driver.rest.dtos.CreateUpdateGroupRequest
+import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.GroupResponse
+import de.tarent.crud.driver.rest.dtos.Index
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created

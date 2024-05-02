@@ -3,7 +3,7 @@ package de.tarent.crud
 import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.GroupService
 import de.tarent.crud.application.MetricService
-import de.tarent.crud.driver.rest.Failure
+import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.adminPage
 import de.tarent.crud.driver.rest.devicePage
 import de.tarent.crud.driver.rest.groupPage

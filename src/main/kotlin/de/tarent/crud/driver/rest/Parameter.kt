@@ -1,5 +1,6 @@
 package de.tarent.crud.driver.rest
 
+import de.tarent.crud.driver.rest.dtos.Failure
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.server.application.ApplicationCall

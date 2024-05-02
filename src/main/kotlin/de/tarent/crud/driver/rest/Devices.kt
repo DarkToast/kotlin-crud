@@ -11,6 +11,7 @@ import de.tarent.crud.domain.Name
 import de.tarent.crud.domain.Type
 import de.tarent.crud.driver.rest.dtos.CreateUpdateDeviceRequest
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
+import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.GroupResponse
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict

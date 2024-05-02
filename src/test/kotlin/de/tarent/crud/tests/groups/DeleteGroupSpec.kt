@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.groups
 
-import de.tarent.crud.driver.rest.Index
+import de.tarent.crud.driver.rest.dtos.Index
 import io.ktor.client.request.accept
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -9,7 +9,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
-import kotlinx.serialization.decodeFromString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
