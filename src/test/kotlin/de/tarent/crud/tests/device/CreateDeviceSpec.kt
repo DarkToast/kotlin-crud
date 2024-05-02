@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.driver.rest.dtos.Failure
 import de.tarent.crud.driver.rest.dtos.DeviceResponse
+import de.tarent.crud.driver.rest.dtos.Failure
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody

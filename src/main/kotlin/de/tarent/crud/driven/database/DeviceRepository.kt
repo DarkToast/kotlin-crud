@@ -1,18 +1,9 @@
 package de.tarent.crud.driven.database
 
-import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Device
-import de.tarent.crud.domain.Name
-import de.tarent.crud.domain.Type
-import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 class DeviceRepository(private val database: Database) {
     fun insert(
@@ -55,9 +46,9 @@ class DeviceRepository(private val database: Database) {
                 .map {
                     Device(
                         id = it[DeviceEntity.id].value,
-                        name = Name(it[DeviceEntity.name]),
-                        description = Description(it[DeviceEntity.description]),
-                        type = Type(it[DeviceEntity.type]),
+                        name = it[DeviceEntity.name],
+                        description = it[DeviceEntity.description],
+                        type = it[DeviceEntity.type],
                     )
                 }
                 .firstOrNull()
@@ -78,9 +69,9 @@ class DeviceRepository(private val database: Database) {
                 .map {
                     Device(
                         id = it[DeviceEntity.id].value,
-                        name = Name(it[DeviceEntity.name]),
-                        description = Description(it[DeviceEntity.description]),
-                        type = Type(it[DeviceEntity.type]),
+                        name = it[DeviceEntity.name],
+                        description = it[DeviceEntity.description],
+                        type = it[DeviceEntity.type],
                     )
                 }
         }

@@ -11,8 +11,6 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-class DomainException(message: String) : RuntimeException(message)
-
 @Serializable
 data class Metric(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),

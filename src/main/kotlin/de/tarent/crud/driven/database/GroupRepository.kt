@@ -1,24 +1,16 @@
 package de.tarent.crud.driven.database
 
-import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Group
-import de.tarent.crud.domain.Name
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 class GroupRepository(private val database: Database) {
     private val transform = { row: ResultRow ->
         Group(
             row[GroupEntity.id].value,
-            Name(row[GroupEntity.name]),
-            Description(row[GroupEntity.description]),
+            row[GroupEntity.name],
+            row[GroupEntity.description],
         )
     }
 

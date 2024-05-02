@@ -5,10 +5,7 @@ import de.tarent.crud.application.results.DeviceAlreadyExists
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
-import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Device
-import de.tarent.crud.domain.Name
-import de.tarent.crud.domain.Type
 import de.tarent.crud.driver.rest.body
 import de.tarent.crud.driver.rest.deviceDontExist
 import de.tarent.crud.driver.rest.dtos.CreateUpdateDeviceRequest
@@ -21,15 +18,9 @@ import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.delete
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 val logger = KotlinLogging.logger("de.tarent.crud.controller.devicesKt")
 
@@ -48,6 +39,7 @@ fun Route.devicePage(deviceService: DeviceService) {
                         }
                     call.respond(OK, response)
                 }
+
                 is GroupDontExists -> groupDontExist(call, result)
             }
         }
@@ -62,6 +54,7 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '${result.value.name}' loaded" }
                     call.respond(OK, DeviceResponse.from(result.value).withLinks(groupName))
                 }
+
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
             }
@@ -75,9 +68,9 @@ fun Route.devicePage(deviceService: DeviceService) {
                 } ?: return@post
             val device =
                 Device(
-                    name = Name(command.name),
-                    description = Description(command.description),
-                    type = Type(command.type),
+                    name = command.name,
+                    description = command.description,
+                    type = command.type,
                 )
 
             logger.info { "CREATE a new device in the group $groupName" }
@@ -87,6 +80,7 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '${result.value.name}' created" }
                     call.respond(Created, DeviceResponse.from(result.value).withLinks(groupName))
                 }
+
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
             }
@@ -101,9 +95,9 @@ fun Route.devicePage(deviceService: DeviceService) {
                 } ?: return@put
             val device =
                 Device(
-                    name = Name(command.name),
-                    description = Description(command.description),
-                    type = Type(command.type),
+                    name = command.name,
+                    description = command.description,
+                    type = command.type,
                 )
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
@@ -113,6 +107,7 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '$deviceName' updated" }
                     call.respond(OK, DeviceResponse.from(result.value).withLinks(groupName))
                 }
+
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
@@ -130,6 +125,7 @@ fun Route.devicePage(deviceService: DeviceService) {
                     logger.debug { "Device '$deviceName' deleted" }
                     call.respond(OK, result.value.let { GroupResponse.from(it).withLinks() })
                 }
+
                 is GroupDontExists -> groupDontExist(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
             }

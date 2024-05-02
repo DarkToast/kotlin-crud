@@ -4,9 +4,7 @@ import de.tarent.crud.application.GroupService
 import de.tarent.crud.application.results.GroupAlreadyExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
-import de.tarent.crud.domain.Description
 import de.tarent.crud.domain.Group
-import de.tarent.crud.domain.Name
 import de.tarent.crud.driver.rest.body
 import de.tarent.crud.driver.rest.dtos.CreateUpdateGroupRequest
 import de.tarent.crud.driver.rest.dtos.Failure
@@ -18,15 +16,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.delete
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.put
-import io.ktor.server.routing.route
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 fun Route.groupPage(groupService: GroupService) {
     val logger = KotlinLogging.logger {}
@@ -58,8 +50,8 @@ fun Route.groupPage(groupService: GroupService) {
             logger.info { "CREATE group with name '${command.name}'." }
             val group =
                 Group(
-                    name = Name(command.name),
-                    description = Description(command.description),
+                    name = command.name,
+                    description = command.description,
                 )
 
             when (val result = groupService.create(group)) {
@@ -75,8 +67,8 @@ fun Route.groupPage(groupService: GroupService) {
 
             val group =
                 Group(
-                    name = Name(command.name),
-                    description = Description(command.description),
+                    name = command.name,
+                    description = command.description,
                 )
 
             when (val result = groupService.update(name, group)) {
