@@ -1,4 +1,4 @@
-package de.tarent.crud.driven.database
+package de.tarent.crud.adapters.database
 
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricList

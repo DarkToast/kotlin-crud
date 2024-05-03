@@ -1,4 +1,4 @@
-package de.tarent.crud.driven.database
+package de.tarent.crud.adapters.database
 
 import de.tarent.crud.domain.Group
 import org.jetbrains.exposed.sql.Database

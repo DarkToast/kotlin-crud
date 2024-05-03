@@ -1,5 +1,9 @@
 package de.tarent.crud.domain
 
+import de.tarent.crud.domain.Method.DELETE
+import de.tarent.crud.domain.Method.GET
+import de.tarent.crud.domain.Method.POST
+import de.tarent.crud.domain.Method.PUT
 import kotlinx.serialization.Serializable
 import java.net.URI
 import java.util.UUID
@@ -20,10 +24,10 @@ data class Group(
     }
 
     fun withLinks(): Group =
-        this.addLink("_self", Method.GET, URI("/groups/$name"))
-            .addLink("index", Method.GET, URI("/"))
-            .addLink("delete", Method.DELETE, URI("/groups/$name"))
-            .addLink("update", Method.PUT, URI("/groups/$name"))
-            .addLink("add_device", Method.POST, URI("/groups/$name/devices"))
-            .addLink("list_devices", Method.GET, URI("/groups/$name/devices"))
+        this.addLink("_self", GET, URI("/groups/$name"))
+            .addLink("index", GET, URI("/"))
+            .addLink("delete", DELETE, URI("/groups/$name"))
+            .addLink("update", PUT, URI("/groups/$name"))
+            .addLink("add_device", POST, URI("/groups/$name/devices"))
+            .addLink("list_devices", GET, URI("/groups/$name/devices"))
 }

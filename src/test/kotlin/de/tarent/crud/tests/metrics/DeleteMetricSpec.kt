@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.metrics
 
 import de.tarent.crud.domain.Device
-import de.tarent.crud.driver.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.dtos.Failure
 import io.ktor.client.request.delete
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound

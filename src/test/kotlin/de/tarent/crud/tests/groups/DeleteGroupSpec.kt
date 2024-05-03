@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.groups
 
-import de.tarent.crud.driver.rest.dtos.Index
+import de.tarent.crud.adapters.rest.dtos.Index
 import io.ktor.client.request.accept
 import io.ktor.client.request.delete
 import io.ktor.client.request.get

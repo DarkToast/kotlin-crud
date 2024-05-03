@@ -14,9 +14,9 @@ data class Configuration(val databaseConfig: DatabaseConfig) {
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        fun load(configuration: ApplicationConfig): Configuration {
+        fun load(appConfig: ApplicationConfig): Configuration {
             logger.info { "Loading database configuration with: " }
-            val dbProps = configuration.config("database")
+            val dbProps = appConfig.config("database")
 
             val databaseConfig =
                 DatabaseConfig(

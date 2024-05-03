@@ -13,9 +13,9 @@ import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricList
 import de.tarent.crud.domain.MetricQuery
-import de.tarent.crud.driven.database.DeviceRepository
-import de.tarent.crud.driven.database.GroupRepository
-import de.tarent.crud.driven.database.MetricRepository
+import de.tarent.crud.adapters.database.DeviceRepository
+import de.tarent.crud.adapters.database.GroupRepository
+import de.tarent.crud.adapters.database.MetricRepository
 import java.util.UUID
 
 class MetricService(

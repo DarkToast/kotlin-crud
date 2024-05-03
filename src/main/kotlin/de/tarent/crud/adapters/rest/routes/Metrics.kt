@@ -1,4 +1,4 @@
-package de.tarent.crud.driver.rest.routes
+package de.tarent.crud.adapters.rest.routes
 
 import de.tarent.crud.application.MetricService
 import de.tarent.crud.application.results.DeviceDontExists
@@ -7,12 +7,12 @@ import de.tarent.crud.application.results.MetricDontNotExists
 import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricQuery
-import de.tarent.crud.driver.rest.body
-import de.tarent.crud.driver.rest.deviceDontExist
-import de.tarent.crud.driver.rest.dtos.Failure
-import de.tarent.crud.driver.rest.groupDontExists
-import de.tarent.crud.driver.rest.parseDateTime
-import de.tarent.crud.driver.rest.path
+import de.tarent.crud.adapters.rest.body
+import de.tarent.crud.adapters.rest.deviceDontExist
+import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.groupDontExists
+import de.tarent.crud.adapters.rest.parseDateTime
+import de.tarent.crud.adapters.rest.path
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created

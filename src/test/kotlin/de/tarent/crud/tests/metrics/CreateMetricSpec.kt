@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.metrics
 
 import de.tarent.crud.domain.Metric
-import de.tarent.crud.driver.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.dtos.Failure
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody

@@ -33,11 +33,11 @@ Content-Type: application/json
 {
   "unit": "°C",
   "value": -3.0,
-  "timestamp": "2022-12-30T10:00:00+01:00"
+  "timestamp": "2024-05-03T10:00:00+01:00"
 }
 
 ### GET ALL METRIC FOR Wetterstation1 in GROUP HWR
-GET localhost:8080/groups/HWR/devices/Wetterstation1/metrics?from=now-20m&to=now-3m
+GET localhost:8080/groups/HWR/devices/Wetterstation1/metrics?from=now-3h&to=now-3m
 
 #### UPDATE A GROUP
 #PUT localhost:8080/groups/HWR

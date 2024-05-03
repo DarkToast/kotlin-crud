@@ -1,6 +1,6 @@
-package de.tarent.crud.driver.rest.routes
+package de.tarent.crud.adapters.rest.routes
 
-import de.tarent.crud.driver.rest.dtos.Index
+import de.tarent.crud.adapters.rest.dtos.Index
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond

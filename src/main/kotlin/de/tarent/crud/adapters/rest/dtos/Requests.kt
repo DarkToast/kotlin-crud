@@ -1,4 +1,4 @@
-package de.tarent.crud.driver.rest.dtos
+package de.tarent.crud.adapters.rest.dtos
 
 import kotlinx.serialization.Serializable
 

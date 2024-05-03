@@ -1,4 +1,4 @@
-package de.tarent.crud.driven.database
+package de.tarent.crud.adapters.database
 
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.javatime.datetime

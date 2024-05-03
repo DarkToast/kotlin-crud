@@ -12,8 +12,8 @@ import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Group
-import de.tarent.crud.driven.database.DeviceRepository
-import de.tarent.crud.driven.database.GroupRepository
+import de.tarent.crud.adapters.database.DeviceRepository
+import de.tarent.crud.adapters.database.GroupRepository
 
 typealias ListResult = DeviceListResult<List<Device>>
 
