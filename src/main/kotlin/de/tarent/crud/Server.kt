@@ -15,14 +15,16 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.netty.EngineMain
+import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
-import org.koin.core.logger.Level
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import org.koin.core.logger.Level as KoinLevel
+import org.slf4j.event.Level as Slf4JLevel
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
@@ -40,8 +42,12 @@ fun Application.server() {
         }
     }
 
+    install(CallLogging) {
+        level = Slf4JLevel.INFO
+    }
+
     install(Koin) {
-        slf4jLogger(Level.DEBUG)
+        slf4jLogger(KoinLevel.DEBUG)
         modules(dependencies(environment.config))
     }
 

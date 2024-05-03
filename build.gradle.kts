@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.web.ktor.server.netty)
     implementation(libs.web.ktor.server.pages)
     implementation(libs.web.ktor.server.content.negotiation)
+    implementation(libs.web.ktor.server.logging)
     implementation(libs.web.ktor.serialization.json)
 
     implementation(libs.di.koin.core)

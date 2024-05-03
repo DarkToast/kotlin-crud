@@ -25,7 +25,9 @@ web-ktor-server-core = { group = 'io.ktor', name = 'ktor-server-core', version.r
 web-ktor-server-netty = { group = 'io.ktor', name = 'ktor-server-netty', version.ref = 'ktor' }
 web-ktor-server-pages = { group = 'io.ktor', name = 'ktor-server-status-pages', version.ref = 'ktor' }
 web-ktor-server-content-negotiation = { group = 'io.ktor', name = 'ktor-server-content-negotiation', version.ref = 'ktor' }
+web-ktor-server-logging = { group = 'io.ktor', name = 'ktor-server-call-logging', version.ref = 'ktor' }
 web-ktor-serialization-json = { group = 'io.ktor', name = 'ktor-serialization-kotlinx-json', version.ref = 'ktor' }
+
 
 ## LOGGING
 logging-kotlin = { group = 'io.github.oshai', name = 'kotlin-logging-jvm', version.ref = 'logging-kotlin' }

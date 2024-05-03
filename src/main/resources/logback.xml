@@ -1,14 +1,16 @@
 <configuration>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{10} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{25} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <logger name="de.tarent.crud" level="info" />
     <logger name="Exposed" level="info" />
+    <logger name="[Koin]" level="info" />
+    <logger name="Application" level="info" />
 
-    <root level="error">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
