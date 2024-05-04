@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.ZoneId.systemDefault
@@ -27,8 +27,8 @@ class MetricRepository(private val database: Database) {
     ) = transaction(database) {
         val deviceIdQuery =
             DeviceEntity
-                .slice(DeviceEntity.id)
-                .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+                .select(DeviceEntity.id)
+                .where { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
 
         MetricEntity.insert {
             it[id] = metric.id
@@ -42,7 +42,7 @@ class MetricRepository(private val database: Database) {
     fun load(metricId: UUID): Metric? =
         transaction(database) {
             MetricEntity
-                .select { MetricEntity.id eq metricId }
+                .selectAll().where { MetricEntity.id eq metricId }
                 .map(transform)
                 .firstOrNull()
         }
@@ -60,8 +60,8 @@ class MetricRepository(private val database: Database) {
         transaction(database) {
             val deviceIdQuery: Query =
                 DeviceEntity
-                    .slice(DeviceEntity.id)
-                    .select { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+                    .select(DeviceEntity.id)
+                    .where { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
 
             val filterDeviceId = MetricEntity.deviceId inSubQuery deviceIdQuery
             val greaterEqFrom = MetricEntity.timestamp greaterEq queryData.from
@@ -69,7 +69,7 @@ class MetricRepository(private val database: Database) {
             val filterUnit = { type: String -> MetricEntity.unit eq type }
 
             MetricEntity
-                .select {
+                .selectAll().where {
                     val expr = filterDeviceId and greaterEqFrom and lessEqTo
                     queryData.type
                         ?.let { expr and filterUnit(it) }
