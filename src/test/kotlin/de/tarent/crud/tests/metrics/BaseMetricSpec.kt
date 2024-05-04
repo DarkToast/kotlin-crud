@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.metrics
 
-import de.tarent.crud.domain.Metric
+import de.tarent.crud.adapters.rest.dtos.MetricResponse
 import de.tarent.crud.tests.BaseComponentSpec
 import de.tarent.crud.tests.asserts.DeviceAssertion
 import de.tarent.crud.tests.asserts.MetricAssertion
@@ -33,7 +33,7 @@ abstract class BaseMetricSpec : BaseComponentSpec(), MetricAssertion, DeviceAsse
         groupName: String,
         deviceName: String,
         metricJson: String,
-    ): Metric {
+    ): MetricResponse {
         val response =
             builder.client.post("/groups/$groupName/devices/$deviceName/metrics") {
                 contentType(ContentType.Application.Json)

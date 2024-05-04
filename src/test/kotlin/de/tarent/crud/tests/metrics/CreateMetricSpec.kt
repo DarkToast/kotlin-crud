@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.metrics
 
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.domain.Metric
+import de.tarent.crud.adapters.rest.dtos.MetricResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -77,11 +77,11 @@ class CreateMetricSpec : BaseMetricSpec() {
             // then: Status Created
             assertThat(response.status).isEqualTo(Created)
 
-            val metric: Metric = json.decodeFromString(response.bodyAsText())
-            assertMetric("W", 64.2, timestamp, metric)
+            val metric: MetricResponse = json.decodeFromString(response.bodyAsText())
+            assertMetric("W", 64.2, timestamp, metric.payload)
 
             // and: It has all related links
-            val id = metric.id
+            val id = metric.payload.id
             assertLink("_self", "/groups/$testGroupName/devices/$testDeviceName/metrics/$id", "GET", metric.links)
             assertLink("delete", "/groups/$testGroupName/devices/$testDeviceName/metrics/$id", "DELETE", metric.links)
             assertLink("get_device", "/groups/$testGroupName/devices/$testDeviceName", "GET", metric.links)

@@ -6,6 +6,8 @@ import de.tarent.crud.adapters.rest.dtos.Method.POST
 import de.tarent.crud.adapters.rest.dtos.Method.PUT
 import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Group
+import de.tarent.crud.domain.Metric
+import de.tarent.crud.domain.MetricList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -50,10 +52,38 @@ class DeviceResponse(override val payload: Device) : Response<Device>() {
 }
 
 @Serializable
-class DeviceListResponse(override val payload: List<Device>) : Response<List<Device>>() {
+class DeviceListResponse(val groupName: String, override val payload: List<Device>) : Response<List<Device>>() {
     init {
         this.addLink("index", GET, "/")
             .addLink("_self", GET, "/groups")
-            .addLink("get_group", GET, "/groups/{name}")
+            .addLink("get_group", GET, "/groups/$groupName")
+    }
+}
+
+@Serializable
+class MetricResponse(override val payload: Metric) : Response<Metric>() {
+    init {
+        val groupName = payload.groupName
+        val deviceName = payload.deviceName
+        val id = payload.id
+
+        this.addLink("_self", GET, "/groups/$groupName/devices/$deviceName/metrics/$id")
+            .addLink("delete", DELETE, "/groups/$groupName/devices/$deviceName/metrics/$id")
+            .addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
+            .addLink("get_group", GET, "/groups/$groupName")
+    }
+}
+
+@Serializable
+class MetricListResponse(override val payload: MetricList) : Response<MetricList>() {
+    init {
+        val type = if (payload.type != null) "&type=${payload.type}" else ""
+        val query = "?from=${payload.from.toLocalDateTime()}&to=${payload.to.toLocalDateTime()}$type"
+        val groupName = payload.groupName
+        val deviceName = payload.deviceName
+
+        this.addLink("_self", GET, "/groups/$groupName/devices/$deviceName/metrics$query")
+            .addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
+            .addLink("get_group", GET, "/groups/$groupName")
     }
 }

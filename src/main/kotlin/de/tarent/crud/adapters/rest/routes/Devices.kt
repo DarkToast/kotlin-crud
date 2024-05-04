@@ -40,7 +40,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.listDevices(groupName)) {
                 is Ok -> {
                     logger.debug { "${result.value.size}' devices loaded of group '$groupName'." }
-                    call.respond(OK, DeviceListResponse(result.value))
+                    call.respond(OK, DeviceListResponse(groupName, result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)

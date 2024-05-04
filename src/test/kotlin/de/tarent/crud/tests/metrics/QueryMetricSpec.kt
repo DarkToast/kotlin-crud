@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.metrics
 
-import de.tarent.crud.domain.MetricList
+import de.tarent.crud.adapters.rest.dtos.MetricListResponse
 import de.tarent.crud.tests.asserts.Assertion
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -42,11 +42,11 @@ class QueryMetricSpec : BaseMetricSpec() {
 
             // and: The time range is six hours to now.
             // and: The list consists of all metrics.
-            Assertion.assert<MetricList>(response) {
-                assertThat(it.from).isCloseTo(sixHours, within(2, SECONDS))
-                assertThat(it.to).isCloseTo(now, within(2, SECONDS))
-                assertThat(it.type).isNull()
-                assertThat(it.metrics).hasSize(10)
+            Assertion.assert<MetricListResponse>(response) {
+                assertThat(it.payload.from).isCloseTo(sixHours, within(2, SECONDS))
+                assertThat(it.payload.to).isCloseTo(now, within(2, SECONDS))
+                assertThat(it.payload.type).isNull()
+                assertThat(it.payload.metrics).hasSize(10)
                 true
             }
         }
@@ -63,7 +63,7 @@ class QueryMetricSpec : BaseMetricSpec() {
             // then: Status Ok
             assertThat(response.status).isEqualTo(OK)
 
-            Assertion.assert<MetricList>(response) {
+            Assertion.assert<MetricListResponse>(response) {
                 assertLink(
                     "_self",
                     "/groups/$testGroupName/devices/$testDeviceName/metrics?from=$from&to=$to",
@@ -86,12 +86,12 @@ class QueryMetricSpec : BaseMetricSpec() {
 
             // and: The time range is six hours to now.
             // and: The list consists only °C
-            Assertion.assert<MetricList>(response) {
-                assertThat(it.from).isCloseTo(sixHours, within(2, SECONDS))
-                assertThat(it.to).isCloseTo(now, within(2, SECONDS))
-                assertThat(it.type).isEqualTo("°C")
-                assertThat(it.metrics).hasSize(5)
-                assertThat(it.metrics).allMatch { metric -> metric.unit == "°C" }
+            Assertion.assert<MetricListResponse>(response) {
+                assertThat(it.payload.from).isCloseTo(sixHours, within(2, SECONDS))
+                assertThat(it.payload.to).isCloseTo(now, within(2, SECONDS))
+                assertThat(it.payload.type).isEqualTo("°C")
+                assertThat(it.payload.metrics).hasSize(5)
+                assertThat(it.payload.metrics).allMatch { metric -> metric.unit == "°C" }
                 true
             }
 
@@ -103,12 +103,12 @@ class QueryMetricSpec : BaseMetricSpec() {
 
             // and: The time range is six hours to now.
             // and: The list consists only °C
-            Assertion.assert<MetricList>(response) {
-                assertThat(it.from).isCloseTo(sixHours, within(2, SECONDS))
-                assertThat(it.to).isCloseTo(now, within(2, SECONDS))
-                assertThat(it.type).isEqualTo("hPa")
-                assertThat(it.metrics).hasSize(5)
-                assertThat(it.metrics).allMatch { metric -> metric.unit == "hPa" }
+            Assertion.assert<MetricListResponse>(response) {
+                assertThat(it.payload.from).isCloseTo(sixHours, within(2, SECONDS))
+                assertThat(it.payload.to).isCloseTo(now, within(2, SECONDS))
+                assertThat(it.payload.type).isEqualTo("hPa")
+                assertThat(it.payload.metrics).hasSize(5)
+                assertThat(it.payload.metrics).allMatch { metric -> metric.unit == "hPa" }
                 true
             }
         }
@@ -124,12 +124,12 @@ class QueryMetricSpec : BaseMetricSpec() {
 
             // and: The time range is six hours to now.
             // and: The list consists only °C
-            Assertion.assert<MetricList>(response) {
+            Assertion.assert<MetricListResponse>(response) {
                 val tenMinutes = now.minusMinutes(11)
-                assertThat(it.from).isCloseTo(tenMinutes, within(1, SECONDS))
-                assertThat(it.to).isCloseTo(now, within(1, SECONDS))
-                assertThat(it.type).isNull()
-                assertThat(it.metrics).hasSize(4)
+                assertThat(it.payload.from).isCloseTo(tenMinutes, within(1, SECONDS))
+                assertThat(it.payload.to).isCloseTo(now, within(1, SECONDS))
+                assertThat(it.payload.type).isNull()
+                assertThat(it.payload.metrics).hasSize(4)
                 true
             }
         }
@@ -145,14 +145,14 @@ class QueryMetricSpec : BaseMetricSpec() {
 
             // and: The time range is six hours to now.
             // and: The list consists only °C
-            Assertion.assert<MetricList>(response) {
+            Assertion.assert<MetricListResponse>(response) {
                 val twentyMinutes = now.minusMinutes(21)
                 val fiveMinutes = now.minusMinutes(4)
 
-                assertThat(it.from).isCloseTo(twentyMinutes, within(2, SECONDS))
-                assertThat(it.to).isCloseTo(fiveMinutes, within(2, SECONDS))
-                assertThat(it.type).isNull()
-                assertThat(it.metrics).hasSize(8)
+                assertThat(it.payload.from).isCloseTo(twentyMinutes, within(2, SECONDS))
+                assertThat(it.payload.to).isCloseTo(fiveMinutes, within(2, SECONDS))
+                assertThat(it.payload.type).isNull()
+                assertThat(it.payload.metrics).hasSize(8)
                 true
             }
         }
@@ -168,15 +168,15 @@ class QueryMetricSpec : BaseMetricSpec() {
 
             // and: The time range is six hours to now.
             // and: The list consists only °C
-            Assertion.assert<MetricList>(response) {
+            Assertion.assert<MetricListResponse>(response) {
                 val twentyMinutes = now.minusMinutes(21)
                 val fiveMinutes = now.minusMinutes(4)
 
-                assertThat(it.from).isCloseTo(twentyMinutes, within(1, SECONDS))
-                assertThat(it.to).isCloseTo(fiveMinutes, within(1, SECONDS))
-                assertThat(it.type).isEqualTo("hPa")
-                assertThat(it.metrics).hasSize(4)
-                assertThat(it.metrics).allMatch { metric -> metric.unit == "hPa" }
+                assertThat(it.payload.from).isCloseTo(twentyMinutes, within(1, SECONDS))
+                assertThat(it.payload.to).isCloseTo(fiveMinutes, within(1, SECONDS))
+                assertThat(it.payload.type).isEqualTo("hPa")
+                assertThat(it.payload.metrics).hasSize(4)
+                assertThat(it.payload.metrics).allMatch { metric -> metric.unit == "hPa" }
                 true
             }
         }

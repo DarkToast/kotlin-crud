@@ -1,8 +1,5 @@
 package de.tarent.crud.domain
 
-import de.tarent.crud.adapters.rest.dtos.Linked
-import de.tarent.crud.adapters.rest.dtos.Method.DELETE
-import de.tarent.crud.adapters.rest.dtos.Method.GET
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.time.LocalDateTime
@@ -13,29 +10,26 @@ import java.util.UUID
 
 @Serializable
 data class Metric(
-    @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID = UUID.randomUUID(),
     val unit: String,
     val value: Double,
-    @Serializable(with = OffsetDateTimeIsoSerializer::class) val timestamp: OffsetDateTime,
-) : Linked<Metric>() {
-    fun withLinks(
-        groupName: String,
-        deviceName: String,
-    ): Metric =
-        this.addLink("_self", GET, "/groups/$groupName/devices/$deviceName/metrics/$id")
-            .addLink("delete", DELETE, "/groups/$groupName/devices/$deviceName/metrics/$id")
-            .addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
-            .addLink("get_group", GET, "/groups/$groupName")
-}
+    @Serializable(with = OffsetDateTimeIsoSerializer::class)
+    val timestamp: OffsetDateTime,
+    val groupName: String,
+    val deviceName: String,
+)
 
 /**
  * Using `OffsetDateTime` as response type to give clients the ability to get information of the servers time zone.
  */
 @Serializable
 class MetricList(
+    val groupName: String,
+    val deviceName: String,
     @Transient private val query: MetricQuery = MetricQuery(),
     @Transient private var metricList: List<Metric> = emptyList(),
-) : Linked<MetricList>() {
+) {
     val metrics: List<Metric> = metricList
 
     @Serializable(with = OffsetDateTimeIsoSerializer::class)
@@ -45,20 +39,6 @@ class MetricList(
     val to: OffsetDateTime = query.to.atZone(ZoneId.systemDefault()).toOffsetDateTime()
 
     val type: String? = query.type
-
-    fun withLinks(
-        groupName: String,
-        deviceName: String,
-    ): MetricList {
-        val type = if (type != null) "&type=$type" else ""
-        val query = "?from=${from.toLocalDateTime()}&to=${to.toLocalDateTime()}$type"
-
-        metricList = metricList.map { it.withLinks(groupName, deviceName) }
-
-        return this.addLink("_self", GET, "/groups/$groupName/devices/$deviceName/metrics$query")
-            .addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
-            .addLink("get_group", GET, "/groups/$groupName")
-    }
 }
 
 /**

@@ -39,11 +39,15 @@ class MetricRepository(private val database: Database) {
         }
     }
 
-    fun load(metricId: UUID): Metric? =
+    fun load(
+        groupName: String,
+        deviceName: String,
+        metricId: UUID,
+    ): Metric? =
         transaction(database) {
             MetricEntity
                 .selectAll().where { MetricEntity.id eq metricId }
-                .map(transform)
+                .map(transform(groupName, deviceName))
                 .firstOrNull()
         }
 
@@ -75,11 +79,14 @@ class MetricRepository(private val database: Database) {
                         ?.let { expr and filterUnit(it) }
                         ?: expr
                 }
-                .map(transform)
-                .let { metrics -> MetricList(queryData, metrics) }
+                .map(transform(groupName, deviceName))
+                .let { metrics -> MetricList(groupName, deviceName, queryData, metrics) }
         }
 
-    private val transform = { row: ResultRow ->
+    private fun transform(
+        groupName: String,
+        deviceName: String,
+    ) = { row: ResultRow ->
         Metric(
             id = row[MetricEntity.id].value,
             unit = row[MetricEntity.unit],
@@ -88,6 +95,8 @@ class MetricRepository(private val database: Database) {
                 row[MetricEntity.timestamp]
                     .atZone(systemDefault())
                     .toOffsetDateTime(),
+            groupName = groupName,
+            deviceName = deviceName,
         )
     }
 }

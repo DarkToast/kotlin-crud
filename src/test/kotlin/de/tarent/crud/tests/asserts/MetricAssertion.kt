@@ -1,5 +1,6 @@
 package de.tarent.crud.tests.asserts
 
+import de.tarent.crud.adapters.rest.dtos.MetricResponse
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.tests.asserts.Assertion.assert
 import io.ktor.client.statement.HttpResponse
@@ -14,7 +15,7 @@ interface MetricAssertion : LinkAssertion {
         timestamp: OffsetDateTime,
         response: HttpResponse,
     ): Boolean {
-        return assert<Metric>(response) { assertMetric(unit, value, timestamp, it) }
+        return assert<MetricResponse>(response) { assertMetric(unit, value, timestamp, it.payload) }
     }
 
     fun assertMetric(

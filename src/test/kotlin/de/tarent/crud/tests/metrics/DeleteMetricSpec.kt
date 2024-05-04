@@ -16,7 +16,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
     override val spec =
         super.spec.withSetup {
             val metric = createMetric(this, testGroupName, testDeviceName, metricJson("°C", 12.6, timestamp))
-            metricId = metric.id
+            metricId = metric.payload.id
         }
 
     @Test

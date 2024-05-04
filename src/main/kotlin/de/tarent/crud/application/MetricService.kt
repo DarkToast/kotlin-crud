@@ -56,7 +56,7 @@ class MetricService(
         metricId: UUID,
     ): MetricReadResult<Metric> {
         return check(groupName, deviceName) {
-            metricRepository.load(metricId)
+            metricRepository.load(groupName, deviceName, metricId)
                 ?.let { Ok(it) }
                 ?: MetricDontNotExists(groupName, deviceName, metricId)
         }

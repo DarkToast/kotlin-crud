@@ -2,8 +2,11 @@ package de.tarent.crud.adapters.rest.routes
 
 import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.deviceDontExist
+import de.tarent.crud.adapters.rest.dtos.CreateMetricRequest
 import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.dtos.MetricListResponse
+import de.tarent.crud.adapters.rest.dtos.MetricResponse
 import de.tarent.crud.adapters.rest.groupDontExists
 import de.tarent.crud.adapters.rest.parseDateTime
 import de.tarent.crud.adapters.rest.path
@@ -35,15 +38,23 @@ fun Route.metricsPage(metricService: MetricService): Route {
         post {
             val groupName = call.path("groupName") ?: return@post
             val deviceName = call.path("deviceName") ?: return@post
-            val metric: Metric =
+            val command: CreateMetricRequest =
                 call.body { msg, cause -> Failure.onDevice(400, msg, cause, groupName, deviceName) } ?: return@post
 
             logger.info { "POST new metric on device '$deviceName' of group '$groupName'" }
+            val metric =
+                Metric(
+                    unit = command.unit,
+                    value = command.value,
+                    timestamp = command.timestamp,
+                    groupName = groupName,
+                    deviceName = deviceName,
+                )
 
             when (val result = metricService.create(groupName, deviceName, metric)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
-                is Ok -> call.respond(Created, metric.withLinks(groupName, deviceName))
+                is Ok -> call.respond(Created, MetricResponse(result.value))
             }
         }
 
@@ -59,7 +70,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is Ok -> {
                     logger.info { "Found ${result.value.metrics.size} metrics" }
-                    call.respond(OK, result.value.withLinks(groupName, deviceName))
+                    call.respond(OK, MetricListResponse(result.value))
                 }
             }
         }
@@ -78,7 +89,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is MetricDontNotExists -> metricDontExist(call, result)
-                is Ok -> call.respond(OK, result.value)
+                is Ok -> call.respond(OK, MetricResponse(result.value))
             }
         }
 
