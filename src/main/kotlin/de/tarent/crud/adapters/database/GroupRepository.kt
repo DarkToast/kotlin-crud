@@ -6,7 +6,6 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -43,7 +42,7 @@ class GroupRepository(private val database: Database) {
 
     fun load(name: String): Group? =
         transaction(database) {
-            GroupEntity.select { GroupEntity.name eq name }
+            GroupEntity.selectAll().where { GroupEntity.name eq name }
                 .map(transform)
                 .firstOrNull()
         }
@@ -60,6 +59,6 @@ class GroupRepository(private val database: Database) {
 
     fun exists(name: String): Boolean =
         transaction(database) {
-            GroupEntity.select { GroupEntity.name eq name }.count() == 1L
+            GroupEntity.selectAll().where { GroupEntity.name eq name }.count() == 1L
         }
 }

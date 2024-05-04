@@ -30,7 +30,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
                     setBody(request)
                 }
 
-            // then: Status Created with an URL
+            // then: Status Created with a URL
             assertThat(response.status).isEqualTo(Created)
 
             // and: the device is returned
