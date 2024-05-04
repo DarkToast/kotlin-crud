@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.domain.Device
 import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.domain.Device
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -30,7 +30,7 @@ class CreateDeviceSpec : BaseDeviceSpec() {
                     setBody(request)
                 }
 
-            // then: Status Created with an URL
+            // then: Status Created with a URL
             assertThat(response.status).isEqualTo(Created)
 
             // and: the device is returned

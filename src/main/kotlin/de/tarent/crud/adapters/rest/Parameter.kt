@@ -21,7 +21,7 @@ suspend fun ApplicationCall.path(parameterName: String): String? {
         val msg = "Parameter '$parameterName' not found"
 
         val logger = KotlinLogging.logger {}
-        logger.warn(msg)
+        logger.warn { msg }
 
         this.respond(BadRequest, Failure(400, "Parameter '$parameterName' not found"))
     }
