@@ -85,9 +85,9 @@ class MetricRepository(private val database: Database) {
             unit = row[MetricEntity.unit],
             value = row[MetricEntity.value].toDouble(),
             timestamp =
-            row[MetricEntity.timestamp]
-                .atZone(systemDefault())
-                .toOffsetDateTime(),
+                row[MetricEntity.timestamp]
+                    .atZone(systemDefault())
+                    .toOffsetDateTime(),
         )
     }
 }
