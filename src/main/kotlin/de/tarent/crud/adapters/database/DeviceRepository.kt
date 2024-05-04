@@ -55,6 +55,7 @@ class DeviceRepository(private val database: Database) {
                         name = it[DeviceEntity.name],
                         description = it[DeviceEntity.description],
                         type = it[DeviceEntity.type],
+                        groupName = it[DeviceEntity.groupId],
                     )
                 }
                 .firstOrNull()
@@ -78,6 +79,7 @@ class DeviceRepository(private val database: Database) {
                         name = it[DeviceEntity.name],
                         description = it[DeviceEntity.description],
                         type = it[DeviceEntity.type],
+                        groupName = it[DeviceEntity.groupId],
                     )
                 }
         }

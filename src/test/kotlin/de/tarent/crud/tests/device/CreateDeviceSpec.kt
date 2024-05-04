@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.device
 
+import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.domain.Device
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -34,8 +34,8 @@ class CreateDeviceSpec : BaseDeviceSpec() {
             assertThat(response.status).isEqualTo(Created)
 
             // and: the device is returned
-            val device: Device = json.decodeFromString(response.bodyAsText())
-            assertDevice("steckdose_lüftung", "Steckdose für die Lüftung", "plug", device)
+            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            assertDevice("steckdose_lüftung", "Steckdose für die Lüftung", "plug", device.payload)
 
             // and: It has all related links
             assertLink("_self", "/groups/$testGroupName/devices/steckdose_lüftung", "GET", device.links)

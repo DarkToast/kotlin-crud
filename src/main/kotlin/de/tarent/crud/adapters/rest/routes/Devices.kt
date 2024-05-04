@@ -3,6 +3,8 @@ package de.tarent.crud.adapters.rest.routes
 import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.deviceDontExist
 import de.tarent.crud.adapters.rest.dtos.CreateUpdateDeviceRequest
+import de.tarent.crud.adapters.rest.dtos.DeviceListResponse
+import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import de.tarent.crud.adapters.rest.path
@@ -38,11 +40,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.listDevices(groupName)) {
                 is Ok -> {
                     logger.debug { "${result.value.size}' devices loaded of group '$groupName'." }
-                    val response: List<Device> =
-                        result.value.map {
-                            it.withLinks(groupName)
-                        }
-                    call.respond(OK, response)
+                    call.respond(OK, DeviceListResponse(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -57,7 +55,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.read(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' loaded" }
-                    call.respond(OK, result.value.withLinks(groupName))
+                    call.respond(OK, DeviceResponse(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -76,6 +74,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
                     name = command.name,
                     description = command.description,
                     type = command.type,
+                    groupName = groupName,
                 )
 
             logger.info { "CREATE a new device in the group $groupName" }
@@ -83,7 +82,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.create(groupName, device)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' created" }
-                    call.respond(Created, result.value.withLinks(groupName))
+                    call.respond(Created, DeviceResponse(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -103,6 +102,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
                     name = command.name,
                     description = command.description,
                     type = command.type,
+                    groupName = groupName,
                 )
 
             logger.info { "UPDATE device '$deviceName' for group '$groupName'." }
@@ -110,7 +110,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.update(groupName, deviceName, device)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' updated" }
-                    call.respond(OK, result.value.withLinks(groupName))
+                    call.respond(OK, DeviceResponse(result.value))
                 }
 
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)

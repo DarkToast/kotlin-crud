@@ -1,13 +1,13 @@
 package de.tarent.crud.tests.device
 
-import de.tarent.crud.domain.Device
+import de.tarent.crud.adapters.rest.dtos.DeviceListResponse
+import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
-import kotlinx.serialization.builtins.ListSerializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -30,16 +30,13 @@ class ReadDeviceSpec : BaseDeviceSpec() {
 
             // and: The list contains two devices
             val body: String = response.bodyAsText()
-            val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
-            assertEquals(2, list.size)
+            val list: DeviceListResponse = json.decodeFromString(body)
+            val payload = list.payload
+            assertEquals(2, payload.size)
 
             // and: The test devices was returned
-            assertDevice(testDeviceName, "test-device", "plug", list[0])
-            assertDevice("$testDeviceName-2", "test-device-2", "plug", list[1])
-
-            // and: Each device has related links
-            assertEquals(5, list[0].links.size)
-            assertEquals(5, list[1].links.size)
+            assertDevice(testDeviceName, "test-device", "plug", payload[0])
+            assertDevice("$testDeviceName-2", "test-device-2", "plug", payload[1])
         }
 
     @Test
@@ -70,7 +67,8 @@ class ReadDeviceSpec : BaseDeviceSpec() {
 
             // and: The list contains two devices
             val body: String = response.bodyAsText()
-            val list: List<Device> = json.decodeFromString(ListSerializer(Device.serializer()), body)
+            val listResponse: DeviceListResponse = json.decodeFromString(body)
+            val list = listResponse.payload
 
             assertEquals(2, list.size)
 
@@ -111,8 +109,8 @@ class ReadDeviceSpec : BaseDeviceSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: the device is returned
-            val device: Device = json.decodeFromString(response.bodyAsText())
-            assertDevice(testDeviceName, "test-device", "plug", device)
+            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            assertDevice(testDeviceName, "test-device", "plug", device.payload)
 
             // and: It has all related links
             assertLink("_self", "/groups/$testGroupName/devices/$testDeviceName", "GET", device.links)

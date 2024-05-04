@@ -4,6 +4,7 @@ import de.tarent.crud.adapters.rest.dtos.Method.DELETE
 import de.tarent.crud.adapters.rest.dtos.Method.GET
 import de.tarent.crud.adapters.rest.dtos.Method.POST
 import de.tarent.crud.adapters.rest.dtos.Method.PUT
+import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Group
 import kotlinx.serialization.Serializable
 
@@ -16,7 +17,7 @@ abstract class Response<P> : Linked<Response<P>>() {
 class GroupResponse(override val payload: Group) : Response<Group>() {
     init {
         val name = payload.name
-        this.addLink("_self", GET, "/groups/${name}")
+        this.addLink("_self", GET, "/groups/$name")
             .addLink("index", GET, "/")
             .addLink("delete", DELETE, "/groups/$name")
             .addLink("update", PUT, "/groups/$name")
@@ -27,6 +28,29 @@ class GroupResponse(override val payload: Group) : Response<Group>() {
 
 @Serializable
 class GroupListResponse(override val payload: List<Group>) : Response<List<Group>>() {
+    init {
+        this.addLink("index", GET, "/")
+            .addLink("_self", GET, "/groups")
+            .addLink("get_group", GET, "/groups/{name}")
+    }
+}
+
+@Serializable
+class DeviceResponse(override val payload: Device) : Response<Device>() {
+    init {
+        val name = payload.name
+        val groupName = payload.groupName
+
+        this.addLink("_self", GET, "/groups/$groupName/devices/$name")
+            .addLink("update", PUT, "/groups/$groupName/devices/$name")
+            .addLink("delete", DELETE, "/groups/$groupName/devices/$name")
+            .addLink("get_devices", GET, "/groups/$groupName/devices")
+            .addLink("get_group", GET, "/groups/$groupName")
+    }
+}
+
+@Serializable
+class DeviceListResponse(override val payload: List<Device>) : Response<List<Device>>() {
     init {
         this.addLink("index", GET, "/")
             .addLink("_self", GET, "/groups")
