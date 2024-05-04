@@ -1,14 +1,15 @@
 [versions]
+assertj = '3.25.3'
+exposed = '0.49.0'
 kotlin = '1.9.23'
 ktlint = '12.1.0'
 versions = '0.51.0'
 ktor = '2.3.10'
+expedia-GrahpQl = '7.1.1'
 logging-kotlin = '6.0.9'
 logging-logback = '1.5.6'
-exposed = '0.49.0'
 hikari = '5.0.1'
 koin = '3.5.6'
-assertj = '3.25.3'
 junit = '5.10.2'
 postgres-driver = '42.7.3'
 h2 = '2.2.224'
@@ -27,7 +28,10 @@ web-ktor-server-pages = { group = 'io.ktor', name = 'ktor-server-status-pages', 
 web-ktor-server-content-negotiation = { group = 'io.ktor', name = 'ktor-server-content-negotiation', version.ref = 'ktor' }
 web-ktor-server-logging = { group = 'io.ktor', name = 'ktor-server-call-logging', version.ref = 'ktor' }
 web-ktor-serialization-json = { group = 'io.ktor', name = 'ktor-serialization-kotlinx-json', version.ref = 'ktor' }
+web-ktor-serialization-jackson = { group = 'io.ktor', name = 'ktor-serialization-jackson', version.ref = 'ktor' }
 
+## GraphQL
+web-ktor-server-graphql = { group = 'com.expediagroup', name = 'graphql-kotlin-ktor-server', version.ref = 'expedia-GrahpQl' }
 
 ## LOGGING
 logging-kotlin = { group = 'io.github.oshai', name = 'kotlin-logging-jvm', version.ref = 'logging-kotlin' }

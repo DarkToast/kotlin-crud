@@ -20,7 +20,9 @@ dependencies {
     implementation(libs.web.ktor.server.pages)
     implementation(libs.web.ktor.server.content.negotiation)
     implementation(libs.web.ktor.server.logging)
+    implementation(libs.web.ktor.server.graphql)
     implementation(libs.web.ktor.serialization.json)
+    implementation(libs.web.ktor.serialization.jackson)
 
     implementation(libs.di.koin.core)
     implementation(libs.di.koin.ktor)
