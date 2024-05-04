@@ -1,5 +1,6 @@
 package de.tarent.crud.tests.asserts
 
+import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import de.tarent.crud.domain.Group
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions
@@ -10,7 +11,7 @@ interface GroupAssertion : LinkAssertion {
         description: String,
         response: HttpResponse,
     ): Boolean {
-        return Assertion.assert<Group>(response) { assertGroup(name, description, it) }
+        return Assertion.assert<GroupResponse>(response) { assertGroup(name, description, it.payload) }
     }
 
     fun assertGroup(

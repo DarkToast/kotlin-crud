@@ -1,7 +1,8 @@
 package de.tarent.crud.tests.groups
 
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.domain.Group
+import de.tarent.crud.adapters.rest.dtos.GroupListResponse
+import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -9,7 +10,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.contentType
-import kotlinx.serialization.builtins.ListSerializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -32,7 +32,8 @@ class ReadGroupSpec : BaseGroupSpec() {
             // then: Status is OK
             assertThat(response.status).isEqualTo(OK)
             val body = response.bodyAsText()
-            val list: List<Group> = json.decodeFromString(ListSerializer(Group.serializer()), body)
+            val listRes: GroupListResponse = json.decodeFromString(body)
+            val list = listRes.payload
 
             // then: A list is returned
             assertEquals(3, list.size)
@@ -58,7 +59,7 @@ class ReadGroupSpec : BaseGroupSpec() {
             assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", response)
 
             // and: It has all further links
-            val group: Group = json.decodeFromString(response.bodyAsText())
+            val group: GroupResponse = json.decodeFromString(response.bodyAsText())
             assertLink("index", "/", "GET", group.links)
             assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
             assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)

@@ -4,6 +4,7 @@ import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.deviceDontExist
 import de.tarent.crud.adapters.rest.dtos.CreateUpdateDeviceRequest
 import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import de.tarent.crud.adapters.rest.path
 import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.results.DeviceAlreadyExists
@@ -127,7 +128,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.delete(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' deleted" }
-                    call.respond(OK, result.value.withLinks())
+                    call.respond(OK, GroupResponse(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)

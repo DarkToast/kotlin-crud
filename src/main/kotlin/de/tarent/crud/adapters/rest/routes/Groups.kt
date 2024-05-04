@@ -3,6 +3,8 @@ package de.tarent.crud.adapters.rest.routes
 import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.dtos.CreateUpdateGroupRequest
 import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.dtos.GroupListResponse
+import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import de.tarent.crud.adapters.rest.dtos.Index
 import de.tarent.crud.adapters.rest.groupDontExists
 import de.tarent.crud.adapters.rest.path
@@ -33,7 +35,7 @@ fun Route.groupPage(groupService: GroupService): Route {
             logger.info { "READ list of groups" }
             when (val result = groupService.list()) {
                 is Ok -> {
-                    call.respond(OK, result.value.map { it.withLinks() })
+                    call.respond(OK, GroupListResponse(result.value))
                 }
             }
         }
@@ -44,7 +46,7 @@ fun Route.groupPage(groupService: GroupService): Route {
 
             when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(OK, result.value.withLinks())
+                is Ok -> call.respond(OK, GroupResponse(result.value))
             }
         }
 
@@ -59,7 +61,7 @@ fun Route.groupPage(groupService: GroupService): Route {
 
             when (val result = groupService.create(group)) {
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(Created, result.value.withLinks())
+                is Ok -> call.respond(Created, GroupResponse(result.value))
             }
         }
 
@@ -77,7 +79,7 @@ fun Route.groupPage(groupService: GroupService): Route {
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(OK, result.value.withLinks())
+                is Ok -> call.respond(OK, GroupResponse(result.value))
             }
         }
 

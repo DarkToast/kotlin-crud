@@ -3,8 +3,8 @@ package de.tarent.crud.tests
 import de.tarent.crud.adapters.database.DeviceEntity
 import de.tarent.crud.adapters.database.GroupEntity
 import de.tarent.crud.adapters.database.MetricEntity
+import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import de.tarent.crud.domain.Device
-import de.tarent.crud.domain.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -113,7 +113,7 @@ abstract class BaseComponentSpec {
             }
 
         assertThat(response.status).isEqualTo(Created)
-        val group: Group = json.decodeFromString(response.bodyAsText())
+        val group: GroupResponse = json.decodeFromString(response.bodyAsText())
 
         return group.links["_self"]?.href
             ?: throw IllegalStateException("Illegal creation state. No _self link set!")

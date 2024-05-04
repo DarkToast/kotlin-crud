@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.asserts
 
-import de.tarent.crud.domain.Link
-import de.tarent.crud.domain.Linked
+import de.tarent.crud.adapters.rest.dtos.Link
+import de.tarent.crud.adapters.rest.dtos.Linked
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions
 

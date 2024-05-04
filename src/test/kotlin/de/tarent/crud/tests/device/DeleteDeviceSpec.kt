@@ -1,7 +1,7 @@
 package de.tarent.crud.tests.device
 
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.domain.Group
+import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -43,8 +43,8 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: The group is returned
-            val group: Group = json.decodeFromString(response.bodyAsText())
-            assertGroup(testGroupName, "my-test-group", group)
+            val group: GroupResponse = json.decodeFromString(response.bodyAsText())
+            assertGroup(testGroupName, "my-test-group", group.payload)
 
             assertLink("index", "/", "GET", group.links)
             assertLink("_self", "/groups/$testGroupName", "GET", group.links)
