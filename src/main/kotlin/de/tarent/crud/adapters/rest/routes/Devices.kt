@@ -1,16 +1,16 @@
 package de.tarent.crud.adapters.rest.routes
 
+import de.tarent.crud.adapters.rest.body
+import de.tarent.crud.adapters.rest.deviceDontExist
+import de.tarent.crud.adapters.rest.dtos.CreateUpdateDeviceRequest
+import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.path
 import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.results.DeviceAlreadyExists
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Device
-import de.tarent.crud.adapters.rest.body
-import de.tarent.crud.adapters.rest.deviceDontExist
-import de.tarent.crud.adapters.rest.dtos.CreateUpdateDeviceRequest
-import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.adapters.rest.path
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -28,8 +28,8 @@ import io.ktor.server.routing.route
 
 val logger = KotlinLogging.logger("de.tarent.crud.controller.devicesKt")
 
-fun Route.devicePage(deviceService: DeviceService) {
-    route("/groups/{groupName?}/devices") {
+fun Route.devicePage(deviceService: DeviceService): Route {
+    return route("/groups/{groupName?}/devices") {
         get {
             val groupName = call.path("groupName") ?: return@get
 

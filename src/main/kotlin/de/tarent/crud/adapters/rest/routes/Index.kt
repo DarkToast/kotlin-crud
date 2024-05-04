@@ -7,8 +7,8 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 
-fun Route.indexPage() {
-    get("/") {
+fun Route.indexPage(): Route {
+    return get("/") {
         call.respond(HttpStatusCode.OK, Index())
     }
 }

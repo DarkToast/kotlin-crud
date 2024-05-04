@@ -1,5 +1,10 @@
 package de.tarent.crud
 
+import com.expediagroup.graphql.server.ktor.GraphQL
+import com.expediagroup.graphql.server.ktor.graphQLPostRoute
+import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
+import de.tarent.crud.adapters.graphql.DeviceQuery
+import de.tarent.crud.adapters.graphql.schema.MySchema
 import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.routes.adminPage
 import de.tarent.crud.adapters.rest.routes.devicePage
@@ -51,19 +56,32 @@ fun Application.server() {
         modules(dependencies(environment.config))
     }
 
-    install(ContentNegotiation) {
-        json()
-    }
-
     val groupService: GroupService by inject()
     val deviceService: DeviceService by inject()
     val metricService: MetricService by inject()
 
+    install(GraphQL) {
+        schema {
+            packages = listOf("de.tarent.crud.adapters.graphql.schema")
+            queries = listOf(DeviceQuery(deviceService))
+            schemaObject = MySchema()
+        }
+    }
+
     routing {
-        indexPage()
-        adminPage()
-        groupPage(groupService)
-        devicePage(deviceService)
-        metricsPage(metricService)
+        listOf(
+            indexPage(),
+            adminPage(),
+            groupPage(groupService),
+            devicePage(deviceService),
+            metricsPage(metricService),
+        ).forEach {
+            it.install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        graphQLSDLRoute()
+        graphQLPostRoute { }
     }
 }
