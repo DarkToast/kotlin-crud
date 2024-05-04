@@ -1,10 +1,10 @@
 package de.tarent.crud.domain
 
-import de.tarent.crud.domain.Method.DELETE
-import de.tarent.crud.domain.Method.GET
+import de.tarent.crud.adapters.rest.dtos.Linked
+import de.tarent.crud.adapters.rest.dtos.Method.DELETE
+import de.tarent.crud.adapters.rest.dtos.Method.GET
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import java.net.URI
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -22,10 +22,10 @@ data class Metric(
         groupName: String,
         deviceName: String,
     ): Metric =
-        this.addLink("_self", GET, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
-            .addLink("delete", DELETE, URI("/groups/$groupName/devices/$deviceName/metrics/$id"))
-            .addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
-            .addLink("get_group", GET, URI("/groups/$groupName"))
+        this.addLink("_self", GET, "/groups/$groupName/devices/$deviceName/metrics/$id")
+            .addLink("delete", DELETE, "/groups/$groupName/devices/$deviceName/metrics/$id")
+            .addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
+            .addLink("get_group", GET, "/groups/$groupName")
 }
 
 /**
@@ -55,9 +55,9 @@ class MetricList(
 
         metricList = metricList.map { it.withLinks(groupName, deviceName) }
 
-        return this.addLink("_self", GET, URI("/groups/$groupName/devices/$deviceName/metrics$query"))
-            .addLink("get_device", GET, URI("/groups/$groupName/devices/$deviceName"))
-            .addLink("get_group", GET, URI("/groups/$groupName"))
+        return this.addLink("_self", GET, "/groups/$groupName/devices/$deviceName/metrics$query")
+            .addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
+            .addLink("get_group", GET, "/groups/$groupName")
     }
 }
 

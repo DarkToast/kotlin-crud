@@ -1,10 +1,9 @@
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 
-package de.tarent.crud.domain
+package de.tarent.crud.adapters.rest.dtos
 
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.Serializable
-import java.net.URI
 
 fun HttpMethod.toString() = this.value
 
@@ -25,9 +24,9 @@ abstract class Linked<out T : Linked<T>>(val links: MutableMap<String, Link> = m
     open fun addLink(
         name: String,
         method: Method,
-        href: URI,
+        href: String,
     ): T {
-        links[name] = Link(href.toString(), method.toString())
+        links[name] = Link(href, method.toString())
         return this as T
     }
 }

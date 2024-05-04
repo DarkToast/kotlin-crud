@@ -1,9 +1,7 @@
 package de.tarent.crud.adapters.rest.dtos
 
-import de.tarent.crud.domain.Linked
-import de.tarent.crud.domain.Method
+import de.tarent.crud.adapters.rest.dtos.Method.GET
 import kotlinx.serialization.Serializable
-import java.net.URI
 
 @Serializable
 data class Failure(
@@ -12,15 +10,15 @@ data class Failure(
     val cause: String = "",
 ) : Linked<Failure>() {
     init {
-        addLink("index", Method.GET, URI("/"))
+        addLink("index", GET, "/")
     }
 
     override fun addLink(
         name: String,
         method: Method,
-        href: URI,
+        href: String,
     ): Failure {
-        require(method == Method.GET) { "Failure only support reading methods." }
+        require(method == GET) { "Failure only support reading methods." }
         return super.addLink(name, method, href)
     }
 
@@ -32,7 +30,7 @@ data class Failure(
         ): Failure =
             Failure(code, message, cause)
                 .apply {
-                    addLink("get_groups", Method.GET, URI("/groups"))
+                    addLink("get_groups", GET, "/groups")
                 }
 
         fun onGroup(
@@ -41,8 +39,8 @@ data class Failure(
             cause: String = "",
             groupName: String,
         ) = onIndex(code, message, cause).apply {
-            addLink("get_group", Method.GET, URI("/groups/$groupName"))
-            addLink("get_devices", Method.GET, URI("/groups/$groupName/devices"))
+            addLink("get_group", GET, "/groups/$groupName")
+            addLink("get_devices", GET, "/groups/$groupName/devices")
         }
 
         fun onDevice(
@@ -52,7 +50,7 @@ data class Failure(
             groupName: String,
             deviceName: String,
         ) = onGroup(code, message, cause, groupName).apply {
-            addLink("get_device", Method.GET, URI("/groups/$groupName/devices/$deviceName"))
+            addLink("get_device", GET, "/groups/$groupName/devices/$deviceName")
         }
     }
 }

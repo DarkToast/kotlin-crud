@@ -1,15 +1,14 @@
 package de.tarent.crud.adapters.rest.dtos
 
-import de.tarent.crud.domain.Linked
-import de.tarent.crud.domain.Method
+import de.tarent.crud.adapters.rest.dtos.Method.GET
+import de.tarent.crud.adapters.rest.dtos.Method.POST
 import kotlinx.serialization.Serializable
-import java.net.URI
 
 @Serializable
 class Index : Linked<Index>() {
     init {
-        addLink("_self", Method.GET, URI("/"))
-        addLink("get_groups", Method.GET, URI("/groups"))
-        addLink("add_group", Method.POST, URI("/groups"))
+        addLink("_self", GET, "/")
+        addLink("get_groups", GET, "/groups")
+        addLink("add_group", POST, "/groups")
     }
 }
