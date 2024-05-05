@@ -1,7 +1,8 @@
 package de.tarent.crud.tests.metrics
 
-import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import de.tarent.crud.adapters.rest.dtos.Failure
+import de.tarent.crud.adapters.rest.dtos.Response
+import de.tarent.crud.domain.Device
 import io.ktor.client.request.delete
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -28,7 +29,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
             // then: Status Ok
             assertThat(response.status).isEqualTo(OK)
 
-            val device: DeviceResponse = json.decodeFromString(response.bodyAsText())
+            val device: Response<Device> = json.decodeFromString(response.bodyAsText())
             assertDevice(testDeviceName, "test-device", "plug", device.payload)
         }
 

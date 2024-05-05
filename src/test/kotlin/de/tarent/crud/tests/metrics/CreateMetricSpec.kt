@@ -1,7 +1,8 @@
 package de.tarent.crud.tests.metrics
 
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.adapters.rest.dtos.MetricResponse
+import de.tarent.crud.adapters.rest.dtos.Response
+import de.tarent.crud.domain.Metric
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -77,7 +78,7 @@ class CreateMetricSpec : BaseMetricSpec() {
             // then: Status Created
             assertThat(response.status).isEqualTo(Created)
 
-            val metric: MetricResponse = json.decodeFromString(response.bodyAsText())
+            val metric: Response<Metric> = json.decodeFromString(response.bodyAsText())
             assertMetric("W", 64.2, timestamp, metric.payload)
 
             // and: It has all related links

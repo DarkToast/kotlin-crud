@@ -3,10 +3,9 @@ package de.tarent.crud.adapters.rest.routes
 import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.deviceDontExist
 import de.tarent.crud.adapters.rest.dtos.CreateMetricRequest
-import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.dtos.MetricListResponse
-import de.tarent.crud.adapters.rest.dtos.MetricResponse
+import de.tarent.crud.adapters.rest.dtos.Response
 import de.tarent.crud.adapters.rest.groupDontExists
 import de.tarent.crud.adapters.rest.parseDateTime
 import de.tarent.crud.adapters.rest.path
@@ -54,7 +53,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
             when (val result = metricService.create(groupName, deviceName, metric)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
-                is Ok -> call.respond(Created, MetricResponse(result.value))
+                is Ok -> call.respond(Created, Response(result.value))
             }
         }
 
@@ -89,7 +88,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is MetricDontNotExists -> metricDontExist(call, result)
-                is Ok -> call.respond(OK, MetricResponse(result.value))
+                is Ok -> call.respond(OK, Response(result.value))
             }
         }
 
@@ -107,7 +106,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
                 is GroupDontExists -> groupDontExists(call, result)
                 is DeviceDontExists -> deviceDontExist(call, result)
                 is MetricDontNotExists -> metricDontExist(call, result)
-                is Ok -> call.respond(OK, DeviceResponse(result.value))
+                is Ok -> call.respond(OK, Response(result.value))
             }
         }
     }

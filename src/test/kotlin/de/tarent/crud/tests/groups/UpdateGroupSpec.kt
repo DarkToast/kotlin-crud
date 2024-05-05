@@ -1,7 +1,8 @@
 package de.tarent.crud.tests.groups
 
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.adapters.rest.dtos.GroupResponse
+import de.tarent.crud.adapters.rest.dtos.Response
+import de.tarent.crud.domain.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.put
@@ -35,7 +36,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
             assertGroup(DEFAULT_GROUP_NAME, "New description", response)
 
             // and: with further links
-            val group: GroupResponse = json.decodeFromString(response.bodyAsText())
+            val group: Response<Group> = json.decodeFromString(response.bodyAsText())
             assertLink("_self", "/groups/$DEFAULT_GROUP_NAME", "GET", group.links)
             assertLink("index", "/", "GET", group.links)
             assertLink("delete", "/groups/$DEFAULT_GROUP_NAME", "DELETE", group.links)
@@ -59,7 +60,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: The response is the request body
-            val group: GroupResponse = json.decodeFromString(response.bodyAsText())
+            val group: Response<Group> = json.decodeFromString(response.bodyAsText())
             assertGroup("NEW_ID", "New description", group.payload)
 
             // and: with further links

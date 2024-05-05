@@ -81,7 +81,7 @@ fun parseDateTime(value: String): LocalDateTime {
     val now = LocalDateTime.now().truncatedTo(SECONDS)
 
     // eg. now; now-4d; now+5m
-    val periodPattern = "^now(([+-])(\\d{0,6})([dhms]))?\$".toRegex()
+    val periodPattern = "^now(([+-])(\\d{0,2})([dhms]))?\$".toRegex()
     // eg. 2022-12-29T15:30:18
     val dateTimePattern = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$".toRegex()
 

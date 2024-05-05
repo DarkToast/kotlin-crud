@@ -1,6 +1,6 @@
 package de.tarent.crud.tests.asserts
 
-import de.tarent.crud.adapters.rest.dtos.DeviceResponse
+import de.tarent.crud.adapters.rest.dtos.Response
 import de.tarent.crud.domain.Device
 import io.ktor.client.statement.HttpResponse
 import org.junit.jupiter.api.Assertions
@@ -12,7 +12,7 @@ interface DeviceAssertion : LinkAssertion {
         type: String,
         response: HttpResponse,
     ): Boolean {
-        return Assertion.assert<DeviceResponse>(response) { assertDevice(name, description, type, it.payload) }
+        return Assertion.assert<Response<Device>>(response) { assertDevice(name, description, type, it.payload) }
     }
 
     fun assertDevice(

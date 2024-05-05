@@ -4,8 +4,8 @@ import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.dtos.CreateUpdateGroupRequest
 import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.dtos.GroupListResponse
-import de.tarent.crud.adapters.rest.dtos.GroupResponse
 import de.tarent.crud.adapters.rest.dtos.Index
+import de.tarent.crud.adapters.rest.dtos.Response
 import de.tarent.crud.adapters.rest.groupDontExists
 import de.tarent.crud.adapters.rest.path
 import de.tarent.crud.application.GroupService
@@ -46,7 +46,7 @@ fun Route.groupPage(groupService: GroupService): Route {
 
             when (val result = groupService.read(name)) {
                 is GroupDontExists -> groupDontExists(call, result)
-                is Ok -> call.respond(OK, GroupResponse(result.value))
+                is Ok -> call.respond(OK, Response(result.value))
             }
         }
 
@@ -61,7 +61,7 @@ fun Route.groupPage(groupService: GroupService): Route {
 
             when (val result = groupService.create(group)) {
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(Created, GroupResponse(result.value))
+                is Ok -> call.respond(Created, Response(result.value))
             }
         }
 
@@ -79,7 +79,7 @@ fun Route.groupPage(groupService: GroupService): Route {
             when (val result = groupService.update(name, group)) {
                 is GroupDontExists -> groupDontExists(call, result)
                 is GroupAlreadyExists -> groupAlreadyExists(call, result)
-                is Ok -> call.respond(OK, GroupResponse(result.value))
+                is Ok -> call.respond(OK, Response(result.value))
             }
         }
 

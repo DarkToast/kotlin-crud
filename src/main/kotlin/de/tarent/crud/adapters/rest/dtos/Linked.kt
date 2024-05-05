@@ -1,11 +1,6 @@
-@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-
 package de.tarent.crud.adapters.rest.dtos
 
-import io.ktor.http.HttpMethod
 import kotlinx.serialization.Serializable
-
-fun HttpMethod.toString() = this.value
 
 enum class Method {
     POST,

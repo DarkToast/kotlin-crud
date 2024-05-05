@@ -4,9 +4,8 @@ import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.deviceDontExist
 import de.tarent.crud.adapters.rest.dtos.CreateUpdateDeviceRequest
 import de.tarent.crud.adapters.rest.dtos.DeviceListResponse
-import de.tarent.crud.adapters.rest.dtos.DeviceResponse
 import de.tarent.crud.adapters.rest.dtos.Failure
-import de.tarent.crud.adapters.rest.dtos.GroupResponse
+import de.tarent.crud.adapters.rest.dtos.Response
 import de.tarent.crud.adapters.rest.path
 import de.tarent.crud.application.DeviceService
 import de.tarent.crud.application.results.DeviceAlreadyExists
@@ -55,7 +54,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.read(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' loaded" }
-                    call.respond(OK, DeviceResponse(result.value))
+                    call.respond(OK, Response(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -82,7 +81,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.create(groupName, device)) {
                 is Ok -> {
                     logger.debug { "Device '${result.value.name}' created" }
-                    call.respond(Created, DeviceResponse(result.value))
+                    call.respond(Created, Response(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
@@ -110,7 +109,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.update(groupName, deviceName, device)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' updated" }
-                    call.respond(OK, DeviceResponse(result.value))
+                    call.respond(OK, Response(result.value))
                 }
 
                 is DeviceAlreadyExists -> deviceAlreadyExists(call, result)
@@ -128,7 +127,7 @@ fun Route.devicePage(deviceService: DeviceService): Route {
             when (val result = deviceService.delete(groupName, deviceName)) {
                 is Ok -> {
                     logger.debug { "Device '$deviceName' deleted" }
-                    call.respond(OK, GroupResponse(result.value))
+                    call.respond(OK, Response(result.value))
                 }
 
                 is GroupDontExists -> groupDontExist(call, result)
