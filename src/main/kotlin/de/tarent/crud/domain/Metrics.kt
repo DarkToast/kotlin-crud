@@ -6,12 +6,10 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 
 @Serializable
 data class Metric(
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID = UUID.randomUUID(),
+    val id: Int = -1,
     val unit: String,
     val value: Double,
     @Serializable(with = OffsetDateTimeIsoSerializer::class)

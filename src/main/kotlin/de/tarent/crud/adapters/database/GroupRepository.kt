@@ -11,54 +11,65 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
 class GroupRepository(private val database: Database) {
-    private val transform = { row: ResultRow ->
-        Group(
-            row[GroupEntity.id].value,
-            row[GroupEntity.name],
-            row[GroupEntity.description],
+
+    private fun transform(results: List<ResultRow>): Group? {
+        if (results.isEmpty()) {
+            return null
+        }
+        return Group(
+            name = results[0][GroupEntity.name],
+            description = results[0][GroupEntity.description],
+            devices = results.mapNotNull { it.getOrNull(DeviceEntity.name) }
         )
     }
 
-    fun insert(group: Group): Boolean =
-        transaction(database) {
-            GroupEntity.insert {
-                it[name] = group.name
-                it[description] = group.description
-            }
-            true
+    fun insert(group: Group): Boolean = transaction(database) {
+        GroupEntity.insert {
+            it[name] = group.name
+            it[description] = group.description
         }
+        true
+    }
 
     fun update(
         groupName: String,
         updatedGroup: Group,
-    ): Boolean =
-        transaction(database) {
-            GroupEntity.update({ GroupEntity.name eq groupName }) {
-                it[name] = updatedGroup.name
-                it[description] = updatedGroup.description
-            }
-            true
+    ): Group? = transaction(database) {
+        GroupEntity.update({ GroupEntity.name eq groupName }) {
+            it[name] = updatedGroup.name
+            it[description] = updatedGroup.description
         }
 
-    fun load(name: String): Group? =
-        transaction(database) {
-            GroupEntity.selectAll().where { GroupEntity.name eq name }
-                .map(transform)
-                .firstOrNull()
-        }
+        load(updatedGroup.name)
+    }
 
-    fun delete(name: String): Int =
-        transaction(database) {
-            GroupEntity.deleteWhere { GroupEntity.name eq name }
-        }
+    fun load(name: String): Group? = transaction(database) {
+        val results = GroupEntity
+            .leftJoin(DeviceEntity)
+            .selectAll()
+            .where { GroupEntity.name eq name }
+            .toList()
+        transform(results)
+    }
 
-    fun list(): List<Group> =
-        transaction(database) {
-            GroupEntity.selectAll().map(transform)
-        }
+    fun delete(name: String): Int = transaction(database) {
+        GroupEntity.deleteWhere { GroupEntity.name eq name }
+    }
 
-    fun exists(name: String): Boolean =
-        transaction(database) {
-            GroupEntity.selectAll().where { GroupEntity.name eq name }.count() == 1L
-        }
+    fun list(): List<Group> = transaction(database) {
+        val resultMap = GroupEntity.leftJoin(DeviceEntity)
+            .selectAll()
+            .toList()
+            .groupBy { it[GroupEntity.id].value }
+
+        resultMap
+            .mapValues { transform(it.value) }
+            .values
+            .filterNotNull()
+            .toList()
+    }
+
+    fun exists(name: String): Boolean = transaction(database) {
+        GroupEntity.selectAll().where { GroupEntity.name eq name }.count() == 1L
+    }
 }

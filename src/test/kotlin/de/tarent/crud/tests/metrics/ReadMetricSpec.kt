@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class ReadMetricSpec : BaseMetricSpec() {
-    private lateinit var metricId: UUID
+    private var metricId: Int = -1
 
     override val spec =
         super.spec.withSetup {

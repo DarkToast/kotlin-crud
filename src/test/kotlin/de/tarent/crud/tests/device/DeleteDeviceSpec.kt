@@ -43,9 +43,9 @@ class DeleteDeviceSpec : BaseDeviceSpec() {
             // then: Status Ok
             assertThat(response.status).isEqualTo(OK)
 
-            // and: The group is returned
+            // and: The group is returned and has still one device
             val group: Response<Group> = json.decodeFromString(response.bodyAsText())
-            assertGroup(testGroupName, "my-test-group", group.payload)
+            assertGroup(testGroupName, "my-test-group", listOf(testDeviceName2), group.payload)
 
             assertLink("index", "/", "GET", group.links)
             assertLink("_self", "/groups/$testGroupName", "GET", group.links)

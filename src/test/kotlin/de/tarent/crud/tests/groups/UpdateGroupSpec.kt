@@ -33,7 +33,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: The returned group is the updated
-            assertGroup(DEFAULT_GROUP_NAME, "New description", response)
+            assertGroup(DEFAULT_GROUP_NAME, "New description", DEFAULT_DEVICE_LIST, response)
 
             // and: with further links
             val group: Response<Group> = json.decodeFromString(response.bodyAsText())
@@ -61,7 +61,7 @@ class UpdateGroupSpec : BaseGroupSpec() {
 
             // and: The response is the request body
             val group: Response<Group> = json.decodeFromString(response.bodyAsText())
-            assertGroup("NEW_ID", "New description", group.payload)
+            assertGroup("NEW_ID", "New description", DEFAULT_DEVICE_LIST, group.payload)
 
             // and: with further links
             assertLink("_self", "/groups/NEW_ID", "GET", group.links)

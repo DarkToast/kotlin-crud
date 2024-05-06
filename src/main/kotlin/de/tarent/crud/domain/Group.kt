@@ -1,15 +1,12 @@
 package de.tarent.crud.domain
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
-import java.util.UUID.randomUUID
 
 @Serializable
 data class Group(
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID = randomUUID(),
     val name: String,
     val description: String,
+    val devices: List<String> = emptyList(),
 ) {
     init {
         require(name.length <= 50) { throw DomainException("Name must not be greater than 50 characters.") }

@@ -28,7 +28,6 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import java.util.UUID
 
 fun Route.metricsPage(metricService: MetricService): Route {
     val logger = KotlinLogging.logger {}
@@ -77,10 +76,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
         get("/{metricId}") {
             val groupName = call.path("groupName") ?: return@get
             val deviceName = call.path("deviceName") ?: return@get
-            val metricId: UUID =
-                call.path("metricId")
-                    ?.let { UUID.fromString(it) }
-                    ?: return@get
+            val metricId: Int = call.path("metricId")?.toInt() ?: return@get
 
             logger.info { "GET metric '$metricId' on device '$deviceName' of group '$groupName'" }
 
@@ -95,10 +91,7 @@ fun Route.metricsPage(metricService: MetricService): Route {
         delete("/{metricId}") {
             val groupName = call.path("groupName") ?: return@delete
             val deviceName = call.path("deviceName") ?: return@delete
-            val metricId: UUID =
-                call.path("metricId")
-                    ?.let { UUID.fromString(it) }
-                    ?: return@delete
+            val metricId: Int = call.path("metricId")?.toInt() ?: return@delete
 
             logger.info { "DELETE metric '$metricId' on device '$deviceName' of group '$groupName'" }
 

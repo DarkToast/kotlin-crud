@@ -1,7 +1,5 @@
 package de.tarent.crud.application.results
 
-import java.util.UUID
-
 data class Ok<T>(val value: T) :
     GroupCreateResult<T>,
     GroupReadResult<T>,
@@ -49,6 +47,6 @@ data class DeviceAlreadyExists<T>(val groupName: String, val deviceName: String)
     DeviceCreateResult<T>,
     DeviceUpdateResult<T>
 
-data class MetricDontNotExists<T>(val groupName: String, val deviceName: String, val metricId: UUID) :
+data class MetricDontNotExists<T>(val groupName: String, val deviceName: String, val metricId: Int) :
     MetricReadResult<T>,
     MetricDeleteResult<T>

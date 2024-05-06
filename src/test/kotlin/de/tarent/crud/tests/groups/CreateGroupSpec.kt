@@ -7,7 +7,7 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -22,8 +22,8 @@ class CreateGroupSpec : BaseGroupSpec() {
             // when: We create a new group
             val response =
                 client.post("/groups") {
-                    contentType(ContentType.Application.Json)
-                    accept(ContentType.Application.Json)
+                    contentType(Json)
+                    accept(Json)
                     setBody(groupJson)
                 }
 
@@ -31,7 +31,7 @@ class CreateGroupSpec : BaseGroupSpec() {
             assertThat(response.status).isEqualTo(Created)
 
             // and: The group as body
-            assertGroup("HWR", "Hauswirtschaftsraum", response)
+            assertGroup("HWR", "Hauswirtschaftsraum", emptyList(), response)
 
             // and: with further links
             val group: Response<Group> = json.decodeFromString(response.bodyAsText())
@@ -52,8 +52,8 @@ class CreateGroupSpec : BaseGroupSpec() {
             // when: the group is created
             val response =
                 client.post("/groups") {
-                    contentType(ContentType.Application.Json)
-                    accept(ContentType.Application.Json)
+                    contentType(Json)
+                    accept(Json)
                     setBody(body)
                 }
 
@@ -76,8 +76,8 @@ class CreateGroupSpec : BaseGroupSpec() {
             // when: the group is created
             val response =
                 client.post("/groups") {
-                    contentType(ContentType.Application.Json)
-                    accept(ContentType.Application.Json)
+                    contentType(Json)
+                    accept(Json)
                     setBody(body)
                 }
 

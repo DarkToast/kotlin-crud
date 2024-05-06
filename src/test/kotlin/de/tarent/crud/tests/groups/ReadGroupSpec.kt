@@ -37,10 +37,11 @@ class ReadGroupSpec : BaseGroupSpec() {
             val list = listRes.payload
 
             // then: A list is returned
+
             assertEquals(3, list.size)
-            assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", list[0])
-            assertGroup("group1", "first_group", list[1])
-            assertGroup("group2", "second_group", list[2])
+            assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", DEFAULT_DEVICE_LIST, list[0])
+            assertGroup("group1", "first_group", emptyList(), list[1])
+            assertGroup("group2", "second_group", emptyList(), list[2])
         }
 
     @Test
@@ -57,7 +58,7 @@ class ReadGroupSpec : BaseGroupSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: the group is returned
-            assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", response)
+            assertGroup(DEFAULT_GROUP_NAME, "Hauswirtschaftsraum", DEFAULT_DEVICE_LIST, response)
 
             // and: It has all further links
             val group: Response<Group> = json.decodeFromString(response.bodyAsText())

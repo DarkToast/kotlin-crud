@@ -17,7 +17,6 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.ZoneId.systemDefault
-import java.util.UUID
 
 class MetricRepository(private val database: Database) {
     fun insert(
@@ -28,7 +27,12 @@ class MetricRepository(private val database: Database) {
         val deviceIdQuery =
             DeviceEntity
                 .select(DeviceEntity.id)
-                .where { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+                .where { 
+                    (DeviceEntity.groupId.eqSubQuery(
+                        GroupEntity.select(GroupEntity.id)
+                            .where { GroupEntity.name eq groupName }) 
+                    ) and (DeviceEntity.name eq deviceName)
+                }
 
         MetricEntity.insert {
             it[id] = metric.id
@@ -42,7 +46,7 @@ class MetricRepository(private val database: Database) {
     fun load(
         groupName: String,
         deviceName: String,
-        metricId: UUID,
+        metricId: Int,
     ): Metric? =
         transaction(database) {
             MetricEntity
@@ -51,9 +55,9 @@ class MetricRepository(private val database: Database) {
                 .firstOrNull()
         }
 
-    fun delete(metricId: UUID): Int =
+    fun delete(metricId: Int): Int =
         transaction(database) {
-            MetricEntity.deleteWhere { MetricEntity.id eq metricId }
+            MetricEntity.deleteWhere { id eq metricId }
         }
 
     fun query(
@@ -65,7 +69,7 @@ class MetricRepository(private val database: Database) {
             val deviceIdQuery: Query =
                 DeviceEntity
                     .select(DeviceEntity.id)
-                    .where { (DeviceEntity.groupId eq groupName) and (DeviceEntity.name eq deviceName) }
+                    .where { (DeviceEntity.groupId eq 0) and (DeviceEntity.name eq deviceName) }
 
             val filterDeviceId = MetricEntity.deviceId inSubQuery deviceIdQuery
             val greaterEqFrom = MetricEntity.timestamp greaterEq queryData.from

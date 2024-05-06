@@ -37,8 +37,9 @@ class GroupService(private val repo: GroupRepository) {
             return GroupAlreadyExists(group.name)
         }
 
-        repo.update(name, group)
-        return Ok(group)
+        return repo.update(name, group)
+            ?.let { Ok(it) }
+            ?: GroupDontExists(group.name)
     }
 
     fun delete(name: String): GroupDeleteResult<String> {

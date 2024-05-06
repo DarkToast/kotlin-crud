@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class DeleteMetricSpec : BaseMetricSpec() {
-    private lateinit var metricId: UUID
+    private var metricId: Int = -1
 
     override val spec =
         super.spec.withSetup {

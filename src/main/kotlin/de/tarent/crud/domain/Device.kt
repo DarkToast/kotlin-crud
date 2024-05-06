@@ -1,13 +1,9 @@
 package de.tarent.crud.domain
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
-import java.util.UUID.randomUUID
 
 @Serializable
 data class Device(
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID = randomUUID(),
     val name: String,
     val description: String,
     val type: String,

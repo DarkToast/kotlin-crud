@@ -16,7 +16,6 @@ import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricList
 import de.tarent.crud.domain.MetricQuery
-import java.util.UUID
 
 class MetricService(
     private val groupRepository: GroupRepository,
@@ -53,7 +52,7 @@ class MetricService(
     fun read(
         groupName: String,
         deviceName: String,
-        metricId: UUID,
+        metricId: Int,
     ): MetricReadResult<Metric> {
         return check(groupName, deviceName) {
             metricRepository.load(groupName, deviceName, metricId)
@@ -65,7 +64,7 @@ class MetricService(
     fun delete(
         groupName: String,
         deviceName: String,
-        metricId: UUID,
+        metricId: Int,
     ): MetricDeleteResult<Device> {
         return check(groupName, deviceName) {
             if (metricRepository.delete(metricId) == 1) {
