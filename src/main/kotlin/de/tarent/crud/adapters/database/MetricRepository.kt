@@ -23,7 +23,7 @@ class MetricRepository(private val database: Database) {
         groupName: String,
         deviceName: String,
         metric: Metric,
-    ) = transaction(database) {
+    ): Metric = transaction(database) {
         val deviceIdQuery =
             DeviceEntity
                 .select(DeviceEntity.id)
@@ -34,13 +34,14 @@ class MetricRepository(private val database: Database) {
                     ) and (DeviceEntity.name eq deviceName)
                 }
 
-        MetricEntity.insert {
-            it[id] = metric.id
+        val newId = MetricEntity.insert {
             it[unit] = metric.unit
             it[value] = BigDecimal.valueOf(metric.value)
             it[timestamp] = metric.timestamp.toLocalDateTime()
             it[deviceId] = deviceIdQuery
-        }
+        }[MetricEntity.id].value
+
+        metric.copy(id = newId)
     }
 
     fun load(

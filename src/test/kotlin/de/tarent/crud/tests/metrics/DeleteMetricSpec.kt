@@ -9,7 +9,6 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 class DeleteMetricSpec : BaseMetricSpec() {
     private var metricId: Int = -1
@@ -37,7 +36,7 @@ class DeleteMetricSpec : BaseMetricSpec() {
     fun `not found`() =
         spec.componentSpec {
             // when: Delete on metrics with unknown id
-            val response = client.delete("$metricsUrl/${UUID.randomUUID()}")
+            val response = client.delete("$metricsUrl/-1")
 
             // then: Status Ok
             assertThat(response.status).isEqualTo(NotFound)

@@ -7,7 +7,6 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 class ReadMetricSpec : BaseMetricSpec() {
     private var metricId: Int = -1
@@ -35,7 +34,7 @@ class ReadMetricSpec : BaseMetricSpec() {
     fun `not found`() =
         spec.componentSpec {
             // when: Get on metrics with unknown id
-            val response = client.get("$metricsUrl/${UUID.randomUUID()}")
+            val response = client.get("$metricsUrl/-1")
 
             // then: Status Ok
             assertThat(response.status).isEqualTo(NotFound)

@@ -44,8 +44,7 @@ class MetricService(
         metric: Metric,
     ): MetricCreateResult<Metric> {
         return check<Metric, MetricCreateResult<Metric>>(groupName, deviceName) {
-            metricRepository.insert(groupName, deviceName, metric)
-            Ok(metric)
+            Ok(metricRepository.insert(groupName, deviceName, metric))
         }
     }
 
