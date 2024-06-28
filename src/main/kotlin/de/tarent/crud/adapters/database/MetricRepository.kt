@@ -23,26 +23,30 @@ class MetricRepository(private val database: Database) {
         groupName: String,
         deviceName: String,
         metric: Metric,
-    ): Metric = transaction(database) {
-        val deviceIdQuery =
-            DeviceEntity
-                .select(DeviceEntity.id)
-                .where { 
-                    (DeviceEntity.groupId.eqSubQuery(
-                        GroupEntity.select(GroupEntity.id)
-                            .where { GroupEntity.name eq groupName }) 
-                    ) and (DeviceEntity.name eq deviceName)
-                }
+    ): Metric =
+        transaction(database) {
+            val deviceIdQuery =
+                DeviceEntity
+                    .select(DeviceEntity.id)
+                    .where {
+                        (
+                            DeviceEntity.groupId.eqSubQuery(
+                                GroupEntity.select(GroupEntity.id)
+                                    .where { GroupEntity.name eq groupName },
+                            )
+                        ) and (DeviceEntity.name eq deviceName)
+                    }
 
-        val newId = MetricEntity.insert {
-            it[unit] = metric.unit
-            it[value] = BigDecimal.valueOf(metric.value)
-            it[timestamp] = metric.timestamp.toLocalDateTime()
-            it[deviceId] = deviceIdQuery
-        }[MetricEntity.id].value
+            val newId =
+                MetricEntity.insert {
+                    it[unit] = metric.unit
+                    it[value] = BigDecimal.valueOf(metric.value)
+                    it[timestamp] = metric.timestamp.toLocalDateTime()
+                    it[deviceId] = deviceIdQuery
+                }[MetricEntity.id].value
 
-        metric.copy(id = newId)
-    }
+            metric.copy(id = newId)
+        }
 
     fun load(
         groupName: String,
@@ -70,7 +74,7 @@ class MetricRepository(private val database: Database) {
             val deviceIdQuery: Query =
                 DeviceEntity
                     .select(DeviceEntity.id)
-                    .where { (DeviceEntity.groupId eq 0) and (DeviceEntity.name eq deviceName) }
+                    .where { (DeviceEntity.name eq deviceName) and (DeviceEntity.groupName eq groupName) }
 
             val filterDeviceId = MetricEntity.deviceId inSubQuery deviceIdQuery
             val greaterEqFrom = MetricEntity.timestamp greaterEq queryData.from
