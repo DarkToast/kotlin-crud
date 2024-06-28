@@ -1,0 +1,24 @@
+"My fancy graphql schema"
+schema {
+    query: Query
+}
+
+type Query {
+    devicesByGroup(groupName: String!): [Device!]!
+    get(groupName: String!): Group
+    groups: [Group!]!
+}
+
+type Device {
+    description: String!
+    groupName: String!
+    name: String!
+    type: String!
+}
+
+type Group {
+    description: String!
+    devices: [String!]!
+    name: String!
+}
+

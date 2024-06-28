@@ -25,9 +25,11 @@ object DeviceEntity : IdTable<Int>("device") {
     val description = varchar("description", 250)
     val type = varchar("type", 32)
     val groupId = integer("group_id").references(GroupEntity.id, onDelete = CASCADE)
+    val groupName = varchar("groupName", 50)
 
     init {
         uniqueIndex(name, groupId)
+        uniqueIndex(name, groupName)
     }
 }
 

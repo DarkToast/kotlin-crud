@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.versions)
+    alias(libs.plugins.graphQl)
 }
 
 repositories {
@@ -51,6 +52,20 @@ dependencies {
 kotlin {
     jvmToolchain(21)
 }
+
+ graphql {
+//    client {
+//        endpoint = "http://localhost:8080/graphql"
+//        // Target package name to be used for generated classes.
+//        packageName = "de.tarent.crud.domain"
+//        sdlEndpoint = "http://localhost:8080/sdl"
+//        queryFiles = listOf()
+//    }
+    schema {
+        // List of supported packages that can contain GraphQL schema type definitions
+        packages = listOf("de.tarent.crud")
+    }
+ }
 
 tasks.test {
     useJUnitPlatform()
