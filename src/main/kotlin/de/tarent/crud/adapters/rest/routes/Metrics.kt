@@ -7,7 +7,7 @@ import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.dtos.MetricListResponse
 import de.tarent.crud.adapters.rest.dtos.Response
 import de.tarent.crud.adapters.rest.groupDontExists
-import de.tarent.crud.adapters.rest.parseDateTime
+import de.tarent.crud.adapters.parseDateTime
 import de.tarent.crud.adapters.rest.path
 import de.tarent.crud.application.MetricService
 import de.tarent.crud.application.results.DeviceDontExists
