@@ -20,7 +20,6 @@ import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.java.KoinJavaComponent.inject
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
@@ -39,10 +38,8 @@ abstract class BaseComponentSpec {
             }
         }
 
-        private val cleanKoinDi: testBlock = { stopKoin() }
-
         private val setups: MutableList<testBlock> = mutableListOf()
-        private val tearDowns: MutableList<testBlock> = mutableListOf(cleanDatabase, cleanKoinDi)
+        private val tearDowns: MutableList<testBlock> = mutableListOf(cleanDatabase)
 
         @Suppress("unused")
         fun withSetup(setup: testBlock): Spec {
