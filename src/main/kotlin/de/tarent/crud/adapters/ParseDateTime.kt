@@ -1,11 +1,14 @@
 package de.tarent.crud.adapters
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAmount
 
 fun parseDateTime(value: String): LocalDateTime {
+    val logger = KotlinLogging.logger {}
+
     fun LocalDateTime.transform(
         op: String,
         amount: String,
@@ -36,6 +39,8 @@ fun parseDateTime(value: String): LocalDateTime {
     val dateTimePattern = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$".toRegex()
 
     val periodResult = periodPattern.find(value)
+    logger.debug { "Regex Captures are ${periodResult?.groupValues}" }
+
     if (periodResult != null) {
         return if (periodResult.value == "now") {
             now
