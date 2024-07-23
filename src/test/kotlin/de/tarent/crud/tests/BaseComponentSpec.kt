@@ -1,10 +1,10 @@
 package de.tarent.crud.tests
 
-import de.tarent.crud.domain.Device
-import de.tarent.crud.domain.Group
 import de.tarent.crud.adapters.database.DeviceEntity
 import de.tarent.crud.adapters.database.GroupEntity
 import de.tarent.crud.adapters.database.MetricEntity
+import de.tarent.crud.domain.Device
+import de.tarent.crud.domain.Group
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -17,11 +17,11 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.Database as ExposedDatabase
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.java.KoinJavaComponent.inject
-import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
 typealias testBlock = suspend ApplicationTestBuilder.() -> Unit
 

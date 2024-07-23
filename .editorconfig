@@ -11,11 +11,15 @@ ij_formatter_off_tag = @formatter:off
 ij_formatter_on_tag = @formatter:on
 ij_formatter_tags_enabled = true
 ij_smart_tabs = false
-ij_visual_guides = 
 ij_wrap_on_typing = false
 
 [{*.graphqlconfig,*.graphqlrc,*.har,*.json,*.jsonc}]
 indent_size = 2
+
+[{*.kt,*.kts}]
+ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
 
 [{*.yaml,*.yml}]
 indent_size = 2

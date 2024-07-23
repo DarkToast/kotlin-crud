@@ -1,5 +1,6 @@
 package de.tarent.crud.application
 
+import de.tarent.crud.adapters.database.GroupRepository
 import de.tarent.crud.application.results.GroupAlreadyExists
 import de.tarent.crud.application.results.GroupCreateResult
 import de.tarent.crud.application.results.GroupDeleteResult
@@ -9,7 +10,6 @@ import de.tarent.crud.application.results.GroupReadResult
 import de.tarent.crud.application.results.GroupUpdateResult
 import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Group
-import de.tarent.crud.adapters.database.GroupRepository
 
 class GroupService(private val repo: GroupRepository) {
     fun create(group: Group): GroupCreateResult<Group> =

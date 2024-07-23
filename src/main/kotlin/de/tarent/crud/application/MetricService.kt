@@ -1,5 +1,8 @@
 package de.tarent.crud.application
 
+import de.tarent.crud.adapters.database.DeviceRepository
+import de.tarent.crud.adapters.database.GroupRepository
+import de.tarent.crud.adapters.database.MetricRepository
 import de.tarent.crud.application.results.DeviceDontExists
 import de.tarent.crud.application.results.GroupDontExists
 import de.tarent.crud.application.results.MetricCreateResult
@@ -13,9 +16,6 @@ import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Metric
 import de.tarent.crud.domain.MetricList
 import de.tarent.crud.domain.MetricQuery
-import de.tarent.crud.adapters.database.DeviceRepository
-import de.tarent.crud.adapters.database.GroupRepository
-import de.tarent.crud.adapters.database.MetricRepository
 import java.util.UUID
 
 class MetricService(

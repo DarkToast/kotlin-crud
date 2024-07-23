@@ -20,10 +20,10 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
+import org.koin.core.logger.Level as KoinLevel
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
-import org.koin.core.logger.Level as KoinLevel
 import org.slf4j.event.Level as Slf4JLevel
 
 fun main(args: Array<String>) = EngineMain.main(args)
