@@ -9,9 +9,15 @@ import de.tarent.crud.application.results.Ok
 import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Group
 
-class MetricQuery(private val metricService: MetricService): Query {
-    fun metrics(groupName: String, deviceName: String, from: String, to: String, type: String): List<Device> {
-       TODO()
+class MetricQuery(private val metricService: MetricService) : Query {
+    fun metrics(
+        groupName: String,
+        deviceName: String,
+        from: String,
+        to: String,
+        type: String,
+    ): List<Device> {
+        TODO()
     }
 }
 

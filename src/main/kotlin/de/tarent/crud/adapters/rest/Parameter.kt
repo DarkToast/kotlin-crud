@@ -3,10 +3,12 @@ package de.tarent.crud.adapters.rest
 import de.tarent.crud.adapters.rest.dtos.Failure
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.server.application.*
-import io.ktor.server.plugins.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.path
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
 
 suspend fun ApplicationCall.path(parameterName: String): String? {
     val parameter = this.parameters[parameterName]
@@ -48,4 +50,3 @@ fun cause(e: Throwable): String {
 
     return step(e).message ?: "n/a"
 }
-

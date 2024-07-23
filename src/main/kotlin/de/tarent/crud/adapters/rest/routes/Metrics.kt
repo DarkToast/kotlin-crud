@@ -1,5 +1,6 @@
 package de.tarent.crud.adapters.rest.routes
 
+import de.tarent.crud.adapters.parseDateTime
 import de.tarent.crud.adapters.rest.body
 import de.tarent.crud.adapters.rest.deviceDontExist
 import de.tarent.crud.adapters.rest.dtos.CreateMetricRequest
@@ -7,7 +8,6 @@ import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.dtos.MetricListResponse
 import de.tarent.crud.adapters.rest.dtos.Response
 import de.tarent.crud.adapters.rest.groupDontExists
-import de.tarent.crud.adapters.parseDateTime
 import de.tarent.crud.adapters.rest.path
 import de.tarent.crud.application.MetricService
 import de.tarent.crud.application.results.DeviceDontExists

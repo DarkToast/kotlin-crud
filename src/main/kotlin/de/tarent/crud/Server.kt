@@ -65,11 +65,12 @@ fun Application.server() {
     install(GraphQL) {
         schema {
             packages = listOf("de.tarent.crud.domain")
-            queries = listOf(
-                DeviceQuery(deviceService),
-                GroupQuery(groupService),
-                MetricQuery(metricService)
-            )
+            queries =
+                listOf(
+                    DeviceQuery(deviceService),
+                    GroupQuery(groupService),
+                    MetricQuery(metricService),
+                )
             schemaObject = IoTSchema()
         }
     }

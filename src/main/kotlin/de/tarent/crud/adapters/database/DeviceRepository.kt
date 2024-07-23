@@ -1,28 +1,36 @@
 package de.tarent.crud.adapters.database
 
 import de.tarent.crud.domain.Device
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class DeviceRepository(private val database: Database) {
     fun insert(
         groupName: String,
         device: Device,
-    ): String = transaction(database) {
-        DeviceEntity.insert {
-            it[name] = device.name
-            it[description] = device.description
-            it[type] = device.type
-            it[groupId] = GroupEntity.select(GroupEntity.id).where(GroupEntity.name eq groupName)
-            it[DeviceEntity.groupName] = device.groupName
+    ): String =
+        transaction(database) {
+            DeviceEntity.insert {
+                it[name] = device.name
+                it[description] = device.description
+                it[type] = device.type
+                it[groupId] = GroupEntity.select(GroupEntity.id).where(GroupEntity.name eq groupName)
+                it[DeviceEntity.groupName] = device.groupName
+            }
+
+            device.name
         }
 
-        device.name
-    }
-
-    private fun deviceByNameAndGroup(deviceName: String, groupName: String) =
-        (DeviceEntity.name eq deviceName) and (DeviceEntity.groupName eq groupName)
+    private fun deviceByNameAndGroup(
+        deviceName: String,
+        groupName: String,
+    ) = (DeviceEntity.name eq deviceName) and (DeviceEntity.groupName eq groupName)
 
     fun update(
         groupName: String,
