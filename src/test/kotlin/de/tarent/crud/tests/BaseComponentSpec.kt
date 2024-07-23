@@ -18,10 +18,10 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.Database as ExposedDatabase
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.java.KoinJavaComponent.inject
-import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
 typealias testBlock = suspend ApplicationTestBuilder.() -> Unit
 
