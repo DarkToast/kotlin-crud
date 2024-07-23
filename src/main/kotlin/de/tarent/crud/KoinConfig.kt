@@ -14,7 +14,7 @@ import de.tarent.crud.application.MetricService
 import io.ktor.server.config.ApplicationConfig
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.Slf4jSqlDebugLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.module.dsl.singleOf
@@ -53,7 +53,7 @@ val dependencies = { appConfiguration: ApplicationConfig ->
             val database = Database.connect(source)
 
             transaction(database) {
-                addLogger(StdOutSqlLogger)
+                addLogger(Slf4jSqlDebugLogger)
                 SchemaUtils.create(GroupEntity, DeviceEntity, MetricEntity)
             }
 
