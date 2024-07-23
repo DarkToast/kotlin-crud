@@ -37,6 +37,10 @@ class MetricList(
     val to: OffsetDateTime = query.to.atZone(ZoneId.systemDefault()).toOffsetDateTime()
 
     val type: String? = query.type
+
+    val units: Set<String> = metrics.map { it.unit }.toSet()
+
+    val size: Int = metrics.size
 }
 
 /**

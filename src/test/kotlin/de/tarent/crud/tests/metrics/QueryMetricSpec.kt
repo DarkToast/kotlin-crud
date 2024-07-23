@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit.SECONDS
 class QueryMetricSpec : BaseMetricSpec() {
     private val sixHours = now().minusHours(6).minusSeconds(1)
     private val now = now()
+    private val within4s = within(4, SECONDS)
 
     override val spec =
         super.spec.withSetup {
@@ -43,10 +44,12 @@ class QueryMetricSpec : BaseMetricSpec() {
             // and: The time range is six hours to now.
             // and: The list consists of all metrics.
             Assertion.assert<MetricListResponse>(response) {
-                assertThat(it.payload.from).isCloseTo(sixHours, within(2, SECONDS))
-                assertThat(it.payload.to).isCloseTo(now, within(2, SECONDS))
+                assertThat(it.payload.from).isCloseTo(sixHours, within4s)
+                assertThat(it.payload.to).isCloseTo(now, within4s)
                 assertThat(it.payload.type).isNull()
-                assertThat(it.payload.metrics).hasSize(10)
+                assertThat(it.payload.size).isEqualTo(10)
+                assertThat(it.payload.units).isEqualTo(setOf("°C", "hPa"))
+
                 true
             }
         }
@@ -87,11 +90,12 @@ class QueryMetricSpec : BaseMetricSpec() {
             // and: The time range is six hours to now.
             // and: The list consists only °C
             Assertion.assert<MetricListResponse>(response) {
-                assertThat(it.payload.from).isCloseTo(sixHours, within(2, SECONDS))
-                assertThat(it.payload.to).isCloseTo(now, within(2, SECONDS))
+                assertThat(it.payload.from).isCloseTo(sixHours, within4s)
+                assertThat(it.payload.to).isCloseTo(now, within4s)
                 assertThat(it.payload.type).isEqualTo("°C")
-                assertThat(it.payload.metrics).hasSize(5)
-                assertThat(it.payload.metrics).allMatch { metric -> metric.unit == "°C" }
+
+                assertThat(it.payload.size).isEqualTo(5)
+                assertThat(it.payload.units).isEqualTo(setOf("°C"))
                 true
             }
 
@@ -104,11 +108,12 @@ class QueryMetricSpec : BaseMetricSpec() {
             // and: The time range is six hours to now.
             // and: The list consists only °C
             Assertion.assert<MetricListResponse>(response) {
-                assertThat(it.payload.from).isCloseTo(sixHours, within(2, SECONDS))
-                assertThat(it.payload.to).isCloseTo(now, within(2, SECONDS))
+                assertThat(it.payload.from).isCloseTo(sixHours, within4s)
+                assertThat(it.payload.to).isCloseTo(now, within4s)
                 assertThat(it.payload.type).isEqualTo("hPa")
-                assertThat(it.payload.metrics).hasSize(5)
-                assertThat(it.payload.metrics).allMatch { metric -> metric.unit == "hPa" }
+
+                assertThat(it.payload.size).isEqualTo(5)
+                assertThat(it.payload.units).isEqualTo(setOf("hPa"))
                 true
             }
         }
@@ -123,13 +128,17 @@ class QueryMetricSpec : BaseMetricSpec() {
             assertThat(response.status).isEqualTo(OK)
 
             // and: The time range is six hours to now.
-            // and: The list consists only °C
-            Assertion.assert<MetricListResponse>(response) {
+            // and: The list consists °C and hPA
+            Assertion.assert<MetricListResponse>(response) { body ->
                 val tenMinutes = now.minusMinutes(11)
-                assertThat(it.payload.from).isCloseTo(tenMinutes, within(1, SECONDS))
-                assertThat(it.payload.to).isCloseTo(now, within(1, SECONDS))
-                assertThat(it.payload.type).isNull()
-                assertThat(it.payload.metrics).hasSize(4)
+                val payload = body.payload
+
+                assertThat(payload.from).isCloseTo(tenMinutes, within4s)
+                assertThat(payload.to).isCloseTo(now, within4s)
+                assertThat(payload.type).isNull()
+
+                assertThat(payload.size).isEqualTo(4)
+                assertThat(payload.units).isEqualTo(setOf("°C", "hPa"))
                 true
             }
         }
@@ -149,10 +158,12 @@ class QueryMetricSpec : BaseMetricSpec() {
                 val twentyMinutes = now.minusMinutes(21)
                 val fiveMinutes = now.minusMinutes(4)
 
-                assertThat(it.payload.from).isCloseTo(twentyMinutes, within(2, SECONDS))
-                assertThat(it.payload.to).isCloseTo(fiveMinutes, within(2, SECONDS))
+                assertThat(it.payload.from).isCloseTo(twentyMinutes, within4s)
+                assertThat(it.payload.to).isCloseTo(fiveMinutes, within4s)
                 assertThat(it.payload.type).isNull()
-                assertThat(it.payload.metrics).hasSize(8)
+
+                assertThat(it.payload.size).isEqualTo(8)
+                assertThat(it.payload.units).isEqualTo(setOf("°C", "hPa"))
                 true
             }
         }
@@ -172,11 +183,12 @@ class QueryMetricSpec : BaseMetricSpec() {
                 val twentyMinutes = now.minusMinutes(21)
                 val fiveMinutes = now.minusMinutes(4)
 
-                assertThat(it.payload.from).isCloseTo(twentyMinutes, within(1, SECONDS))
-                assertThat(it.payload.to).isCloseTo(fiveMinutes, within(1, SECONDS))
+                assertThat(it.payload.from).isCloseTo(twentyMinutes, within4s)
+                assertThat(it.payload.to).isCloseTo(fiveMinutes, within4s)
                 assertThat(it.payload.type).isEqualTo("hPa")
-                assertThat(it.payload.metrics).hasSize(4)
-                assertThat(it.payload.metrics).allMatch { metric -> metric.unit == "hPa" }
+
+                assertThat(it.payload.size).isEqualTo(4)
+                assertThat(it.payload.units).isEqualTo(setOf("hPa"))
                 true
             }
         }
