@@ -53,7 +53,7 @@ kotlin {
     jvmToolchain(21)
 }
 
- graphql {
+graphql {
 //    client {
 //        endpoint = "http://localhost:8080/graphql"
 //        // Target package name to be used for generated classes.
@@ -65,14 +65,9 @@ kotlin {
         // List of supported packages that can contain GraphQL schema type definitions
         packages = listOf("de.tarent.crud")
     }
- }
+}
 
 tasks.test {
     useJUnitPlatform()
     testLogging.showStandardStreams = true
 }
-
-// tasks.register("prepareImage", Copy) {
-//    from "$buildDir/resources/main/Dockerfile"
-//    into "$buildDir/install"
-// }

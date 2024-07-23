@@ -5,7 +5,8 @@ import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
 import de.tarent.crud.adapters.graphql.DeviceQuery
 import de.tarent.crud.adapters.graphql.GroupQuery
-import de.tarent.crud.adapters.graphql.schema.IoTSchema
+import de.tarent.crud.adapters.graphql.IoTSchema
+import de.tarent.crud.adapters.graphql.MetricQuery
 import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.routes.adminPage
 import de.tarent.crud.adapters.rest.routes.devicePage
@@ -64,7 +65,11 @@ fun Application.server() {
     install(GraphQL) {
         schema {
             packages = listOf("de.tarent.crud.domain")
-            queries = listOf(DeviceQuery(deviceService), GroupQuery(groupService))
+            queries = listOf(
+                DeviceQuery(deviceService),
+                GroupQuery(groupService),
+                MetricQuery(metricService)
+            )
             schemaObject = IoTSchema()
         }
     }

@@ -1,4 +1,4 @@
-package de.tarent.crud.adapters.graphql.schema
+package de.tarent.crud.adapters.graphql
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.federation.directives.ContactDirective
