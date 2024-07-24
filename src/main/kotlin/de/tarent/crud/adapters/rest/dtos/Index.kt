@@ -10,5 +10,7 @@ class Index : Linked<Index>() {
         addLink("_self", GET, "/")
         addLink("get_groups", GET, "/groups")
         addLink("add_group", POST, "/groups")
+        addLink("graphql-API", POST, "/graphql")
+        addLink("graphql-Schema", GET, "/graphql/schema")
     }
 }

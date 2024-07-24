@@ -88,7 +88,7 @@ fun Application.server() {
             }
         }
 
-        graphQLSDLRoute()
-        graphQLPostRoute { }
+        graphQLSDLRoute(endpoint = "/graphql/schema")
+        graphQLPostRoute(endpoint = "/graphql")
     }
 }
