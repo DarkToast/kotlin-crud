@@ -54,10 +54,12 @@ class DeleteGroupSpec : BaseGroupSpec() {
             // and: has index links
             val index: Index = json.decodeFromString(response.bodyAsText())
 
-            assertEquals(3, index.links.size)
+            assertEquals(5, index.links.size)
             assertLink("_self", "/", "GET", index.links)
             assertLink("get_groups", "/groups", "GET", index.links)
             assertLink("add_group", "/groups", "POST", index.links)
+            assertLink("graphql-API", "/graphql", "POST", index.links)
+            assertLink("graphql-Schema", "/graphql/schema", "GET", index.links)
         }
 
     @Test
