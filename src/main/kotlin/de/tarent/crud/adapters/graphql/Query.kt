@@ -13,9 +13,9 @@ class MetricQuery(private val metricService: MetricService) : Query {
     fun metrics(
         groupName: String,
         deviceName: String,
-        from: String,
-        to: String,
-        type: String,
+        from: String?,
+        to: String?,
+        type: String?,
     ): List<Device> {
         TODO()
     }

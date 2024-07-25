@@ -1,5 +1,6 @@
 package de.tarent.crud.adapters.database
 
+import de.tarent.crud.domain.Device
 import de.tarent.crud.domain.Group
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
@@ -18,7 +19,14 @@ class GroupRepository(private val database: Database) {
         return Group(
             name = results[0][GroupEntity.name],
             description = results[0][GroupEntity.description],
-            devices = results.mapNotNull { it.getOrNull(DeviceEntity.name) },
+            devices = results.map {
+                Device(
+                    name = it[DeviceEntity.name],
+                    description = it[DeviceEntity.description],
+                    type = it[DeviceEntity.type],
+                    groupName = it[GroupEntity.name]
+                )
+            }
         )
     }
 

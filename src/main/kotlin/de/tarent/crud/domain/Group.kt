@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Group(
     val name: String,
     val description: String,
-    val devices: List<String> = emptyList(),
+    val devices: List<Device> = emptyList(),
 ) {
     init {
         require(name.length <= 50) { throw DomainException("Name must not be greater than 50 characters.") }
