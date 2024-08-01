@@ -23,7 +23,7 @@ interface GroupAssertion : LinkAssertion {
     ): Boolean {
         assertEquals(name, group.name)
         assertEquals(description, group.description)
-        assertEquals(devices, group.devices)
+        assertEquals(devices, group.devices.map { it.name })
         return true
     }
 }

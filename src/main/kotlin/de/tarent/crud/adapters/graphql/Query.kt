@@ -29,14 +29,14 @@ class DeviceQuery(private val deviceService: DeviceService) : Query {
         }
 }
 
-class GroupQuery(private val groupServic: GroupService) : Query {
+class GroupQuery(private val groupService: GroupService) : Query {
     fun groups(): List<Group> =
-        when (val result = groupServic.list()) {
+        when (val result = groupService.list()) {
             is Ok -> result.value
         }
 
     fun get(groupName: String): Group? =
-        when (val result = groupServic.read(groupName)) {
+        when (val result = groupService.read(groupName)) {
             is Ok -> result.value
             is GroupDontExists -> null
         }
