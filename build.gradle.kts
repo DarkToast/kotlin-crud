@@ -1,5 +1,6 @@
 plugins {
     application
+    alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
@@ -11,7 +12,23 @@ repositories {
 }
 
 application {
-    mainClass = "de.tarent.crud.ApplicationKt"
+    mainClass = "de.tarent.crud.ServerKt"
+}
+
+// Due to ticket: https://youtrack.jetbrains.com/issue/KTOR-6775
+jib {
+    container.creationTime = "USE_CURRENT_TIMESTAMP"
+}
+
+ktor {
+    fatJar {
+        archiveFileName = "fat.jar"
+    }
+    docker {
+        localImageName = "crud"
+        imageTag = "latest"
+        jreVersion = JavaVersion.VERSION_21
+    }
 }
 
 dependencies {
