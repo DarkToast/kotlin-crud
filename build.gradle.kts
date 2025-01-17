@@ -1,10 +1,10 @@
 plugins {
     application
-    alias(libs.plugins.ktor)
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.versions)
+    id("org.jetbrains.kotlin.jvm") version "1.9.23"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("com.github.ben-manes.versions") version "0.51.0"
+    id("io.ktor.plugin") version "2.3.10"
 }
 
 repositories {
@@ -31,36 +31,48 @@ ktor {
     }
 }
 
+// Define versions as variables
+val ktorVersion = "2.3.10"
+val kotlinLoggingVersion = "6.0.9"
+val logbackVersion = "1.5.6"
+val koinVersion = "3.5.6"
+val exposedVersion = "0.49.0"
+val hikariCPVersion = "5.0.1"
+val postgresqlVersion = "42.7.3"
+val kotlinTestVersion = "1.9.23"
+val junitVersion = "5.10.2"
+val assertjVersion = "3.25.3"
+val h2Version = "2.2.224"
+
 dependencies {
-    implementation(libs.web.ktor.server.core)
-    implementation(libs.web.ktor.server.netty)
-    implementation(libs.web.ktor.server.pages)
-    implementation(libs.web.ktor.server.content.negotiation)
-    implementation(libs.web.ktor.server.logging)
-    implementation(libs.web.ktor.serialization.json)
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation(libs.di.koin.core)
-    implementation(libs.di.koin.ktor)
-    implementation(libs.di.koin.logger)
+    implementation("io.github.oshai:kotlin-logging-jvm:$kotlinLoggingVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
-    implementation(libs.db.exposed.core)
-    implementation(libs.db.exposed.dao)
-    implementation(libs.db.exposed.jdbc)
-    implementation(libs.db.exposed.time)
+    implementation("io.insert-koin:koin-core:$koinVersion")
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
-    implementation(libs.db.hikari)
-    runtimeOnly(libs.db.postgres.driver)
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
+    runtimeOnly("org.postgresql:postgresql:$postgresqlVersion")
 
-    implementation(libs.logging.logback)
-    implementation(libs.logging.kotlin)
-
-    testImplementation(libs.test.junit.engine)
-    testImplementation(libs.test.junit.params)
-    testImplementation(libs.test.assertj)
-    testImplementation(libs.test.ktor.server)
-    testImplementation(libs.test.koin)
-
-    testRuntimeOnly(libs.test.h2)
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinTestVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
+    testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testImplementation("io.insert-koin:koin-test:$koinVersion")
+    testRuntimeOnly("com.h2database:h2:$h2Version")
 }
 
 kotlin {
