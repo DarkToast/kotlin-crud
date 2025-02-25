@@ -1,10 +1,10 @@
 plugins {
     application
-    alias(libs.plugins.ktor)
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.versions)
+    id("org.jetbrains.kotlin.jvm") version "1.9.23"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("com.github.ben-manes.versions") version "0.51.0"
+    id("io.ktor.plugin") version "2.3.10"
 }
 
 repositories {
@@ -32,35 +32,39 @@ ktor {
 }
 
 dependencies {
-    implementation(libs.web.ktor.server.core)
-    implementation(libs.web.ktor.server.netty)
-    implementation(libs.web.ktor.server.pages)
-    implementation(libs.web.ktor.server.content.negotiation)
-    implementation(libs.web.ktor.server.logging)
-    implementation(libs.web.ktor.serialization.json)
+    // KTOR
+    implementation("io.ktor:ktor-server-core:2.3.10")
+    implementation("io.ktor:ktor-server-netty:2.3.10")
+    implementation("io.ktor:ktor-server-status-pages:2.3.10")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.10")
+    implementation("io.ktor:ktor-server-call-logging:2.3.10")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
 
-    implementation(libs.di.koin.core)
-    implementation(libs.di.koin.ktor)
-    implementation(libs.di.koin.logger)
+    // LOGGING
+    implementation("io.github.oshai:kotlin-logging-jvm:6.0.9")
+    implementation("ch.qos.logback:logback-classic:1.5.6")
 
-    implementation(libs.db.exposed.core)
-    implementation(libs.db.exposed.dao)
-    implementation(libs.db.exposed.jdbc)
-    implementation(libs.db.exposed.time)
+    // DI
+    implementation("io.insert-koin:koin-core:3.5.6")
+    implementation("io.insert-koin:koin-ktor:3.5.6")
+    implementation("io.insert-koin:koin-logger-slf4j:3.5.6")
 
-    implementation(libs.db.hikari)
-    runtimeOnly(libs.db.postgres.driver)
+    // DATABASE
+    implementation("org.jetbrains.exposed:exposed-core:0.49.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.49.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.49.0")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.49.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    runtimeOnly("org.postgresql:postgresql:42.7.3")
 
-    implementation(libs.logging.logback)
-    implementation(libs.logging.kotlin)
-
-    testImplementation(libs.test.junit.engine)
-    testImplementation(libs.test.junit.params)
-    testImplementation(libs.test.assertj)
-    testImplementation(libs.test.ktor.server)
-    testImplementation(libs.test.koin)
-
-    testRuntimeOnly(libs.test.h2)
+    // TEST
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+    testImplementation("io.ktor:ktor-server-test-host:2.3.10")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
+    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("io.insert-koin:koin-test:3.5.6")
+    testRuntimeOnly("com.h2database:h2:2.2.224")
 }
 
 kotlin {
