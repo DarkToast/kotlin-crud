@@ -1,11 +1,24 @@
 plugins {
     application
-    id("org.jetbrains.kotlin.jvm") version "1.9.23"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
-    id("com.github.ben-manes.versions") version "0.51.0"
-    id("io.ktor.plugin") version "2.3.10"
+    id("org.jetbrains.kotlin.jvm") version "2.1.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
+    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("com.github.ben-manes.versions") version "0.52.0"
+    id("io.ktor.plugin") version "3.1.3"
 }
+
+// Versions
+val kotlinVersion = "2.1.21"
+val ktorVersion = "3.1.3"
+val kotlinLoggingVersion = "7.0.7"
+val logbackVersion = "1.5.18"
+val koinVersion = "4.0.4"
+val exposedVersion = "0.61.0"
+val hikariVersion = "6.3.0"
+val postgresqlVersion = "42.7.5"
+val junitVersion = "5.12.2"
+val assertjVersion = "3.27.3"
+val h2Version = "2.3.232"
 
 repositories {
     mavenCentral()
@@ -33,38 +46,38 @@ ktor {
 
 dependencies {
     // KTOR
-    implementation("io.ktor:ktor-server-core:2.3.10")
-    implementation("io.ktor:ktor-server-netty:2.3.10")
-    implementation("io.ktor:ktor-server-status-pages:2.3.10")
-    implementation("io.ktor:ktor-server-content-negotiation:2.3.10")
-    implementation("io.ktor:ktor-server-call-logging:2.3.10")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
     // LOGGING
-    implementation("io.github.oshai:kotlin-logging-jvm:6.0.9")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
+    implementation("io.github.oshai:kotlin-logging-jvm:$kotlinLoggingVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     // DI
-    implementation("io.insert-koin:koin-core:3.5.6")
-    implementation("io.insert-koin:koin-ktor:3.5.6")
-    implementation("io.insert-koin:koin-logger-slf4j:3.5.6")
+    implementation("io.insert-koin:koin-core:$koinVersion")
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
     // DATABASE
-    implementation("org.jetbrains.exposed:exposed-core:0.49.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.49.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.49.0")
-    implementation("org.jetbrains.exposed:exposed-java-time:0.49.0")
-    implementation("com.zaxxer:HikariCP:5.0.1")
-    runtimeOnly("org.postgresql:postgresql:42.7.3")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("com.zaxxer:HikariCP:$hikariVersion")
+    runtimeOnly("org.postgresql:postgresql:$postgresqlVersion")
 
     // TEST
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
-    testImplementation("io.ktor:ktor-server-test-host:2.3.10")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
-    testImplementation("org.assertj:assertj-core:3.25.3")
-    testImplementation("io.insert-koin:koin-test:3.5.6")
-    testRuntimeOnly("com.h2database:h2:2.2.224")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
+    testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testImplementation("io.insert-koin:koin-test:$koinVersion")
+    testRuntimeOnly("com.h2database:h2:$h2Version")
 }
 
 kotlin {
@@ -75,8 +88,3 @@ tasks.test {
     useJUnitPlatform()
     testLogging.showStandardStreams = true
 }
-
-// tasks.register("prepareImage", Copy) {
-//    from "$buildDir/resources/main/Dockerfile"
-//    into "$buildDir/install"
-// }

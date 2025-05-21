@@ -1,5 +1,6 @@
 package de.tarent.crud
 
+import com.zaxxer.hikari.HikariDataSource
 import de.tarent.crud.adapters.rest.dtos.Failure
 import de.tarent.crud.adapters.rest.routes.adminPage
 import de.tarent.crud.adapters.rest.routes.devicePage
@@ -15,7 +16,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.netty.EngineMain
-import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
@@ -55,13 +56,14 @@ fun Application.server() {
         json()
     }
 
+    val database: HikariDataSource by inject()
     val groupService: GroupService by inject()
     val deviceService: DeviceService by inject()
     val metricService: MetricService by inject()
 
     routing {
         indexPage()
-        adminPage()
+        adminPage(database)
         groupPage(groupService)
         devicePage(deviceService)
         metricsPage(metricService)
