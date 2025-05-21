@@ -24,20 +24,19 @@ data class Health(
 fun Route.adminPage(database: HikariDataSource) {
     val logger = KotlinLogging.logger { }
 
-    //val database: HikariDataSource by inject()
-
     get("/admin/status") {
         call.respond(HttpStatusCode.OK, """{ "status": "UP" }""")
     }
 
     get("/admin/health") {
-        val state = try {
-            val dbState = if (database.isRunning) UP else DOWN
-            Health(UP, dbState)
-        } catch (e: Exception) {
-            logger.error(e) { "Error while checking system status" }
-            Health(DOWN, DOWN)
-        }
+        val state =
+            try {
+                val dbState = if (database.isRunning) UP else DOWN
+                Health(UP, dbState)
+            } catch (e: Exception) {
+                logger.error(e) { "Error while checking system status" }
+                Health(DOWN, DOWN)
+            }
         call.respond(HttpStatusCode.OK, state)
     }
 }
